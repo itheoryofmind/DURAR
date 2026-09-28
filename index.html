@@ -284,6 +284,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .plan .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
 .plan .opts button{border:1px solid var(--line);background:var(--raised);border-radius:10px;padding:8px 4px;font-size:14px}
 .quotebtn{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:46;border:0;border-radius:20px;background:var(--brass);color:#1a1209;font-weight:600;padding:9px 18px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.exact{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);margin:10px 2px 0}
+.sprog{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.sprog .bar{background:var(--brass-soft)}.sprog .bar i{background:var(--brass)}
+.bio{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--brass-soft);border-radius:12px;padding:10px 14px}
+.about .links{display:flex;flex-wrap:wrap;gap:8px}
+.aboutq{font-family:var(--text);font-size:17px;line-height:2;margin:0;border-inline-start:3px solid var(--brass);padding-inline-start:12px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -309,6 +315,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <input id="q" type="search" placeholder="ابحث في نص الكتاب كاملاً" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
       <button class="btn btn-primary" type="submit">بحث</button>
     </form>
+    <label class="exact"><input type="checkbox" id="exact"> العبارة بنصها (لا الكلمات متفرقة)</label>
     <div class="chips" id="chips"></div>
   </div>
 
@@ -370,6 +377,19 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
         <a class="action" href="download/"><b>تحميل الكتاب كاملاً</b><span>ملف PDF واحد</span></a>
         <button class="action" id="saveAll" type="button"><b>احفظه للقراءة بدون إنترنت</b><span id="saveAllInfo">الصور والنص · نحو ٣٨٠ ميجا · يفضّل على Wi‑Fi</span></button>
       </div>
+    </section>
+
+    <section class="about">
+      <h2>عن الكتاب</h2>
+      <p class="aboutq" id="aboutQ"></p>
+      <p class="count" id="aboutSrc"></p>
+      <div class="links" id="aboutLinks"></div>
+    </section>
+
+    <section class="about">
+      <h2>بياناتك</h2>
+      <p class="note">المفضلة والتعليقات وخطة الختم وموضع القراءة محفوظة في جهازك فقط. احفظ نسخة منها في ملف قبل تغيير الجوال أو حذف التطبيق، ثم استرجعها.</p>
+      <div class="links"><button class="btn btn-quiet" id="bkSave" type="button">حفظ نسخة من بياناتي</button><button class="btn btn-quiet" id="bkLoad" type="button">استرجاع من ملف</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
     </section>
 
     <section class="about">
@@ -450,7 +470,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <button class="icon" id="sClose" aria-label="إغلاق البحث"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="body">
-    <div class="filter" style="margin-bottom:8px"><label><input type="checkbox" id="onlyPart"> في هذا الجزء فقط</label></div>
+    <div class="filter" style="margin-bottom:8px"><label><input type="checkbox" id="onlyPart"> في هذا الجزء فقط</label><label><input type="checkbox" id="exact2"> العبارة بنصها</label></div>
     <div class="results" id="res2" aria-live="polite"></div>
   </div>
 </div>
@@ -488,7 +508,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='6';
-const APP_VER='2026-09-29-0205';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0214';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -583,9 +603,9 @@ function snip(raw,k,len){
   if(e+100<raw.length){const i=B.search(/\s\S*$/);if(i>0)B=B.slice(0,i)}
   return {a:A.replace(/\s+/g,' '),m:raw.slice(a,e),b:B.replace(/\s+/g,' ')};
 }
-async function runSearch(rawq,only,onStatus){
+async function runSearch(rawq,only,onStatus,exact,onPart){
   const q=norm(rawq.trim()).replace(/\s+/g,' ');if(q.length<2)return null;
-  const W=q.split(' ').filter(w=>w.length>1);
+  const W=exact?[q]:q.split(' ').filter(w=>w.length>1);
   const out=[];const vols=only?[only]:VOLS.slice(1).map(v=>v.n);
   for(const n of vols){
     if(onStatus)onStatus(n);
@@ -593,13 +613,14 @@ async function runSearch(rawq,only,onStatus){
     for(let p=1;p<P.length;p++){
       const pg=P[p];if(!pg)continue;const t=pg.n;
       let qq=q,k=t.indexOf(q);
-      if(k<0&&W.length>1&&W.every(w=>t.includes(w))){qq=W[0];k=t.indexOf(qq)}
+      if(k<0&&!exact&&W.length>1&&W.every(w=>t.includes(w))){qq=W[0];k=t.indexOf(qq)}
       let c=0;
       while(k>-1&&c<3&&out.length<600){
         out.push(Object.assign({n,p,src:pg.src,hl:W.length>1?W:[q]},snip(pg.raw,k,qq.length)));
         c++;k=t.indexOf(qq,k+qq.length);
       }
     }
+    if(onPart)onPart({out},n);
     if(out.length>=600)break;
   }
   return {out};
@@ -627,10 +648,13 @@ function renderHits(R,res,filterN){
   if(res.out.length>=600)R.prepend(el('p','note','عُرض أول ٦٠٠ موضع. أضف كلمة أخرى لتضييق النتائج.'));
 }
 let lastRes=null;
+function progressBar(R){const w=el('div','sprog');const t=el('p','note','جاري البحث…');const b=el('div','bar');const i=el('i');b.append(i);w.append(t,b);R.before(w);return {t,i,done(){w.remove()}}}
 async function homeSearch(v){
   const sec=$('#resSec'),R=$('#res');sec.hidden=false;$('#filterRow').hidden=true;
-  R.innerHTML='';R.append(el('p','note','جاري البحث…'));sec.scrollIntoView({behavior:'smooth',block:'start'});
-  const res=await runSearch(v,0,n=>{R.firstChild&&(R.firstChild.textContent='جاري البحث في '+partName(n)+'…')});
+  R.innerHTML='';const pr=progressBar(R);sec.scrollIntoView({behavior:'smooth',block:'start'});
+  // results appear part by part while the rest of the book is still loading
+  const res=await runSearch(v,0,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=((n-1)/16*100)+'%'},$('#exact').checked,r=>{if(r.out.length)renderHits(R,r,0)});
+  pr.done();
   if(!res){R.innerHTML='';R.append(el('p','note','اكتب كلمة من حرفين على الأقل.'));return}
   if(res.error&&!res.out.length){R.innerHTML='';R.append(el('p','note','تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت ثم جرّب مرة ثانية.'));return}
   lastRes=res;
@@ -740,6 +764,8 @@ async function renderIdx(){
     }else{
       const occ=(D.s.find(x=>x[0]===IX.sub)||[,[]])[1];
       const bk=el('button','btn btn-link back','→ كل العلماء');bk.type='button';bk.onclick=()=>{IX.sub=null;renderIdx()};frag.append(bk,el('h5',null,IX.sub));
+      const bio=D.b&&D.b[IX.sub];
+      if(bio){const b=el('div','bio');b.append(el('span',null,'ترجمته في «كتاب تراجم أصحاب الرسائل والأجوبة»'));const g=el('button','btn btn-primary','الجزء السادس عشر · ص '+ar(bio[0])+(bio[1]?' تقريباً':''));g.type='button';g.onclick=()=>goFromIdx(16,bio[0]);b.append(g);frag.append(b)}
       N.textContent='يظهر صدر كل موضع كما في النص، مع الجزء والصفحة.';
       for(const [v,p,k,t,ap] of occ){if(!has(t))continue;if(shown>=MAX)break;frag.append(iitem(v,p,t,k,null,ap));shown++}
     }
@@ -1172,7 +1198,9 @@ $('#qSearch').onclick=openSearch;$('#sClose').onclick=closeSearch;
 $('#sform2').addEventListener('submit',async e=>{
   e.preventDefault();$('#q2').blur();const R=$('#res2');R.innerHTML='';R.append(el('p','note','جاري البحث…'));
   const only=$('#onlyPart').checked&&cur.n?cur.n:0;
-  const res=await runSearch($('#q2').value,only,n=>{R.firstChild&&(R.firstChild.textContent='جاري البحث في '+partName(n)+'…')});
+  R.innerHTML='';const pr=progressBar(R);
+  const res=await runSearch($('#q2').value,only,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=((n-1)/16*100)+'%'},$('#exact2').checked,r=>{if(r.out.length)renderHits(R,r,0)});
+  pr.done();
   if(!res){R.innerHTML='';R.append(el('p','note','اكتب كلمة من حرفين على الأقل.'));return}
   if(res.error&&!res.out.length){R.innerHTML='';R.append(el('p','note','تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت.'));return}
   renderHits(R,res,0);
@@ -1255,6 +1283,33 @@ $('#quoteBtn').onclick=async()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.append(a);a.click();a.remove();
 };
 
+/* ---------- about the book: from the book itself ---------- */
+async function renderAbout(){
+  const L=$('#aboutLinks');L.innerHTML='';
+  [['تقريظات الكتاب',1,5],['تمهيد الجامع',1,11],['تنبيهات الجامع',1,24],['بيان الأجزاء',16,494],['تراجم أصحاب الرسائل',16,314]].forEach(([t,n,p])=>{const b=el('button','btn btn-quiet',t);b.type='button';b.onclick=()=>openPart(n,p,null,false,'txt');L.append(b)});
+  try{const T=await textOf(1);const x=T.p[22];if(x&&!(x[0]&2)){const t=x.slice(1).filter(i=>typeof i==='string')[0];$('#aboutQ').textContent='«'+t.replace(/^[^.]{0,20}\.\s*/,'')+'»';   // the page opens with the end of the previous sentence$('#aboutSrc').textContent='من تمهيد الجامع عبدالرحمن بن قاسم، الجزء الأول، ص ٢٢'}}catch(e){}
+}
+
+/* ---------- backup of the reader's own data ---------- */
+const BK_KEYS=k=>/^(favs|notes|plan|lastRead|last\d+|mode|fs|view2|chosen)$/.test(k);
+$('#bkSave').onclick=async()=>{
+  const d={app:'durar',saved:new Date().toISOString(),data:{}};
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(BK_KEYS(k))d.data[k]=localStorage.getItem(k)}}catch(e){}
+  const file=new File([JSON.stringify(d)],'الدرر السنية - بياناتي.json',{type:'application/json'});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});return}}catch(e){if(e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;document.body.append(a);a.click();a.remove();
+};
+$('#bkLoad').onclick=()=>$('#bkFile').click();
+$('#bkFile').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{const d=JSON.parse(await f.text());if(d.app!=='durar'||!d.data)throw 0;
+    if(!confirm('سيتم استبدال بياناتك الحالية بما في الملف. متابعة؟'))return;
+    for(const [k,v] of Object.entries(d.data))if(BK_KEYS(k))localStorage.setItem(k,v);
+    toast('استُرجعت بياناتك');renderHome();renderPlan();
+  }catch(err){toast('الملف غير صالح',3000)}
+  e.target.value='';
+};
+
 /* add to home screen: a small hint, shown until dismissed */
 (function(){
   const standalone=window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches;
@@ -1285,7 +1340,7 @@ setTimeout(checkUpdate,1500);
 
 /* start */
 if(hasCaches){volCache().then(c=>c.delete(new Request('./_vol/8.pdf'))).catch(()=>{});caches.delete('durar-text-v1').catch(()=>{})}
-renderHome();daily();renderPlan();
+renderHome();daily();renderPlan();renderAbout();
 (function(){const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m&&+m[1]<=16){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openPart(+m[1],+m[2],null,true)}})();
 </script>
 </body>
