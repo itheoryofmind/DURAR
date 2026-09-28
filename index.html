@@ -306,13 +306,15 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 
 /* ---------- storage ---------- */
 const hasCaches='caches' in window;
-const volKey=n=>new Request('./_vol/'+n+'.pdf'), txtKey=n=>new Request('./_txt/'+n+'.txt');
+// VV: file version per part (part 8 pages 41-120 were re-ordered to match the printed numbering)
+const VV={8:2},vq=n=>VV[n]?'?v='+VV[n]:'',vk=n=>VV[n]?'.v'+VV[n]:'';
+const volKey=n=>new Request('./_vol/'+n+vk(n)+'.pdf'), txtKey=n=>new Request('./_txt/'+n+vk(n)+'.txt');
 const volCache=()=>caches.open('durar-vols-v1'), txtCache=()=>caches.open('durar-text-v1');
 async function isSaved(n){if(!hasCaches)return false;try{return !!(await (await volCache()).match(volKey(n)))}catch(e){return false}}
 async function saveVol(n,onp){
   if(!hasCaches)throw new Error('no-cache');
   if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
-  const r=await fetch('vols/'+n+'.pdf',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
+  const r=await fetch('vols/'+n+'.pdf'+vq(n),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
   const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
   for(;;){const {done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(onp&&total)onp(got/total)}
   await (await volCache()).put(volKey(n),new Response(new Blob(parts,{type:'application/pdf'})));
@@ -326,7 +328,7 @@ async function pagesOf(n){
   let t=null;
   try{if(hasCaches){const m=await (await txtCache()).match(txtKey(n));if(m)t=await m.text()}}catch(e){}
   if(t===null){
-    const r=await fetch('vols/'+n+'.txt');if(!r.ok)throw new Error('HTTP '+r.status);
+    const r=await fetch('vols/'+n+'.txt'+vq(n));if(!r.ok)throw new Error('HTTP '+r.status);
     t=await r.text();
     try{if(hasCaches)await (await txtCache()).put(txtKey(n),new Response(t,{headers:{'Content-Type':'text/plain; charset=utf-8'}}))}catch(e){}
   }
@@ -485,7 +487,7 @@ async function openPart(n,p,hl,noPush){
       if(pdf){try{pdf.destroy()}catch(e){}pdf=null}
       let src;
       if(hasCaches){const m=await (await volCache()).match(volKey(n));if(m)src={data:new Uint8Array(await m.arrayBuffer())}}
-      if(!src)src={url:'vols/'+n+'.pdf',rangeChunkSize:262144};
+      if(!src)src={url:'vols/'+n+'.pdf'+vq(n),rangeChunkSize:262144};
       const doc=await pdfjsLib.getDocument(src).promise;
       if(seq!==openSeq){doc.destroy();return}
       pdf=doc;cur.n=n;
@@ -603,6 +605,7 @@ $('#sform2').addEventListener('submit',async e=>{
 window.addEventListener('resize',()=>{if(!$('#reader').hidden&&pdf&&!loading)go(cur.p)});
 
 /* start */
+if(hasCaches){volCache().then(c=>c.delete(new Request('./_vol/8.pdf'))).catch(()=>{});txtCache().then(c=>c.delete(new Request('./_txt/8.txt'))).catch(()=>{})}
 renderHome();
 (function(){const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m&&+m[1]<=16){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openPart(+m[1],+m[2],null,true)}})();
 </script>
