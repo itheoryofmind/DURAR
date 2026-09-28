@@ -204,7 +204,9 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .tbody p.vnote{text-indent:0;font-family:var(--ui);font-size:12px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.4em}
 .tbody p.bsm{text-indent:0;text-align:center;font-family:var(--display);color:var(--brass);font-size:1.15em}
 .tbody h3{font-family:var(--display);font-size:1.25em;text-align:center;margin:.4em 0 .6em;color:var(--brass)}
+@font-face{font-family:"UthmanicHafs";src:url(lib/hafs.18.woff2) format("woff2");font-display:swap}
 .q{color:var(--verse);font-family:var(--display);font-size:1.08em}
+.qu{font-family:"UthmanicHafs","Amiri",serif;font-size:1.1em;line-height:2.3}
 .qb{font-size:0}
 .ed{color:var(--muted);font-family:var(--ui);font-size:.72em}
 .tbody p.edt{text-indent:0;text-align:center;color:var(--muted);font-family:var(--ui);font-size:.72em}
@@ -274,6 +276,14 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .install svg{color:var(--brass);flex:none}
 .install span{flex:1;line-height:1.6}
 .install b{color:var(--ink)}
+.plan p{margin:0}
+.plan .today{font-family:var(--display);font-size:22px;margin:4px 0}
+.plan .pbar{height:8px;border-radius:4px;background:var(--brass-soft);overflow:hidden;margin:10px 0 6px}
+.plan .pbar i{display:block;height:100%;background:var(--brass)}
+.plan .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.plan .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.plan .opts button{border:1px solid var(--line);background:var(--raised);border-radius:10px;padding:8px 4px;font-size:14px}
+.quotebtn{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:46;border:0;border-radius:20px;background:var(--brass);color:#1a1209;font-weight:600;padding:9px 18px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -334,6 +344,13 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <p class="hint">اضغط على الجزء لعرض أبوابه. الخط الذهبي على الكعب يبيّن موضع وقوفك، والنقطة الخضراء تعني أنه محفوظ للقراءة بدون إنترنت.</p>
     </section>
 
+    <section id="planSec">
+      <div class="card plan">
+        <div class="section-head" style="margin-bottom:6px"><h2>خطة الختم</h2><button class="btn btn-link" id="planEdit" type="button" hidden>تغيير</button></div>
+        <div id="planBody"></div>
+      </div>
+    </section>
+
     <section id="dailySec" hidden>
       <div class="card daily">
         <div class="src" id="dailySrc"></div>
@@ -345,6 +362,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <section id="favSec" hidden>
       <div class="section-head"><h2>المفضلة والتعليقات</h2><span class="count" id="favCount"></span></div>
       <div class="favs" id="favs"></div>
+      <button class="btn btn-quiet" id="exportNotes" type="button" style="margin-top:10px">تصدير تعليقاتي في ملف</button>
     </section>
 
     <section>
@@ -360,6 +378,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="trust">
         <div class="card"><b>الصورة هي الأصل</b><span>صور الصفحات من المسح الأصلي بلا أي تعديل، واللون البيج طبقة عرض فقط. أرقام الصفحات تطابق المطبوع، فيصح العزو إليها.</span></div>
         <div class="card"><b>نص مطابَق صفحةً صفحة</b><span>النص من المكتبة الشاملة (الطبعة السادسة ١٤١٧هـ). قُرئ أول كل صفحة وآخرها من صورتها قراءة جديدة وطوبق من الجهتين، وما لم تكتمل مطابقة حدوده عُلِّم «≈ حدود تقريبية».</span></div>
+        <div class="card"><b>الآيات بالرسم العثماني</b><span>تُعرض الآية المستشهد بها بخط مصحف المدينة (مجمع الملك فهد لطباعة المصحف الشريف)، متى طابقت كلماتها نص الآية المعزوّ إليها كلمة كلمة، وإلا بقيت كما في النص.</span></div>
         <div class="card"><b>فهارس تعمل باللمس</b><span>أرقام الصفحات في فهارس الأجزاء قُرئت وروجعت، فاضغط على أي موضوع في الفهرس المطبوع لتنتقل إلى صفحته.</span></div>
       </div>
       <p class="note">النص الرقمي قد يخالف المطبوع في الرسم والهمزات وعلامات الترقيم، ولا تدخل فيه الحواشي، وما بين معقوفين [ ] من عناوين وعزو للآيات هو بصيغة النسخة الرقمية وقد لا يكون في المطبوع بلفظه (يظهر بلون باهت). فالمعتمد في النقل والعزو صورة الصفحة، وهي بجانب النص دائماً.</p>
@@ -381,6 +400,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <div id="tview" hidden><div class="tpage" id="tpage"></div></div>
     <div id="view" class="beige"><div class="stage" id="stage"><canvas id="cv"></canvas><div class="hot" id="hot"></div></div><div class="loader" id="loader" hidden>جاري التحميل…</div></div>
   </div>
+  <button class="quotebtn" id="quoteBtn" type="button" hidden>بطاقة اقتباس</button>
   <nav class="qbar" aria-label="أدوات القراءة">
     <button class="icon" id="qHome" aria-label="الرئيسية"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button>
     <button class="icon" id="qPrev" aria-label="الصفحة السابقة"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></button>
@@ -467,7 +487,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='5';               // version of the data files
+const DV='6';               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -781,15 +801,20 @@ $('#saveAll').onclick=async()=>{
 
 /* ---------- text rendering ---------- */
 // Quran verses are between { } in the digital text: they are shown with ornate brackets, and copying keeps the original characters.
-function richInline(s,hl,inQ){
+function richInline(s,hl,inQ,rep){
   // { } Quran (ornate brackets on screen, original characters when copied); [ ] wording of the digital edition (muted)
   // inQ: the text starts inside a verse that opened earlier (on the previous page or paragraph)
   const f=document.createDocumentFragment();let buf='',node=f,qspan=null,ed=null,edParent=null;
   if(inQ){qspan=el('span','q');f.append(qspan);node=qspan}
   const flush=()=>{if(buf){appendHL(node,buf,hl);buf=''}};
+  let k=-1,skip=false;
   for(const ch of s){
-    if(ch==='{'&&!qspan&&!ed){flush();qspan=el('span','q');const b=el('span','qb','{');b.dataset.c='﴿';qspan.append(b);f.append(qspan);node=qspan;continue}
-    if(ch==='}'&&qspan&&!ed){flush();const b=el('span','qb','}');b.dataset.c='﴾';qspan.append(b);node=f;qspan=null;continue}
+    if(ch==='{'&&!qspan&&!ed){flush();k++;qspan=el('span','q');const b=el('span','qb','{');b.dataset.c='﴿';qspan.append(b);f.append(qspan);node=qspan;
+      // the verse in the Uthmani script of the King Fahd Complex, when the quotation matches it word for word
+      if(rep&&rep[k]!=null){qspan.append(el('span','qu',rep[k]));skip=true}
+      continue}
+    if(ch==='}'&&qspan&&!ed){if(skip)buf='';else flush();skip=false;const b=el('span','qb','}');b.dataset.c='﴾';qspan.append(b);node=f;qspan=null;continue}
+    if(skip)continue;
     if(ch==='['&&!ed){flush();ed=el('span','ed');ed.title='بصيغة النسخة الرقمية، وقد لا يكون في المطبوع بلفظه';edParent=node;node.append(ed);node=ed;buf='[';continue}
     if(ch===']'&&ed){buf+=']';flush();node=edParent;ed=null;continue}
     buf+=ch;
@@ -806,8 +831,9 @@ function appendHL(node,text,hl){
 const TX={n:-1,from:0,to:0,T:null,lock:false,raf:0};
 function pageItemsDom(x,body){
   const items=x.slice(1);let hasVerse=false,inQ=!!(x[0]&4);
-  const rich=t=>{const f=richInline(t,HL,inQ);inQ=f.inQ;return f};
-  items.forEach((it,i)=>{
+  const U={};for(const [ii,k,t] of (x.u||[]))(U[ii]=U[ii]||{})[k]=t;
+  let cur=-1;const rich=t=>{const f=richInline(t,HL,inQ,U[cur]);inQ=f.inQ;return f};
+  items.forEach((it,i)=>{cur=i;
     if(typeof it==='string'&&isVerse(it)){hasVerse=true;const P=el('p','verse');P.append(rich(it));body.append(P);return}
     if(typeof it==='string'){const P=el('p');if(i===0&&(x[0]&1))P.className='cont';else if(/^بسم الله الرحمن الر ?حيم\.?$/.test(it.trim()))P.className='bsm';P.append(rich(it));body.append(P)}
     else if(it.e){const e=el('p','edt');e.title='عنوان من النسخة الرقمية، ليس في المطبوع';e.append(richInline(it.e,HL));body.append(e)}
@@ -828,7 +854,7 @@ function pageBlock(T,n,p){
   hd.append(el('span','pgline'),ib);b.append(hd);
   const st=el('div','istage');st.hidden=true;b.append(st);
   const body=el('div','tbody');b.append(body);
-  if(x){pageItemsDom(x,body);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
+  if(x){x.u=(T.u&&T.u[p])||null;pageItemsDom(x,body);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
   else{
     ib.hidden=true;st.hidden=false;st.dataset.auto='1';IO.observe(st);
     if(isIdx)body.append(el('p','nonote','الفهرس المطبوع: اضغط على الموضوع لتنتقل إلى صفحته.'));
@@ -994,7 +1020,7 @@ async function openPart(n,p,hl,noPush,view){
   await go(p||1);
 }
 function setPage(p){
-  cur.p=p;LS.set('last'+cur.n,p);if(cur.n)LS.set('lastRead',{n:cur.n,p});
+  planProgress(cur.n,p);cur.p=p;LS.set('last'+cur.n,p);if(cur.n)LS.set('lastRead',{n:cur.n,p});
   history.replaceState(history.state,'','#v'+cur.n+'p'+p);
   $('#pg').value=p;updFav();
 }
@@ -1065,7 +1091,7 @@ async function buildHot(H,n,p,still){
 }
 function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16)openPart(cur.n+1,1,null,true);else toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
 function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
-function closeReader(){$('#reader').hidden=true;$('#home').hidden=false;closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
+function closeReader(){$('#reader').hidden=true;$('#home').hidden=false;$('#quoteBtn').hidden=true;renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=$('#qHome').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m)openPart(+m[1],+m[2],null,true);else if(!$('#reader').hidden)closeReader()});
 $('#qNext').onclick=next;$('#qPrev').onclick=prev;
@@ -1152,6 +1178,82 @@ $('#sform2').addEventListener('submit',async e=>{
 });
 let rT;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(()=>{if(!$('#reader').hidden){layout();if(pdf&&!loading&&!$('#view').hidden)go(cur.p,true)}},150)});
 
+/* ---------- reading plan (خطة الختم) ---------- */
+const OFF=[0];for(let n=1;n<=16;n++)OFF[n]=OFF[n-1]+VOLS[n].p;       // global page index = OFF[n-1]+p
+const TOTAL=OFF[16];
+const gidx=(n,p)=>OFF[n-1]+p;
+function fromG(g){for(let n=1;n<=16;n++)if(g<=OFF[n])return {n,p:g-OFF[n-1]};return {n:16,p:VOLS[16].p}}
+const dayNo=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5);
+function renderPlan(){
+  const P=LS.get('plan',null),B=$('#planBody');B.innerHTML='';$('#planEdit').hidden=!P;
+  if(!P){
+    B.append(el('p',null,'اختر مدة لختم الكتاب، ويقسمه الموقع أوراداً يومية ويتابع تقدمك.'));
+    const o=el('div','opts');[[90,'٣ أشهر'],[180,'٦ أشهر'],[365,'سنة'],[730,'سنتان']].forEach(([d,t])=>{const b=el('button',null,t);b.type='button';b.onclick=()=>{
+      const lr=LS.get('lastRead',null);LS.set('plan',{days:d,start:dayNo(),from:1,done:0});renderPlan()};o.append(b)});
+    B.append(o);return;
+  }
+  const ppd=Math.ceil(TOTAL/P.days),day=Math.min(P.days-1,Math.max(0,dayNo()-P.start));
+  const a=Math.min(TOTAL,day*ppd+1),z=Math.min(TOTAL,(day+1)*ppd),A=fromG(a),Z=fromG(z);
+  const done=P.done||0,expected=Math.min(TOTAL,(day+1)*ppd);
+  B.append(el('p','count','اليوم '+ar(day+1)+' من '+ar(P.days)+' · '+ar(ppd)+' صفحة يومياً'));
+  B.append(el('p','today','ورد اليوم: '+short(A.n)+' ص '+ar(A.p)+' — '+short(Z.n)+' ص '+ar(Z.p)));
+  const bar=el('div','pbar');const i=el('i');i.style.width=(done/TOTAL*100).toFixed(1)+'%';bar.append(i);B.append(bar);
+  const behind=day*ppd-done;
+  B.append(el('p','count','قرأت '+ar(done)+' صفحة من '+ar(TOTAL)+(done>=TOTAL?' · ختمت الكتاب، تقبّل الله منك':done>=z?' · أنهيت ورد اليوم':behind>0?' · متأخر '+ar(behind)+' صفحة عن الأيام السابقة':'')));
+  const row=el('div','row');
+  if(done<TOTAL){const go1=el('button','btn btn-primary',done+1>a?'تابع ورد اليوم':'اقرأ ورد اليوم');go1.type='button';
+  go1.onclick=()=>{const t=fromG(Math.min(TOTAL,done+1));openPart(t.n,t.p)};row.append(go1)}
+  B.append(row);
+}
+$('#planEdit').onclick=()=>{if(confirm('إلغاء الخطة الحالية واختيار مدة جديدة؟')){LS.set('plan',null);renderPlan()}};
+// a page counts as read when reached in order within the plan
+function planProgress(n,p){const P=LS.get('plan',null);if(!P||!n)return;const g=gidx(n,p);if(g===(P.done||0)+1||(g>(P.done||0)&&g<=(P.done||0)+3)){P.done=g;LS.set('plan',P)}}
+
+/* ---------- notes export ---------- */
+$('#exportNotes').onclick=async()=>{
+  const N=notes(),keys=Object.keys(N).filter(k=>N[k]).sort((a,b)=>{const [n1,p1]=a.split(':').map(Number),[n2,p2]=b.split(':').map(Number);return n1-n2||p1-p2});
+  if(!keys.length){toast('لا توجد تعليقات بعد. اكتب تعليقك من قائمة «⋯» داخل الصفحة.',3500);return}
+  let t='فوائدي من الدرر السنية في الأجوبة النجدية\n\n',last=0;
+  for(const k of keys){const [n,p]=k.split(':').map(Number);if(n!==last){t+='\n— '+partName(n)+' —\n';last=n}t+='ص '+ar(p)+': '+N[k]+'\n'}
+  const file=new File([t],'فوائدي من الدرر السنية.txt',{type:'text/plain'});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});return}}catch(e){if(e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;document.body.append(a);a.click();a.remove();
+};
+
+/* ---------- quote card ---------- */
+document.addEventListener('selectionchange',()=>{
+  const s=document.getSelection(),b=$('#quoteBtn');
+  const ok=s&&!s.isCollapsed&&$('#tview').contains(s.anchorNode)&&s.toString().trim().length>3&&!$('#reader').hidden;
+  b.hidden=!ok;
+});
+$('#quoteBtn').addEventListener('pointerdown',e=>e.preventDefault());   // keep the selection
+$('#quoteBtn').onclick=async()=>{
+  const s=document.getSelection();let t=s.toString().replace(/\s+/g,' ').trim();if(!t)return;
+  if(t.length>700)t=t.slice(0,700).replace(/\s\S*$/,'')+' …';
+  const node=s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement,blk=node&&node.closest('.pgblk');const pp=blk?+blk.dataset.p:cur.p;
+  const W=1080,pad=110,c=document.createElement('canvas'),x=c.getContext('2d');
+  try{await document.fonts.load('48px "Noto Naskh Arabic"');await document.fonts.load('40px Amiri')}catch(e){}
+  x.font='50px "Noto Naskh Arabic", Amiri, serif';x.direction='rtl';
+  const words=t.split(' '),lines=[];let line='';
+  for(const w of words){const tr=line?line+' '+w:w;if(x.measureText(tr).width>W-2*pad&&line){lines.push(line);line=w}else line=tr}
+  if(line)lines.push(line);
+  const lh=92,H=Math.max(1080,pad*2+120+lines.length*lh+170);c.width=W;c.height=H;
+  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#4a2f1b');g.addColorStop(1,'#241509');x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.strokeStyle='#c9a35a';x.lineWidth=3;x.strokeRect(40,40,W-80,H-80);x.lineWidth=1;x.strokeRect(54,54,W-108,H-108);
+  // eight-point star ornament
+  const star=(cx,cy,r)=>{x.save();x.translate(cx,cy);x.strokeStyle='#c9a35a';x.lineWidth=2.5;for(const a of [0,Math.PI/4]){x.save();x.rotate(a);x.strokeRect(-r,-r,2*r,2*r);x.restore()}x.restore()};
+  star(W/2,112,26);
+  x.fillStyle='#f6ecd8';x.textAlign='center';x.direction='rtl';x.font='50px "Noto Naskh Arabic", Amiri, serif';
+  let y=pad+130;for(const l of lines){x.fillText(l,W/2,y);y+=lh}
+  x.fillStyle='#e7c27a';x.font='38px Amiri, serif';
+  x.fillText('الدرر السنية في الأجوبة النجدية — '+partName(cur.n)+'، ص '+ar(pp),W/2,H-120);
+  x.fillStyle='rgba(246,236,216,.6)';x.font='28px "IBM Plex Sans Arabic", sans-serif';x.fillText(location.host+location.pathname.replace(/\/$/,''),W/2,H-76);
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+  const file=new File([blob],'اقتباس من الدرر السنية.png',{type:'image/png'});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:citation(pp)});return}}catch(e){if(e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.append(a);a.click();a.remove();
+};
+
 /* add to home screen: a small hint, shown until dismissed */
 (function(){
   const standalone=window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches;
@@ -1166,7 +1268,7 @@ let rT;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(()=>
 
 /* start */
 if(hasCaches){volCache().then(c=>c.delete(new Request('./_vol/8.pdf'))).catch(()=>{});caches.delete('durar-text-v1').catch(()=>{})}
-renderHome();daily();
+renderHome();daily();renderPlan();
 (function(){const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m&&+m[1]<=16){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openPart(+m[1],+m[2],null,true)}})();
 </script>
 </body>
