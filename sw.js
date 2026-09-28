@@ -1,5 +1,5 @@
 // Offline shell for the site. Book volumes are cached by the page itself when the reader saves them.
-const V='durar-shell-v3';
+const V='durar-shell-v4';
 const SHELL=['./','index.html','manifest.json','icon-192.png','icon-512.png',
   'lib/pdf.js','lib/pdf.worker.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(SHELL.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
@@ -7,7 +7,7 @@ self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.a
 self.addEventListener('fetch',e=>{
   const u=new URL(e.request.url);
   if(e.request.method!=='GET')return;
-  if(u.origin===location.origin&&/\/(vols|book|download)\//.test(u.pathname))return;
+  if(u.origin===location.origin&&/\/(vols|book|download|data)\//.test(u.pathname))return;
   const cacheable=u.origin===location.origin||['cdnjs.cloudflare.com','fonts.googleapis.com','fonts.gstatic.com'].includes(u.hostname);
   if(!cacheable)return;
   const isPage=e.request.mode==='navigate';
