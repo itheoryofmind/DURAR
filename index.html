@@ -487,7 +487,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='6';               // version of the data files
+const DV='6';
+const APP_VER='2026-09-29-0205';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1265,6 +1266,22 @@ $('#quoteBtn').onclick=async()=>{
   window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();txt.textContent='ثبّته تطبيقاً على جهازك ليفتح بضغطة ويعمل بدون إنترنت.';const b=$('#installBtn');b.hidden=false;box.hidden=false;
     b.onclick=async()=>{e.prompt();try{await e.userChoice}catch(_){}box.hidden=true}});
 })();
+
+/* updates: the home-screen app on iPhone resumes the old page, so check for a newer version when it comes to the front */
+async function checkUpdate(){
+  try{
+    const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;
+    const j=await r.json();if(!j.v||j.v===APP_VER||$('#updBar'))return;
+    const b=el('div','banner');b.id='updBar';b.setAttribute('role','status');
+    const row=el('div');row.style.cssText='display:flex;align-items:center;gap:10px';
+    const t=el('span',null,'يوجد تحديث جديد للموقع.');t.style.flex='1';
+    const go=el('button','btn btn-primary','حدّث الآن');go.type='button';go.style.background='#c9a35a';go.style.color='#1a1209';
+    go.onclick=async()=>{try{const ks=await caches.keys();await Promise.all(ks.filter(k=>k.startsWith('durar-shell-')).map(k=>caches.delete(k)));const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update()}catch(e){}location.reload()};
+    row.append(t,go);b.append(row);document.body.append(b);
+  }catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
+setTimeout(checkUpdate,1500);
 
 /* start */
 if(hasCaches){volCache().then(c=>c.delete(new Request('./_vol/8.pdf'))).catch(()=>{});caches.delete('durar-text-v1').catch(()=>{})}
