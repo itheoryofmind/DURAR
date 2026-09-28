@@ -187,6 +187,7 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .pghd .pgimg{border:1px solid var(--line);background:var(--surface);color:var(--brass);border-radius:14px;padding:2px 12px;font-size:13px;font-weight:500}
 .istage{position:relative;margin:10px auto 6px;background:#f2e6c6;border-radius:6px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:1000/1527;max-width:680px}
 .istage canvas{display:block;width:100%;height:auto}
+.iload{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#6c5a45;font-size:14px}
 .istage canvas.night{filter:invert(1) hue-rotate(180deg) brightness(.92)}
 .tbody p.nonote{text-indent:0;font-family:var(--ui);font-size:13px;color:var(--muted);text-align:center;margin:0}
 .partend{text-align:center;padding:30px 0 10px;display:flex;flex-direction:column;gap:10px;align-items:center;font-family:var(--display);font-size:20px}
@@ -237,6 +238,32 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .toc button{display:flex;justify-content:space-between;gap:12px;border:0;border-bottom:1px solid var(--line);background:none;padding:11px 4px;text-align:start;font-family:var(--text);font-size:16.5px}
 .toc button span:last-child{color:var(--brass);font-family:var(--ui);font-size:14px;flex:none}
 .toc h5{font-family:var(--display);font-size:22px;margin:22px 0 4px;color:var(--brass)}
+.idxcards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.idxcard{display:flex;flex-direction:column;gap:2px;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;border-top:3px solid var(--brass)}
+.idxcard b{font-family:var(--display);font-size:20px;line-height:1.3}
+.idxcard span{font-size:12.5px;color:var(--muted);line-height:1.5}
+@media (max-width:440px){.idxcards{grid-template-columns:1fr 1fr 1fr}.idxcard{padding:10px}.idxcard span{display:none}}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.tabs button{border:0;background:var(--surface);padding:9px;font-weight:600}
+.tabs button[aria-selected=true]{background:var(--brown);color:var(--on-brown)}
+@media (prefers-color-scheme:dark){.tabs button[aria-selected=true]{background:var(--brass);color:#1a1209}}
+.searchbox.small{box-shadow:none;margin-bottom:8px;padding:2px 8px}
+.searchbox.small input{padding:8px 4px;font-size:16px}
+.ilist{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ilist h5{font-family:var(--display);font-size:21px;margin:14px 0 0;color:var(--brass)}
+.ilist h6{font-family:var(--display);font-size:17px;margin:6px 0 0;color:var(--muted);font-weight:400}
+.iitem{display:block;width:100%;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.iitem .t{font-family:var(--text);font-size:16px;line-height:1.9}
+.iitem .w{font-size:13px;color:var(--brass);font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.iitem .k{font-weight:500;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:0 8px}
+.irow{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-family:var(--text);font-size:17px}
+.irow span:last-child{font-family:var(--ui);font-size:13px;color:var(--muted);flex:none}
+.back{align-self:flex-start}
+.choices{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.choices button{display:flex;flex-direction:column;gap:4px;text-align:start;border:1px solid var(--line);background:var(--raised);border-radius:14px;padding:14px}
+.choices b{font-family:var(--display);font-size:22px}
+.choices span{font-size:14px;color:var(--muted);line-height:1.7}
+.fallback{border:1px dashed var(--brass);border-radius:10px;padding:8px;margin-top:6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -276,6 +303,11 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="actions">
         <button class="action main" id="continue" type="button"><b id="contT">ابدأ القراءة</b><span id="contS">من أول الجزء الأول</span></button>
         <button class="action" id="openToc" type="button"><b>أبواب الكتاب</b><span>الأجزاء والكتب والأبواب وفهارسها</span></button>
+      </div>
+      <div class="idxcards">
+        <button class="idxcard" type="button" data-tab="q"><b>المسائل</b><span>كل سؤال في الكتاب وموضع جوابه</span></button>
+        <button class="idxcard" type="button" data-tab="s"><b>العلماء</b><span>أجوبة كل عالم ورسائله وأقواله</span></button>
+        <button class="idxcard" type="button" data-tab="a"><b>الآيات</b><span>مواضع الاستشهاد بكل آية</span></button>
       </div>
     </section>
 
@@ -325,7 +357,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="rtop">
     <button class="icon" id="rBack" aria-label="الرجوع للرئيسية"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button>
     <div class="ttl" id="rTitle"></div>
-    <div class="modes" role="group" aria-label="طريقة العرض"><button type="button" data-v="img">الصورة</button><button type="button" data-v="txt">النص</button></div>
+    <div class="modes" role="group" aria-label="طريقة العرض"><button type="button" data-v="img">صور</button><button type="button" data-v="txt">نص</button></div>
     <div class="pgbox"><label for="pg" class="count">ص</label><input id="pg" type="number" inputmode="numeric" min="1"><span id="tot" class="num"></span></div>
   </div>
   <div class="panes" id="panes">
@@ -361,6 +393,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="menu">
     <button type="button" id="mFihris"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>فهرس هذا الجزء (اضغط على الموضوع للانتقال)</button>
     <button type="button" id="mToc"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h6v14H4zM14 5h6v14h-6z"/></svg>أبواب الكتاب</button>
+    <button type="button" id="mIdx"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5zM9 8h6M9 12h6M9 16h3"/></svg>فهارس المسائل والعلماء والآيات</button>
     <button type="button" id="mCopy"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>نسخ نص الصفحة مع الاستشهاد</button>
     <button type="button" id="mCite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h4v4c0 3-2 5-4 6M15 7h4v4c0 3-2 5-4 6"/></svg>نسخ الاستشهاد بهذه الصفحة</button>
     <button type="button" id="mLink"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>مشاركة رابط هذه الصفحة</button>
@@ -382,6 +415,29 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <div class="filter" style="margin-bottom:8px"><label><input type="checkbox" id="onlyPart"> في هذا الجزء فقط</label></div>
     <div class="results" id="res2" aria-live="polite"></div>
   </div>
+</div>
+
+<!-- Indexes overlay -->
+<div class="overlay" id="idxOverlay" hidden role="dialog" aria-label="فهارس الكتاب">
+  <div class="head"><h2 style="flex:1">فهارس الكتاب</h2><button class="icon" id="idxClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="body">
+    <div class="tabs" role="tablist"><button type="button" data-tab="q" role="tab">المسائل</button><button type="button" data-tab="s" role="tab">العلماء</button><button type="button" data-tab="a" role="tab">الآيات</button></div>
+    <div class="searchbox small"><input id="idxq" type="search" placeholder="تصفية القائمة" aria-label="تصفية القائمة" autocomplete="off"></div>
+    <p class="note" id="idxNote"></p>
+    <div id="idxList" class="ilist"></div>
+  </div>
+</div>
+
+<!-- Reading mode chooser -->
+<div class="sheet-back" id="chooseBack" hidden></div>
+<div class="sheet" id="choose" hidden role="dialog" aria-label="طريقة القراءة">
+  <div class="grip"></div>
+  <h4>كيف تحب أن تقرأ؟</h4>
+  <div class="choices">
+    <button type="button" data-v="txt"><b>نص</b><span>النص مطابَق لحدود كل صفحة، والصفحات تتتابع بالتمرير. نحو ربع الصفحات لم تكتمل مطابقة نصها، فتظهر صورتها في موضعها.</span></button>
+    <button type="button" data-v="img"><b>صور الصفحات</b><span>صور الكتاب المطبوع كما هي، صفحةً صفحة.</span></button>
+  </div>
+  <p class="hint">تستطيع التبديل في أي وقت من الزر أعلى القارئ.</p>
 </div>
 
 <!-- TOC overlay -->
@@ -608,6 +664,69 @@ async function daily(){
   }catch(e){}
 }
 
+/* ---------- indexes: questions, scholars, verses ---------- */
+const IX={tab:'q',sub:null};
+const idx=()=>getJSON('data/idx.json');
+function openIdx(tab){IX.tab=tab||IX.tab;IX.sub=null;$('#idxq').value='';$('#idxOverlay').hidden=false;renderIdx()}
+document.querySelectorAll('.idxcard').forEach(b=>b.onclick=()=>openIdx(b.dataset.tab));
+document.querySelectorAll('#idxOverlay .tabs button').forEach(b=>b.onclick=()=>{IX.tab=b.dataset.tab;IX.sub=null;$('#idxq').value='';renderIdx()});
+$('#idxClose').onclick=()=>{$('#idxOverlay').hidden=true};
+let idxT;$('#idxq').addEventListener('input',()=>{clearTimeout(idxT);idxT=setTimeout(renderIdx,200)});
+function goFromIdx(v,p){$('#idxOverlay').hidden=true;openPart(v,p)}
+function iitem(v,p,text,kind,extra){
+  const b=el('button','iitem');b.type='button';const w=el('div','w');w.append(partName(v)+' · ص '+ar(p));
+  if(kind)w.append(el('span','k',kind));if(extra)w.append(el('span','k',extra));
+  const t=el('div','t');t.append(richInline(text));b.append(w,t);b.onclick=()=>goFromIdx(v,p);return b;
+}
+async function renderIdx(){
+  document.querySelectorAll('#idxOverlay .tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===IX.tab));
+  const L=$('#idxList');L.innerHTML='';L.append(el('p','note','جاري التحميل…'));
+  let D;try{D=await idx()}catch(e){L.innerHTML='';L.append(el('p','note','تعذّر تحميل الفهارس. تأكد من الاتصال بالإنترنت.'));return}
+  L.innerHTML='';const f=norm($('#idxq').value.trim());const has=t=>!f||norm(t).includes(f);
+  const N=$('#idxNote');const MAX=300;let shown=0;const frag=document.createDocumentFragment();
+  if(IX.tab==='q'){
+    N.textContent='الأسئلة التي تبدأ بـ«سُئل» في الصفحات ذات النص المطابَق ('+ar(D.q.length)+' سؤالاً)، مرتبة بالجزء والباب. اضغط على السؤال لتنتقل إلى صفحته.';
+    let lv=0,lh=null;
+    for(const [v,p,h,t] of D.q){
+      if(!has(t)&&!has(h))continue;if(shown>=MAX)break;
+      if(v!==lv){frag.append(el('h5',null,partName(v)));lv=v;lh=null}
+      if(h&&h!==lh){frag.append(el('h6',null,h));lh=h}
+      frag.append(iitem(v,p,t));shown++;
+    }
+  }else if(IX.tab==='s'){
+    if(IX.sub==null){
+      N.textContent='العلماء المصرَّح بأسمائهم في صدر الجواب أو القول أو الرسالة، في الصفحات ذات النص المطابَق. العدد عدد المواضع.';
+      for(const [name,occ] of D.s){if(!has(name))continue;const r=el('button','irow');r.type='button';r.append(el('span',null,name),el('span',null,ar(occ.length)+' موضعاً'));r.onclick=()=>{IX.sub=name;$('#idxq').value='';renderIdx()};frag.append(r)}
+    }else{
+      const occ=(D.s.find(x=>x[0]===IX.sub)||[,[]])[1];
+      const bk=el('button','btn btn-link back','→ كل العلماء');bk.type='button';bk.onclick=()=>{IX.sub=null;renderIdx()};frag.append(bk,el('h5',null,IX.sub));
+      N.textContent='يظهر صدر كل موضع كما في النص، مع الجزء والصفحة.';
+      for(const [v,p,k,t] of occ){if(!has(t))continue;if(shown>=MAX)break;frag.append(iitem(v,p,t,k));shown++}
+    }
+  }else{
+    const S=D.suras;
+    if(IX.sub==null){
+      N.textContent='الآيات المستشهد بها مرتبة بالسور، بحسب عزو الآيات في النسخة الرقمية، في الصفحات ذات النص المطابَق.';
+      const cnt={};for(const r of D.a)cnt[r[0]]=(cnt[r[0]]||0)+1;
+      S.forEach((name,i)=>{const c=cnt[i+1];if(!c||!has(name))return;const r=el('button','irow');r.type='button';r.append(el('span',null,ar(i+1)+'. سورة '+name),el('span',null,ar(c)+' موضعاً'));r.onclick=()=>{IX.sub=i+1;$('#idxq').value='';renderIdx()};frag.append(r)});
+    }else{
+      const bk=el('button','btn btn-link back','→ كل السور');bk.type='button';bk.onclick=()=>{IX.sub=null;renderIdx()};frag.append(bk,el('h5',null,'سورة '+S[IX.sub-1]));
+      N.textContent='';
+      for(const [s,a1,a2,v,p,t] of D.a){if(s!==IX.sub)continue;if(!has(t))continue;if(shown>=MAX)break;frag.append(iitem(v,p,'{'+t+'}',null,'الآية '+ar(a1)+(a2>a1?'–'+ar(a2):'')));shown++}
+    }
+  }
+  if(shown>=MAX)frag.append(el('p','note','عُرض أول '+ar(MAX)+'. اكتب في خانة التصفية لتضييق القائمة.'));
+  if(!frag.childNodes.length)frag.append(el('p','note','لا شيء يطابق التصفية.'));
+  N.hidden=!N.textContent;L.append(frag);$('#idxOverlay').scrollTop=0;
+}
+
+/* first reading: ask how to read */
+function chooseMode(then){
+  $('#chooseBack').hidden=false;$('#choose').hidden=false;
+  document.querySelectorAll('#choose .choices button').forEach(b=>b.onclick=()=>{$('#chooseBack').hidden=true;$('#choose').hidden=true;LS.set('chosen',1);VIEW=b.dataset.v;LS.set('view2',VIEW);then()});
+  $('#chooseBack').onclick=()=>{$('#chooseBack').hidden=true;$('#choose').hidden=true;LS.set('chosen',1);then()};
+}
+
 /* ---------- TOC ---------- */
 async function renderToc(focus){
   const box=$('#toc');box.innerHTML='';let H=[];try{H=await heads()}catch(e){}
@@ -635,7 +754,7 @@ $('#saveAll').onclick=async()=>{
     try{await saveVol(n,f=>{i.style.width=((done+f*VOLS[n].p)/totalPages*100).toFixed(1)+'%'})}catch(e){failed++}
     done+=VOLS[n].p;i.style.width=(done/totalPages*100).toFixed(1)+'%';
   }
-  try{await fihris();await heads();await meta()}catch(e){}
+  try{await fihris();await heads();await meta();await idx()}catch(e){}
   ban.remove();btn.disabled=false;
   toast(failed?'حُفظت الأجزاء إلا '+ar(failed)+'، اضغط الزر مرة ثانية لإكمالها.':'حُفظ الكتاب كاملاً، ويمكن قراءته الآن بدون إنترنت.',3500);
   renderHome();
@@ -679,20 +798,22 @@ function pageBlock(T,n,p){
   const x=T.p[p],isIdx=n&&p>=VOLS[n].f;
   const hd=el('div','pghd');const ib=el('button','pgimg',x?'قارن بالصورة':'');ib.type='button';
   hd.append(el('span','pgno',(n?'':'')+'ص '+ar(p)),el('span','pgline'),ib);b.append(hd);
-  const body=el('div','tbody');b.append(body);
   const st=el('div','istage');st.hidden=true;b.append(st);
-  if(x){pageItemsDom(x,body);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden)inlineImage(st,n,p)}}
+  const body=el('div','tbody');b.append(body);
+  if(x){pageItemsDom(x,body);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
   else{
+    b.classList.add('fallback');
     ib.hidden=true;st.hidden=false;st.dataset.auto='1';IO.observe(st);
-    body.append(el('p','nonote',!n?'صفحة عنوان الكتاب.':isIdx?'صفحة من الفهرس المطبوع: اضغط على أي موضوع فيها لتنتقل إلى صفحته.':'هذه الصفحة تُعرض بصورتها، لأن مطابقة نصها مع الصورة لم تكتمل.'));
+    body.append(el('p','nonote',!n?'صفحة عنوان الكتاب.':isIdx?'صفحة من الفهرس المطبوع: اضغط على أي موضوع فيها لتنتقل إلى صفحته.':'تُعرض هذه الصفحة بصورتها لأن مطابقة نصها مع الصورة لم تكتمل، ويستمر النص بعدها.'));
   }
   return b;
 }
 const IO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){IO.unobserve(e.target);inlineImage(e.target,TX.n,+e.target.closest('.pgblk').dataset.p)}},{root:document.getElementById('tview'),rootMargin:'700px 0px'});
 async function inlineImage(st,n,p){
   if(st.dataset.done)return;st.dataset.done='1';
+  if(!st.querySelector('canvas'))st.innerHTML='<div class="iload">جاري تحميل صورة الصفحة…</div>';
   try{
-    if(!pdf||pdf._n!==n)await loadPdf(n,openSeq);
+    if(!pdf||pdf._n!==n)await loadPdf(n);
     if(!pdf||pdf._n!==n){st.dataset.done='';return}
     const pg=await pdf.getPage(p),base=pg.getViewport({scale:1}),dpr=Math.min(window.devicePixelRatio||1,2);
     const w=st.clientWidth||Math.min(680,window.innerWidth-36);
@@ -703,7 +824,7 @@ async function inlineImage(st,n,p){
     if(PAPER==='night')cv.className='night';
     st.style.aspectRatio=v.width+'/'+v.height;st.innerHTML='';st.append(cv);
     if(n&&p>=VOLS[n].f){const H=el('div','hot');st.append(H);buildHot(H,n,p)}
-  }catch(e){st.dataset.done=''}
+  }catch(e){st.dataset.done='';st.innerHTML='<div class="iload">تعذّر تحميل الصورة، اضغط لإعادة المحاولة</div>';st.onclick=()=>{st.onclick=null;inlineImage(st,n,p)}}
 }
 function paintPaper(x,cv){if(PAPER==='beige'){x.globalCompositeOperation='multiply';x.fillStyle='#f2e6c6';x.fillRect(0,0,cv.width,cv.height);x.globalCompositeOperation='source-over'}}
 function appendPages(to){
@@ -787,21 +908,27 @@ function layout(){
 async function setView(v){VIEW=v;LS.set('view2',v);layout();if(v==='txt')renderText();if(!$('#view').hidden){if(!pdf||pdf._n!==cur.n)await loadPdf(cur.n,openSeq);if(pdf)go(cur.p,true)}}
 document.querySelectorAll('.modes button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
 function setLoading(on){loading=on;$('#cv').classList.toggle('loading',on)}
-async function loadPdf(n,seq){
-  if(pdf&&pdf._n===n)return;
-  if(pdf){try{pdf.destroy()}catch(e){}pdf=null}
-  setLoading(true);$('#loader').hidden=false;
-  try{
-    let src;
-    if(hasCaches){const m=await (await volCache()).match(volKey(n));if(m)src={data:new Uint8Array(await m.arrayBuffer())}}
-    if(!src)src={url:'vols/'+n+'.pdf'+vq(n),rangeChunkSize:262144};
-    const doc=await pdfjsLib.getDocument(src).promise;
-    if(seq!==openSeq){doc.destroy();return}
-    doc._n=n;pdf=doc;
-  }catch(e){toast('تعذّر فتح صور '+partName(n)+'. تأكد من الاتصال بالإنترنت، أو احفظ الجزء للقراءة بدون إنترنت.',4000)}
-  finally{$('#loader').hidden=true;setLoading(false)}
+let PDFLOAD=null;
+function loadPdf(n){
+  if(pdf&&pdf._n===n)return Promise.resolve();
+  if(PDFLOAD&&PDFLOAD.n===n)return PDFLOAD.p;          // one download per part, shared by every page that needs it
+  const job=(async()=>{
+    if(pdf){try{pdf.destroy()}catch(e){}pdf=null}
+    setLoading(true);$('#loader').hidden=false;
+    try{
+      let src;
+      if(hasCaches){const m=await (await volCache()).match(volKey(n));if(m)src={data:new Uint8Array(await m.arrayBuffer())}}
+      if(!src)src={url:'vols/'+n+'.pdf'+vq(n),rangeChunkSize:262144};
+      const doc=await pdfjsLib.getDocument(src).promise;
+      if(PDFLOAD&&PDFLOAD.n!==n){doc.destroy();return}
+      doc._n=n;pdf=doc;
+    }catch(e){toast('تعذّر فتح صور '+partName(n)+'. تأكد من الاتصال بالإنترنت، أو احفظ الجزء للقراءة بدون إنترنت.',4000)}
+    finally{$('#loader').hidden=true;setLoading(false)}
+  })();
+  PDFLOAD={n,p:job};return job;
 }
 async function openPart(n,p,hl,noPush,view){
+  if(!LS.get('chosen',0)&&!view){return chooseMode(()=>openPart(n,p,hl,noPush,VIEW))}
   const seq=++openSeq;HL=hl||[];
   if(view){VIEW=view;LS.set('view2',view)}
   $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
@@ -925,6 +1052,7 @@ function closeSheet(){
 $('#qMore').onclick=openSheet;$('#sheetBack').onclick=closeSheet;
 $('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VIEW==='txt'&&!wide())await setView('img');go(VOLS[cur.n].f)};
 $('#mToc').onclick=()=>{closeSheet();renderToc(cur.n);$('#tocOverlay').hidden=false};
+$('#mIdx').onclick=()=>{closeSheet();openIdx()};
 function citation(p){return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
 const pageUrl=()=>location.origin+location.pathname+'#v'+cur.n+'p'+cur.p;
 async function copyText(t,okMsg){try{await navigator.clipboard.writeText(t);toast(okMsg)}catch(e){prompt('انسخ النص:',t)}}
