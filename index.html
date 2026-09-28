@@ -184,6 +184,7 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .pghd{display:flex;align-items:center;gap:10px;margin:22px 0 10px;color:var(--brass);font-size:13px;font-weight:600}
 .pgblk:first-child .pghd{margin-top:2px}
 .pghd .pgline{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--brass));opacity:.45}
+.pghd .approx{border:0;background:none;color:var(--muted);font-size:12px;font-weight:500;padding:0}
 .pghd .pgimg{border:1px solid var(--line);background:var(--surface);color:var(--brass);border-radius:14px;padding:2px 12px;font-size:13px;font-weight:500}
 .istage{position:relative;margin:10px auto 6px;background:#f2e6c6;border-radius:6px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:1000/1527;max-width:680px}
 .istage canvas{display:block;width:100%;height:auto}
@@ -198,7 +199,7 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .tbody p{margin:0 0 .7em;text-indent:1.4em}
 .tbody p.cont{text-indent:0}
 .tbody p.verse{text-indent:0;text-align:center;font-family:var(--display);font-size:1.05em;color:var(--verse)}
-.tbody p.vnote{text-indent:0;font-family:var(--ui);font-size:13px;color:var(--clay);border:1px dashed var(--line);border-radius:10px;padding:6px 10px;line-height:1.7}
+.tbody p.vnote{text-indent:0;font-family:var(--ui);font-size:12px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.4em}
 .tbody p.bsm{text-indent:0;text-align:center;font-family:var(--display);color:var(--brass);font-size:1.15em}
 .tbody h3{font-family:var(--display);font-size:1.25em;text-align:center;margin:.4em 0 .6em;color:var(--brass)}
 .q{color:var(--verse);font-family:var(--display);font-size:1.08em}
@@ -342,7 +343,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="stats" id="stats"></div>
       <div class="trust">
         <div class="card"><b>الصورة هي الأصل</b><span>صور الصفحات من المسح الأصلي بلا أي تعديل، واللون البيج طبقة عرض فقط. أرقام الصفحات تطابق المطبوع، فيصح العزو إليها.</span></div>
-        <div class="card"><b>نص مطابَق صفحةً صفحة</b><span>النص من المكتبة الشاملة (الطبعة السادسة ١٤١٧هـ). قُرئ أول كل صفحة وآخرها من صورتها قراءة جديدة، ولا يُعرض نص صفحة إلا إذا طابق أوله وآخره الصورة من الجهتين.</span></div>
+        <div class="card"><b>نص مطابَق صفحةً صفحة</b><span>النص من المكتبة الشاملة (الطبعة السادسة ١٤١٧هـ). قُرئ أول كل صفحة وآخرها من صورتها قراءة جديدة وطوبق من الجهتين، وما لم تكتمل مطابقة حدوده عُلِّم «≈ حدود تقريبية».</span></div>
         <div class="card"><b>فهارس تعمل باللمس</b><span>أرقام الصفحات في فهارس الأجزاء قُرئت وروجعت، فاضغط على أي موضوع في الفهرس المطبوع لتنتقل إلى صفحته.</span></div>
       </div>
       <p class="note">النص الرقمي قد يخالف المطبوع في الرسم والهمزات وعلامات الترقيم، ولا تدخل فيه الحواشي، وما بين معقوفين [ ] من عناوين وعزو للآيات هو بصيغة النسخة الرقمية وقد لا يكون في المطبوع بلفظه (يظهر بلون باهت). فالمعتمد في النقل والعزو صورة الصفحة، وهي بجانب النص دائماً.</p>
@@ -434,7 +435,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="grip"></div>
   <h4>كيف تحب أن تقرأ؟</h4>
   <div class="choices">
-    <button type="button" data-v="txt"><b>نص</b><span>النص مطابَق لحدود كل صفحة، والصفحات تتتابع بالتمرير. نحو ربع الصفحات لم تكتمل مطابقة نصها، فتظهر صورتها في موضعها.</span></button>
+    <button type="button" data-v="txt"><b>نص</b><span>الكتاب كله نصاً، والصفحات تتتابع بالتمرير مع رقم كل صفحة، وصورة كل صفحة بضغطة للمقارنة.</span></button>
     <button type="button" data-v="img"><b>صور الصفحات</b><span>صور الكتاب المطبوع كما هي، صفحةً صفحة.</span></button>
   </div>
   <p class="hint">تستطيع التبديل في أي وقت من الزر أعلى القارئ.</p>
@@ -449,7 +450,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='3';               // version of the data files
+const DV='4';               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -531,7 +532,7 @@ async function searchPart(n){
   const T=await textOf(n),out=[];
   for(let p=1;p<=VOLS[n].p;p++){
     const t=pagePlain(T,p);
-    if(t!=null)out[p]={raw:t,n:norm(t),src:'t'};
+    if(t!=null)out[p]={raw:t,n:norm(t),src:(T.p[p][0]&2)?'a':'t'};
     else if(T.o&&T.o[p])out[p]={raw:T.o[p],n:norm(T.o[p]),src:'o'};
   }
   return NT[n]=out;
@@ -577,6 +578,7 @@ function renderHits(R,res,filterN){
     const b=el('button','hit');b.type='button';
     const w=el('div','where');w.append(partName(h.n)+' · ص '+ar(h.p));
     const s=el('div','snip');
+    if(h.src==='a')w.append(el('span','tag','≈ الصفحة تقريبية'));
     if(h.src==='o'){w.append(el('span','tag','في صورة الصفحة'));s.classList.add('onote');s.textContent='وردت الكلمة في صورة هذه الصفحة، ونصها غير متاح. اضغط لعرض الصورة.'}
     else s.append('…'+h.a,el('mark',null,h.m),h.b+'…');
     b.append(w,s);
@@ -652,7 +654,7 @@ async function daily(){
   try{
     const m=await meta();
     const s=$('#stats');s.innerHTML='';
-    [[ar(16),'جزءاً'],[ar(m.pages),'صفحة'],[ar(m.textPages),'صفحة بنصها المطابَق'],[ar(m.fihris),'موضوعاً في الفهارس']].forEach(([a,b])=>{const d=el('div');d.append(el('b',null,a),el('span',null,b));s.append(d)});
+    [[ar(16),'جزءاً'],[ar(m.pages),'صفحة'],[ar(m.textPages),'صفحة مطابقة الحدود'],[ar(m.fihris),'موضوعاً في الفهارس']].forEach(([a,b])=>{const d=el('div');d.append(el('b',null,a),el('span',null,b));s.append(d)});
     const days=Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5);
     const [n,p]=m.daily[(days*7919)%m.daily.length];const T=await textOf(n);
     const items=pageItems(T,p);if(!items)return;
@@ -673,8 +675,8 @@ document.querySelectorAll('#idxOverlay .tabs button').forEach(b=>b.onclick=()=>{
 $('#idxClose').onclick=()=>{$('#idxOverlay').hidden=true};
 let idxT;$('#idxq').addEventListener('input',()=>{clearTimeout(idxT);idxT=setTimeout(renderIdx,200)});
 function goFromIdx(v,p){$('#idxOverlay').hidden=true;openPart(v,p)}
-function iitem(v,p,text,kind,extra){
-  const b=el('button','iitem');b.type='button';const w=el('div','w');w.append(partName(v)+' · ص '+ar(p));
+function iitem(v,p,text,kind,extra,ap){
+  const b=el('button','iitem');b.type='button';const w=el('div','w');w.append(partName(v)+' · ص '+ar(p)+(ap?' تقريباً':''));
   if(kind)w.append(el('span','k',kind));if(extra)w.append(el('span','k',extra));
   const t=el('div','t');t.append(richInline(text));b.append(w,t);b.onclick=()=>goFromIdx(v,p);return b;
 }
@@ -685,34 +687,34 @@ async function renderIdx(){
   L.innerHTML='';const f=norm($('#idxq').value.trim());const has=t=>!f||norm(t).includes(f);
   const N=$('#idxNote');const MAX=300;let shown=0;const frag=document.createDocumentFragment();
   if(IX.tab==='q'){
-    N.textContent='الأسئلة التي تبدأ بـ«سُئل» في الصفحات ذات النص المطابَق ('+ar(D.q.length)+' سؤالاً)، مرتبة بالجزء والباب. اضغط على السؤال لتنتقل إلى صفحته.';
+    N.textContent='الأسئلة التي تبدأ بـ«سُئل» ('+ar(D.q.length)+' سؤالاً)، مرتبة بالجزء والباب. اضغط على السؤال لتنتقل إلى صفحته.';
     let lv=0,lh=null;
-    for(const [v,p,h,t] of D.q){
+    for(const [v,p,h,t,ap] of D.q){
       if(!has(t)&&!has(h))continue;if(shown>=MAX)break;
       if(v!==lv){frag.append(el('h5',null,partName(v)));lv=v;lh=null}
       if(h&&h!==lh){frag.append(el('h6',null,h));lh=h}
-      frag.append(iitem(v,p,t));shown++;
+      frag.append(iitem(v,p,t,null,null,ap));shown++;
     }
   }else if(IX.tab==='s'){
     if(IX.sub==null){
-      N.textContent='العلماء المصرَّح بأسمائهم في صدر الجواب أو القول أو الرسالة، في الصفحات ذات النص المطابَق. العدد عدد المواضع.';
+      N.textContent='العلماء المصرَّح بأسمائهم في صدر الجواب أو القول أو الرسالة. العدد عدد المواضع.';
       for(const [name,occ] of D.s){if(!has(name))continue;const r=el('button','irow');r.type='button';r.append(el('span',null,name),el('span',null,ar(occ.length)+' موضعاً'));r.onclick=()=>{IX.sub=name;$('#idxq').value='';renderIdx()};frag.append(r)}
     }else{
       const occ=(D.s.find(x=>x[0]===IX.sub)||[,[]])[1];
       const bk=el('button','btn btn-link back','→ كل العلماء');bk.type='button';bk.onclick=()=>{IX.sub=null;renderIdx()};frag.append(bk,el('h5',null,IX.sub));
       N.textContent='يظهر صدر كل موضع كما في النص، مع الجزء والصفحة.';
-      for(const [v,p,k,t] of occ){if(!has(t))continue;if(shown>=MAX)break;frag.append(iitem(v,p,t,k));shown++}
+      for(const [v,p,k,t,ap] of occ){if(!has(t))continue;if(shown>=MAX)break;frag.append(iitem(v,p,t,k,null,ap));shown++}
     }
   }else{
     const S=D.suras;
     if(IX.sub==null){
-      N.textContent='الآيات المستشهد بها مرتبة بالسور، بحسب عزو الآيات في النسخة الرقمية، في الصفحات ذات النص المطابَق.';
+      N.textContent='الآيات المستشهد بها مرتبة بالسور، بحسب عزو الآيات في النسخة الرقمية.';
       const cnt={};for(const r of D.a)cnt[r[0]]=(cnt[r[0]]||0)+1;
       S.forEach((name,i)=>{const c=cnt[i+1];if(!c||!has(name))return;const r=el('button','irow');r.type='button';r.append(el('span',null,ar(i+1)+'. سورة '+name),el('span',null,ar(c)+' موضعاً'));r.onclick=()=>{IX.sub=i+1;$('#idxq').value='';renderIdx()};frag.append(r)});
     }else{
       const bk=el('button','btn btn-link back','→ كل السور');bk.type='button';bk.onclick=()=>{IX.sub=null;renderIdx()};frag.append(bk,el('h5',null,'سورة '+S[IX.sub-1]));
       N.textContent='';
-      for(const [s,a1,a2,v,p,t] of D.a){if(s!==IX.sub)continue;if(!has(t))continue;if(shown>=MAX)break;frag.append(iitem(v,p,'{'+t+'}',null,'الآية '+ar(a1)+(a2>a1?'–'+ar(a2):'')));shown++}
+      for(const [s,a1,a2,v,p,t,ap] of D.a){if(s!==IX.sub)continue;if(!has(t))continue;if(shown>=MAX)break;frag.append(iitem(v,p,'{'+t+'}',null,'الآية '+ar(a1)+(a2>a1?'–'+ar(a2):''),ap));shown++}
     }
   }
   if(shown>=MAX)frag.append(el('p','note','عُرض أول '+ar(MAX)+'. اكتب في خانة التصفية لتضييق القائمة.'));
@@ -787,24 +789,25 @@ function pageItemsDom(x,body){
   const items=x.slice(1);let hasVerse=false;
   items.forEach((it,i)=>{
     if(typeof it==='string'&&isVerse(it)){hasVerse=true;const P=el('p','verse');P.append(richInline(it,HL));body.append(P);return}
-    if(typeof it==='string'){const P=el('p');if(i===0&&x[0])P.className='cont';else if(/^بسم الله الرحمن الر ?حيم\.?$/.test(it.trim()))P.className='bsm';P.append(richInline(it,HL));body.append(P)}
+    if(typeof it==='string'){const P=el('p');if(i===0&&(x[0]&1))P.className='cont';else if(/^بسم الله الرحمن الر ?حيم\.?$/.test(it.trim()))P.className='bsm';P.append(richInline(it,HL));body.append(P)}
     else if(it.e){const e=el('p','edt');e.title='عنوان من النسخة الرقمية، ليس في المطبوع';e.append(richInline(it.e,HL));body.append(e)}
     else{const h=el('h3');h.append(richInline(it.h,HL));body.append(h)}
   });
-  if(hasVerse)body.prepend(el('p','vnote','في هذه الصفحة شعر، وقد يسقط في النسخة الرقمية بعض أشطره أو يختل ترتيبه، فراجع الصورة عند النقل.'));
+  if(hasVerse)body.prepend(el('p','vnote','الشعر قد يختل ترتيبه في النسخة الرقمية، فراجع الصورة عند النقل.'));
 }
 function pageBlock(T,n,p){
   const b=el('section','pgblk');b.dataset.p=p;
   const x=T.p[p],isIdx=n&&p>=VOLS[n].f;
   const hd=el('div','pghd');const ib=el('button','pgimg',x?'قارن بالصورة':'');ib.type='button';
-  hd.append(el('span','pgno',(n?'':'')+'ص '+ar(p)),el('span','pgline'),ib);b.append(hd);
+  hd.append(el('span','pgno','ص '+ar(p)));
+  if(x&&(x[0]&2)){const a=el('button','approx','≈ حدود تقريبية');a.type='button';a.onclick=()=>toast('نص هذه الصفحة كاملاً في موضعه، لكن لم تكتمل مطابقة أول الصفحة أو آخرها مع الصورة، فقد يكون أول سطر أو آخره من الصفحة المجاورة. عند العزو راجع الصورة.',7000);hd.append(a)}
+  hd.append(el('span','pgline'),ib);b.append(hd);
   const st=el('div','istage');st.hidden=true;b.append(st);
   const body=el('div','tbody');b.append(body);
   if(x){pageItemsDom(x,body);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
   else{
-    b.classList.add('fallback');
     ib.hidden=true;st.hidden=false;st.dataset.auto='1';IO.observe(st);
-    body.append(el('p','nonote',!n?'صفحة عنوان الكتاب.':isIdx?'صفحة من الفهرس المطبوع: اضغط على أي موضوع فيها لتنتقل إلى صفحته.':'تُعرض هذه الصفحة بصورتها لأن مطابقة نصها مع الصورة لم تكتمل، ويستمر النص بعدها.'));
+    if(isIdx)body.append(el('p','nonote','الفهرس المطبوع: اضغط على الموضوع لتنتقل إلى صفحته.'));
   }
   return b;
 }
@@ -886,7 +889,8 @@ document.addEventListener('copy',e=>{
   if(!$('#tview').contains(s.anchorNode))return;
   const t=s.toString().trim();if(!t)return;
   const node=s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement,blk=node&&node.closest('.pgblk');
-  e.clipboardData.setData('text/plain',t+'\n\n'+citation(blk?+blk.dataset.p:cur.p));e.preventDefault();toast('نُسخ النص مع الاستشهاد بالجزء والصفحة');
+  const pp=blk?+blk.dataset.p:cur.p,ap=TX.T&&TX.T.p[pp]&&(TX.T.p[pp][0]&2);
+  e.clipboardData.setData('text/plain',t+'\n\n'+citation(pp)+(ap?' [حدود الصفحة تقريبية؛ تُراجع صورتها]':''));e.preventDefault();toast('نُسخ النص مع الاستشهاد بالجزء والصفحة');
 });
 
 /* ---------- reader ---------- */
@@ -1058,8 +1062,8 @@ const pageUrl=()=>location.origin+location.pathname+'#v'+cur.n+'p'+cur.p;
 async function copyText(t,okMsg){try{await navigator.clipboard.writeText(t);toast(okMsg)}catch(e){prompt('انسخ النص:',t)}}
 $('#mCite').onclick=()=>{closeSheet();copyText(citation(),'نُسخ الاستشهاد: '+partName(cur.n)+'، ص '+ar(cur.p))};
 $('#mCopy').onclick=async()=>{closeSheet();
-  try{const T=await textOf(cur.n);const t=pagePlain(T,cur.p);if(!t||cur.p>=VOLS[cur.n].f){toast('لا يوجد نص مطابَق لهذه الصفحة، فاعتمد الصورة.',3500);return}
-    copyText(t+'\n\n'+citation(),'نُسخ نص الصفحة مع الاستشهاد')}catch(e){toast('تعذّر تحميل النص')}};
+  try{const T=await textOf(cur.n);const t=pagePlain(T,cur.p);if(!t||cur.p>=VOLS[cur.n].f){toast('لا يوجد نص لهذه الصفحة، فاعتمد الصورة.',3500);return}
+    copyText(t+'\n\n'+citation()+((T.p[cur.p][0]&2)?' [حدود الصفحة تقريبية؛ تُراجع صورتها]':''),'نُسخ نص الصفحة مع الاستشهاد')}catch(e){toast('تعذّر تحميل النص')}};
 $('#mLink').onclick=async()=>{closeSheet();const u=pageUrl(),t=citation();
   if(navigator.share){try{await navigator.share({title:'الدرر السنية',text:t,url:u});return}catch(e){if(e.name==='AbortError')return}}
   copyText(t+'\n'+u,'نُسخ رابط الصفحة')};
