@@ -3,432 +3,608 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f4c4a">
+<meta name="theme-color" content="#3b2616">
+<meta name="description" content="الدرر السنية في الأجوبة النجدية: قراءة الكتاب كاملاً والبحث في نصه والاستشهاد برقم الصفحة المطبوع.">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="الدرر السنية">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap">
 <title>الدرر السنية في الأجوبة النجدية</title>
 <style>
-:root{--ink:#10222b;--bg:#f3f5f4;--card:#fff;--g:#0f4c4a;--gold:#b08a3e;--mut:#5d6f6d;--line:#d5dcda}
-@media(prefers-color-scheme:dark){:root{--ink:#e6eeec;--bg:#0d1719;--card:#152426;--g:#5fb3ab;--gold:#d2b165;--mut:#93a8a5;--line:#28403f}}
-*{box-sizing:border-box}html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:17px/1.8 "Noto Naskh Arabic","Traditional Arabic","Geeza Pro",serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-header{background:var(--g);color:#fff;padding:14px 16px}
-header h1{margin:0;font-size:20px;font-weight:700}
-@media(prefers-color-scheme:dark){header{color:#0d1719}}
-main{max-width:760px;margin:0 auto;padding:14px}
-.q{display:flex;gap:8px}
-input,button{font:inherit}
-input[type=search]{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
-button{border:1px solid var(--g);background:var(--g);color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer}
-@media(prefers-color-scheme:dark){button{color:#0d1719}}
-button.o{background:none;color:var(--g)}
-.note{font-size:14px;color:var(--mut);border-right:3px solid var(--gold);padding:2px 10px;margin:12px 0}
-h2{font-size:18px;margin:20px 0 6px}
-.row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0}
-.row b{flex:1;cursor:pointer}.row small{color:var(--mut)}
-.hit{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0;cursor:pointer}
-.hit small{color:var(--gold);font-weight:700}
-mark{background:#e9d9a6;color:#10222b;padding:0 2px}
-#reader{display:none}
-.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
-#pg{width:64px;text-align:center;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
-#view{overflow:auto;text-align:center;padding-top:8px}
-#cv{max-width:none;box-shadow:0 0 0 1px var(--line);transition:opacity .15s}
-#cv.loading{opacity:.35}
-.beige{background:#f2e6c6}.beige #cv{mix-blend-mode:multiply}
-.white{background:#fff}
-.night{background:#111}.night #cv{filter:invert(1) hue-rotate(180deg)}
-#msg{color:#b3261e;font-size:15px}
-body.immersive header{display:none}
-body.immersive main{padding:0}
-body.immersive .bar{display:none}
-body.immersive #view{padding-top:env(safe-area-inset-top)}
-.tip{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);background:rgba(16,34,43,.92);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;z-index:29;pointer-events:none;transition:opacity .4s;max-width:88vw;text-align:center}
-.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:rgba(16,34,43,.92);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;z-index:40;pointer-events:none;transition:opacity .4s;max-width:88vw;text-align:center}
-@media(prefers-color-scheme:dark){.tip,.toast{background:rgba(230,238,236,.94);color:#10222b}}
-.qbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:rgba(16,34,43,.88);padding:6px;border-radius:26px;z-index:20;backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(0,0,0,.25)}
-@media(prefers-color-scheme:dark){.qbar{background:rgba(230,238,236,.9)}}
-.qbar button{background:none;border:none;color:#fff;font-size:19px;line-height:1;width:42px;height:42px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.qbar button:active{background:rgba(255,255,255,.18)}
-@media(prefers-color-scheme:dark){.qbar button{color:#10222b}.qbar button:active{background:rgba(0,0,0,.1)}}
-.qbar button.on{color:var(--gold)}
-.overlay{position:fixed;inset:0;background:var(--bg);z-index:35;overflow:auto;padding:14px;padding-top:calc(14px + env(safe-area-inset-top))}
-.overlay .q{margin-bottom:4px}
+:root{
+  --ground:#f1e7d2; --surface:#fbf6ea; --raised:#fffdf7;
+  --ink:#2a1d12; --muted:#6c5a45; --line:#ddcdae;
+  --brown:#3b2616; --on-brown:#f6ecd8;
+  --brass:#a0712c; --brass-soft:#ecdcb8;
+  --clay:#8a3a26; --palm:#3f5a47;
+  --mark:#f0d98a; --shadow:0 1px 2px rgba(59,38,22,.08),0 6px 18px rgba(59,38,22,.07);
+  --display:"Amiri","Traditional Arabic",serif;
+  --text:"Noto Naskh Arabic","Geeza Pro","Traditional Arabic",serif;
+  --ui:"IBM Plex Sans Arabic",-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#16110c; --surface:#201911; --raised:#2a2117;
+    --ink:#efe3cb; --muted:#b5a386; --line:#3b3023;
+    --brown:#0e0a07; --on-brown:#efe3cb;
+    --brass:#d0a052; --brass-soft:#3a2d1a;
+    --clay:#d27a5f; --palm:#8fb79a;
+    --mark:#6b5620; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.7;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px}
 
+/* Najdi triangle band */
+.najdi{height:12px;background:
+  linear-gradient(135deg,var(--brass) 33%,transparent 33%) 0 0/14px 12px repeat-x,
+  linear-gradient(225deg,var(--brass) 33%,transparent 33%) 0 0/14px 12px repeat-x;opacity:.85}
+
+/* ---------- Home ---------- */
+.masthead{background:var(--brown);color:var(--on-brown);padding-top:env(safe-area-inset-top)}
+.masthead .wrap{padding-block:28px 26px;display:flex;flex-direction:column;gap:8px}
+.eyebrow{font-size:13px;letter-spacing:.02em;opacity:.8;margin:0}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,9vw,52px);line-height:1.25;margin:0;text-wrap:balance}
+.subtitle{font-family:var(--display);font-size:19px;line-height:1.6;margin:0;opacity:.92;text-wrap:balance}
+.compiler{font-size:14px;margin:4px 0 0;opacity:.8}
+
+.searchbar{margin-top:-24px;position:relative;z-index:2}
+.searchbox{display:flex;align-items:center;gap:8px;background:var(--raised);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 8px;box-shadow:var(--shadow)}
+.searchbox svg{flex:none;color:var(--muted);margin-inline-start:8px}
+.searchbox input{flex:1;min-width:0;border:0;background:none;padding:10px 4px;font-size:17px;outline:none}
+.btn{border:1px solid transparent;border-radius:10px;padding:9px 16px;font-weight:600;font-size:15px;line-height:1.3;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--brown);color:var(--on-brown)}
+@media (prefers-color-scheme:dark){.btn-primary{background:var(--brass);color:#1a1209}}
+.btn-quiet{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn-link{background:none;color:var(--brass);padding-inline:6px}
+.btn:disabled{opacity:.5;cursor:default}
+.hint{font-size:13px;color:var(--muted);margin:8px 2px 0}
+
+main.home{display:flex;flex-direction:column;gap:30px;padding-block:24px 64px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+h2{font-family:var(--display);font-size:26px;line-height:1.3;margin:0}
+.count{color:var(--muted);font-size:14px}
+
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.action{display:flex;flex-direction:column;gap:2px;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:var(--ink)}
+.action b{font-weight:600;font-size:16px}
+.action span{font-size:13px;color:var(--muted)}
+.action.main{background:var(--brown);border-color:var(--brown);color:var(--on-brown)}
+.action.main span{color:var(--on-brown);opacity:.8}
+@media (prefers-color-scheme:dark){.action.main{background:var(--brass-soft);border-color:var(--brass)}.action.main span{color:var(--muted)}}
+@media (max-width:420px){.actions{grid-template-columns:1fr}}
+
+.parts{display:flex;flex-direction:column;gap:10px}
+.part{display:grid;grid-template-columns:56px 1fr;gap:4px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.part .num{grid-row:1/4;width:56px;height:56px;border-radius:12px;background:var(--brass-soft);color:var(--brown);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:30px;font-weight:700}
+@media (prefers-color-scheme:dark){.part .num{color:var(--brass)}}
+.part h3{font-family:var(--display);font-size:22px;margin:0;line-height:1.35}
+.part p{margin:0;font-family:var(--text);font-size:15px;line-height:1.75;color:var(--ink)}
+.part .meta{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.part .row{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.saved{color:var(--palm);font-weight:600}
+.titlepage{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px dashed var(--line);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--muted)}
+
+.results{display:flex;flex-direction:column;gap:8px}
+.rgroup{font-family:var(--display);font-size:20px;margin:10px 0 2px;display:flex;justify-content:space-between;align-items:baseline}
+.rgroup small{font-family:var(--ui);font-size:13px;color:var(--muted)}
+.hit{display:block;width:100%;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.hit .where{font-size:13px;font-weight:600;color:var(--brass);font-variant-numeric:tabular-nums}
+.hit .snip{font-family:var(--text);font-size:15.5px;line-height:1.9}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
+.filter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.filter select{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+
+.note{font-size:14px;color:var(--muted);border-inline-start:3px solid var(--brass);padding:2px 12px;margin:0}
+.about{display:flex;flex-direction:column;gap:10px;font-size:15px}
+.about p{margin:0}
+footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:var(--muted)}
+
+.favs{display:flex;flex-direction:column;gap:8px}
+.fav{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.fav button.go{flex:1;text-align:start;background:none;border:0;padding:4px 0;font-weight:500}
+
+.banner{position:fixed;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:60;background:var(--brown);color:var(--on-brown);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;font-size:14px}
+.bar{height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--brass);transition:width .3s}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%);z-index:80;background:var(--brown);color:var(--on-brown);padding:9px 16px;border-radius:20px;font-size:14px;box-shadow:var(--shadow);max-width:90vw;text-align:center;transition:opacity .3s}
+
+/* ---------- Reader ---------- */
+#reader{position:fixed;inset:0;z-index:40;background:var(--ground);display:flex;flex-direction:column}
+.rtop{display:flex;align-items:center;gap:8px;padding:calc(6px + env(safe-area-inset-top)) 10px 6px;background:var(--surface);border-bottom:1px solid var(--line)}
+.rtop .ttl{flex:1;min-width:0;font-family:var(--display);font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon{border:0;background:none;width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.icon:active{background:var(--brass-soft)}
+.pgbox{display:flex;align-items:center;gap:4px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pgbox input{width:58px;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--raised);padding:4px}
+#view{flex:1;overflow:auto;text-align:center;-webkit-overflow-scrolling:touch;padding-bottom:90px}
+#cv{display:block;margin:0 auto;max-width:none;transition:opacity .15s}
+#cv.loading{opacity:.35}
+#view.beige{background:#f2e6c6}#view.beige #cv{mix-blend-mode:multiply}
+#view.white{background:#fff}
+#view.night{background:#141210}#view.night #cv{filter:invert(1) hue-rotate(180deg) brightness(.92)}
+body.immersive .rtop{display:none}
+.qbar{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:2px;background:rgba(59,38,22,.92);color:#f6ecd8;padding:5px;border-radius:28px;box-shadow:0 4px 16px rgba(0,0,0,.25);backdrop-filter:blur(6px);z-index:45}
+.qbar .icon{color:inherit;width:46px;height:46px}
+.qbar .icon:active{background:rgba(255,255,255,.15)}
+.qbar .icon.on{color:#e7c27a}
+.loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:var(--muted);pointer-events:none}
+
+.sheet-back{position:fixed;inset:0;background:rgba(20,12,6,.45);z-index:70}
+.sheet{position:fixed;inset-inline:0;bottom:0;z-index:71;background:var(--surface);border-radius:18px 18px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto;box-shadow:0 -6px 24px rgba(0,0,0,.2)}
+.sheet .grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 10px}
+.sheet h4{font-family:var(--display);font-size:20px;margin:6px 0 10px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.seg button{border:1px solid var(--line);background:var(--raised);border-radius:10px;padding:8px}
+.seg button[aria-pressed=true]{border-color:var(--brass);background:var(--brass-soft);font-weight:600}
+.menu{display:flex;flex-direction:column}
+.menu button{display:flex;align-items:center;gap:12px;border:0;border-top:1px solid var(--line);background:none;padding:13px 4px;text-align:start;font-size:16px}
+.menu button svg{color:var(--brass);flex:none}
+
+.overlay{position:fixed;inset:0;z-index:75;background:var(--ground);overflow:auto;padding:calc(10px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+.overlay .head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.overlay .searchbox{box-shadow:none;flex:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<header><h1>الدرر السنية في الأجوبة النجدية</h1></header>
-<main>
-<section id="home">
-  <div class="q"><input id="q" type="search" placeholder="ابحث بالنص، مثل: التوحيد"><button id="sb">بحث</button></div>
-  <p class="note">البحث يعمل على نص آلي مستخرج من صور الكتاب وقد يحتوي أخطاء. المرجع الوحيد هو صورة الصفحة الأصلية، فافتح النتيجة وتحقق منها.</p>
-  <div id="res"></div>
-  <div id="fav"></div>
-  <h2>المجلدات</h2>
-  <p class="note">حمّل المجلد وأنت متصل بالإنترنت ليعمل القارئ والبحث بدون إنترنت. البحث يشمل المجلدات المحمّلة فقط.</p>
-  <div class="q"><button id="imp">استيراد ملفات من جهازك</button><button class="o" id="rs">اقرأ من البداية</button></div>
-  <p class="note">يقبل الاستيراد أي اسم ملف يبدأ برقم المجلد: ٠ للتمهيد وحتى ١٦ (مثل "0.pdf" أو الاسم الأصلي من الموقع)، سواء غيّرت الاسم أو لا.</p>
-  <input id="fi" type="file" multiple accept=".pdf,.txt" hidden>
-  <div id="list"></div>
-  <div class="q"><a id="dlFull" href="download/" style="display:block;flex:1;text-align:center;text-decoration:none;border:1px solid var(--g);background:var(--g);color:#fff;border-radius:8px;padding:10px 14px">تحميل الكتاب كاملاً PDF بيج (ملف واحد)</a></div>
-  <button class="o" id="exAll" hidden>تصدير</button>
-  <p id="msg"></p>
+
+<!-- ============ HOME ============ -->
+<div id="home">
+  <header class="masthead">
+    <div class="wrap">
+      <p class="eyebrow">جمع: عبدالرحمن بن محمد بن قاسم العاصمي النجدي الحنبلي (١٣١٢–١٣٩٢هـ)</p>
+      <h1>الدرر السنية في الأجوبة النجدية</h1>
+      <p class="subtitle">مجموعة رسائل ومسائل علماء نجد الأعلام، من عصر الشيخ محمد بن عبدالوهاب إلى عصر الجامع</p>
+    </div>
+    <div class="najdi" aria-hidden="true"></div>
+  </header>
+
+  <div class="wrap searchbar">
+    <form class="searchbox" id="sform" role="search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="ابحث في الكتاب كاملاً، مثل: التوحيد" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
+      <button class="btn btn-primary" type="submit">بحث</button>
+    </form>
+    <p class="hint" id="shint">البحث يشمل الأجزاء الستة عشر، ويعمل على نص مقروء آلياً من صور الصفحات، فتحقق من النتيجة في صورة الصفحة.</p>
+  </div>
+
+  <main class="home wrap">
+    <section id="resSec" hidden aria-live="polite">
+      <div class="section-head"><h2>نتائج البحث</h2><button class="btn btn-link" id="clearRes" type="button">إغلاق النتائج</button></div>
+      <div class="filter" id="filterRow" hidden><label for="fpart">اعرض:</label><select id="fpart"></select><span id="rcount"></span></div>
+      <div class="results" id="res"></div>
+    </section>
+
+    <section>
+      <div class="actions">
+        <button class="action main" id="continue" type="button"><b id="contT">ابدأ القراءة</b><span id="contS">من أول الجزء الأول</span></button>
+        <a class="action" href="download/"><b>تحميل الكتاب كاملاً</b><span>ملف PDF واحد باللون البيج · ٣٦٢ ميجا</span></a>
+      </div>
+    </section>
+
+    <section id="favSec" hidden>
+      <div class="section-head"><h2>المفضلة</h2><span class="count" id="favCount"></span></div>
+      <div class="favs" id="favs"></div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>الأجزاء</h2><span class="count">١٦ جزءاً · ٨٠٧٨ صفحة</span></div>
+      <div class="parts" id="parts"></div>
+      <div class="titlepage" style="margin-top:10px"><span>صفحة عنوان الكتاب</span><button class="btn btn-link" type="button" id="openTitle">اعرضها</button></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px">
+        <button class="btn btn-quiet" type="button" id="saveAll">حفظ الكتاب كاملاً للقراءة بدون إنترنت</button>
+        <span class="count" id="saveAllInfo"></span>
+      </div>
+    </section>
+
+    <section class="about">
+      <h2>عن هذه النسخة</h2>
+      <p>صور الصفحات هي المسح الأصلي للطبعة ذات الستة عشر جزءاً، بلا أي تعديل، واللون البيج طبقة عرض فقط. أرقام الصفحات في القارئ تطابق أرقام الكتاب المطبوع، فيصح العزو إليها مباشرة.</p>
+      <p class="note">النص المستخدم في البحث مقروء آلياً من الصور وقد يقع فيه خطأ، فالمعتمد في النقل والعزو صورة الصفحة نفسها.</p>
+      <p>وصف الأجزاء منقول من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦). مصدر المسح: <a href="https://archive.org/details/1241825" style="color:var(--brass)">archive.org/details/1241825</a></p>
+    </section>
+  </main>
+  <footer>الدرر السنية في الأجوبة النجدية</footer>
+</div>
+
+<!-- ============ READER ============ -->
+<section id="reader" hidden aria-label="القارئ">
+  <div class="rtop">
+    <button class="icon" id="rBack" aria-label="الرجوع للرئيسية"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button>
+    <div class="ttl" id="rTitle"></div>
+    <div class="pgbox"><label for="pg" class="count">ص</label><input id="pg" type="number" inputmode="numeric" min="1"><span id="tot"></span></div>
+  </div>
+  <div id="view" class="beige"><canvas id="cv"></canvas><div class="loader" id="loader" hidden>جاري التحميل…</div></div>
+  <nav class="qbar" aria-label="أدوات القراءة">
+    <button class="icon" id="qHome" aria-label="الرئيسية"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button>
+    <button class="icon" id="qPrev" aria-label="الصفحة السابقة"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></button>
+    <button class="icon" id="qSearch" aria-label="بحث"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <button class="icon" id="qFav" aria-label="إضافة للمفضلة"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path id="favPath" d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.4l-5.6 2.9 1.1-6.2L3 9.7l6.2-.9z"/></svg></button>
+    <button class="icon" id="qNext" aria-label="الصفحة التالية"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 6-6 6 6 6"/></svg></button>
+    <button class="icon" id="qMore" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
+  </nav>
 </section>
-<section id="reader">
-  <div class="bar">
-    <button class="o" id="back">رجوع</button>
-    <button id="nx">التالي</button><input id="pg" type="number" min="1"><span id="tot"></span><button id="pv">السابق</button>
-    <button class="o" id="zi">+</button><button class="o" id="zo">−</button>
-    <button class="o" id="nt">ورق</button><button class="o" id="bm">☆ مفضلة</button><button class="o" id="ct">مشاركة الاستشهاد</button><button class="o" id="sh">مشاركة صورة الصفحة</button><button class="o" id="ex">تصدير هذا المجلد PDF بيج</button>
+
+<!-- More sheet -->
+<div class="sheet-back" id="sheetBack" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-label="خيارات القراءة">
+  <div class="grip"></div>
+  <h4>لون الورق</h4>
+  <div class="seg" id="modes">
+    <button type="button" data-m="beige">بيج</button><button type="button" data-m="white">أبيض</button><button type="button" data-m="night">ليلي</button>
   </div>
-  <div id="view"><canvas id="cv"></canvas></div>
-  <div class="qbar">
-    <button id="qBack" title="الرئيسية">🏠</button>
-    <button id="qPv" title="الصفحة السابقة">›</button>
-    <button id="qSearch" title="بحث">🔍</button>
-    <button id="qFav" title="مفضلة">☆</button>
-    <button id="qNx" title="الصفحة التالية">‹</button>
-    <button id="qMore" title="المزيد">⋯</button>
+  <h4>حجم الصفحة</h4>
+  <div class="seg"><button type="button" id="zo">تصغير</button><button type="button" id="z1">ملء العرض</button><button type="button" id="zi">تكبير</button></div>
+  <div class="menu">
+    <button type="button" id="mFihris"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>فهرس هذا الجزء</button>
+    <button type="button" id="mCite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h4v4c0 3-2 5-4 6M15 7h4v4c0 3-2 5-4 6"/></svg>نسخ الاستشهاد بهذه الصفحة</button>
+    <button type="button" id="mLink"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>مشاركة رابط هذه الصفحة</button>
+    <button type="button" id="mImg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/></svg>مشاركة صورة الصفحة</button>
+    <button type="button" id="mSave"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14"/></svg><span id="mSaveT">حفظ هذا الجزء للقراءة بدون إنترنت</span></button>
   </div>
-  <div id="sOverlay" class="overlay" hidden>
-    <div class="q"><input id="q2" type="search" placeholder="ابحث بالنص، مثل: التوحيد"><button class="o" id="q2close">إغلاق</button></div>
-    <p class="note">البحث يشمل المجلدات المحمّلة فقط. اختر نتيجة للانتقال إليها مباشرة.</p>
-    <div id="res2"></div>
+</div>
+
+<!-- In-reader search -->
+<div class="overlay" id="sOverlay" hidden role="dialog" aria-label="البحث">
+  <div class="head">
+    <form class="searchbox" id="sform2" role="search">
+      <input id="q2" type="search" placeholder="ابحث في الكتاب" aria-label="البحث" enterkeyhint="search" autocomplete="off">
+      <button class="btn btn-primary" type="submit">بحث</button>
+    </form>
+    <button class="icon" id="sClose" aria-label="إغلاق البحث"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
-</section>
-</main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <div class="filter" style="margin-bottom:8px"><label><input type="checkbox" id="onlyPart"> في هذا الجزء فقط</label></div>
+  <div class="results" id="res2" aria-live="polite"></div>
+</div>
+
+<script src="lib/pdf.js"></script>
 <script>
-// إذا رفعت ملفات الـ PDF على استضافتك، غيّر العنوان التالي إلى مسارها (مثل 'books/')
-const BASE='https://archive.org/download/1241825/';
-const ORD=['التمهيد','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
+"use strict";
+const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
+// وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
+const VOLS=[
+ {n:0,p:1,f:0,d:'صفحة عنوان الكتاب'},
+ {n:1,p:607,f:597,d:'تقريظات، وتمهيد، وتنبيهات، وكتاب العقائد'},
+ {n:2,p:371,f:365,d:'كتاب التوحيد'},
+ {n:3,p:388,f:381,d:'كتاب الأسماء والصفات'},
+ {n:4,p:449,f:437,d:'القسم الأول من كتاب العبادات: أوله في أصول مأخذهم، ثم من كتاب الطهارة إلى نهاية باب صلاة أهل الأعذار'},
+ {n:5,p:425,f:417,d:'القسم الثاني من كتاب العبادات: من أول باب صلاة الجمعة إلى نهاية العقيقة'},
+ {n:6,p:483,f:467,d:'من أول كتاب البيع إلى نهاية اللقطة'},
+ {n:7,p:619,f:601,d:'من أول كتاب الوقف إلى نهاية الإقرار'},
+ {n:8,p:512,f:501,d:'القسم الأول من كتاب الجهاد'},
+ {n:9,p:455,f:447,d:'القسم الثاني من كتاب الجهاد، والقسم الأول من كتاب حكم المرتد'},
+ {n:10,p:533,f:525,d:'القسم الأخير من كتاب حكم المرتد'},
+ {n:11,p:600,f:587,d:'القسم الأول من كتاب مختصرات الردود'},
+ {n:12,p:564,f:551,d:'القسم الثاني من كتاب مختصرات الردود'},
+ {n:13,p:469,f:457,d:'تفسير واستنباط لسور وآيات من القرآن الكريم'},
+ {n:14,p:583,f:565,d:'كتاب النصائح'},
+ {n:15,p:508,f:493,d:'القسم الأول من كتاب البيان الواضح وأنبل النصائح'},
+ {n:16,p:512,f:497,d:'القسم الأخير من كتاب البيان الواضح وأنبل النصائح، وتراجم أصحاب الرسائل والأجوبة'}
+];
 const $=s=>document.querySelector(s);
-const name=n=>n?'المجلد '+ORD[n]:ORD[0];
-const idOf=n=>n?String(n).padStart(2,'0')+'_'+(n==1?41814:41813+n):'00_41814';
-const C=()=>caches.open('durar-data');
-const key=(t,n)=>new Request('./_d/'+t+'/'+idOf(n));
-const norm=s=>s.normalize('NFKC').replace(/[\u064B-\u0652\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
-const say=t=>$('#msg').textContent=t||'';
-function toast(msg,ms){
-  const el=document.createElement('div');el.className='toast';el.textContent=msg;
-  document.body.append(el);
-  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),400)},ms||2200);
-}
-async function saveFile(blob,filename){
-  try{
-    if(window.claude&&window.claude.use){
-      const d=await window.claude.use('downloads');
-      if(d){await d.save({filename,data:blob});return true}
-    }
-  }catch(e){}
-  try{
-    const f=new File([blob],filename,{type:blob.type});
-    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return true}
-  }catch(e){}
-  try{
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();return true
-  }catch(e){}
-  return false;
-}
-async function pageToBeigeJpeg(pg,scale,quality){
-  const v=pg.getViewport({scale}),c=document.createElement('canvas');
-  c.width=Math.round(v.width);c.height=Math.round(v.height);
-  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
-  await pg.render({canvasContext:x,viewport:v}).promise;
-  x.globalCompositeOperation='multiply';x.fillStyle='#f2e6c6';x.fillRect(0,0,c.width,c.height);
-  const b=await new Promise(r=>c.toBlob(r,'image/jpeg',quality));
-  return {w:c.width,h:c.height,data:new Uint8Array(await b.arrayBuffer())};
-}
-class PdfBuilder{
-  constructor(){this.parts=[];this.pos=0;this.offs=[];this.enc=new TextEncoder();this.push('%PDF-1.4\n');this.next=3;this.kids=[]}
-  push(z){const b=typeof z==='string'?this.enc.encode(z):z;this.parts.push(b);this.pos+=b.length}
-  obj(id,body){this.offs[id]=this.pos;this.push(id+' 0 obj\n'+body+'\nendobj\n')}
-  addPage(img){
-    const id=this.next;this.next+=3;this.kids.push(id);
-    const cs='q '+img.w+' 0 0 '+img.h+' 0 0 cm /Im Do Q';
-    this.obj(id,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+img.w+' '+img.h+'] /Resources << /XObject << /Im '+(id+2)+' 0 R >> >> /Contents '+(id+1)+' 0 R >>');
-    this.obj(id+1,'<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream');
-    this.offs[id+2]=this.pos;
-    this.push((id+2)+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+img.w+' /Height '+img.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+img.data.length+' >>\nstream\n');
-    this.push(img.data);this.push('\nendstream\nendobj\n');
-  }
-  finish(){
-    this.obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
-    this.obj(2,'<< /Type /Pages /Kids ['+this.kids.map(k=>k+' 0 R').join(' ')+'] /Count '+this.kids.length+' >>');
-    const xr=this.pos,total=this.next;
-    let t='xref\n0 '+total+'\n0000000000 65535 f \n';
-    for(let k=1;k<total;k++)t+=String(this.offs[k]||0).padStart(10,'0')+' 00000 n \n';
-    this.push(t+'trailer\n<< /Size '+total+' /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF');
-    return new Blob(this.parts,{type:'application/pdf'});
-  }
-}
-if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
-if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+const AR='٠١٢٣٤٥٦٧٨٩';const ar=x=>String(x).replace(/\d/g,d=>AR[d]);
+const partName=n=>n?'الجزء '+ORD[n]:'صفحة العنوان';
+const short=n=>n?'ج'+ar(n):'العنوان';
+const norm=s=>s.normalize('NFKC').replace(/[ً-ْٰـ]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>AR.indexOf(d));
+const nl=s=>s.replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(msg,ms){const el=document.createElement('div');el.className='toast';el.textContent=msg;document.body.append(el);setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300)},ms||2200)}
 
-async function has(n){return !!(await(await C()).match(key('pdf',n)))}
-async function fetchTo(url,c,k,btn){
-  const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);
-  const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),ch=[];let got=0;
-  for(;;){const{done,value}=await rd.read();if(done)break;ch.push(value);got+=value.length;
-    if(btn&&total)btn.textContent=Math.round(got/total*100)+'%'}
-  await c.put(k,new Response(new Blob(ch)));
-}
-async function dl(n,btn){
-  say();btn.disabled=true;btn.textContent='...';
-  try{const c=await C();
-    await fetchTo(BASE+idOf(n)+'.pdf',c,key('pdf',n),btn);
-    await fetchTo(BASE+idOf(n)+'_djvu.txt',c,key('txt',n));
-    delete IDX[n];
-  }catch(e){say('المتصفح منع التحميل المباشر من archive.org ('+e.message+'). استخدم زر «استيراد ملفات من جهازك» بعد تنزيل الملفات من صفحة الكتاب.')}
-  home();
-}
-async function del(n){const c=await C();await c.delete(key('pdf',n));await c.delete(key('txt',n));delete IDX[n];home()}
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='lib/pdf.worker.js';
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
-const favs=()=>JSON.parse(localStorage.bm||'[]');
-async function home(){
-  const L=$('#list');L.innerHTML='';
-  for(let n=0;n<=16;n++){
-    const d=await has(n),r=document.createElement('div');r.className='row';
-    const t=document.createElement('b');t.textContent=name(n);t.onclick=()=>{if(d)open(n)};
-    const s=document.createElement('small');s.textContent=d?('محمّل'+(localStorage['last'+n]?' — آخر صفحة '+localStorage['last'+n]:'')):'';
-    const rd=document.createElement('button');rd.textContent='قراءة';rd.onclick=()=>open(n);
-    const b=document.createElement('button');b.className=d?'o':'';b.textContent=d?'حذف':'تحميل';
-    b.onclick=()=>d?del(n):dl(n,b);
-    r.append(t,s,...(d?[rd]:[]),b);L.append(r);
-  }
-  const F=$('#fav');F.innerHTML='';const f=favs();
-  const lr=JSON.parse(localStorage.lr||'null');
-  if(lr){const e=document.createElement('div');e.className='row';const t=document.createElement('b');t.textContent='تابع القراءة: '+name(lr.n)+' — صفحة '+lr.p;t.onclick=()=>open(lr.n,lr.p);e.append(t);F.append(e)}
-  if(f.length){const h=document.createElement('h2');h.textContent='المفضلة';F.append(h);
-    f.forEach((x,i)=>{const e=document.createElement('div');e.className='row';const t=document.createElement('b');t.textContent=name(x.n)+' — صفحة '+x.p;t.onclick=()=>open(x.n,x.p);const r=document.createElement('button');r.className='o';r.textContent='إزالة';r.onclick=()=>{const g=favs();g.splice(i,1);localStorage.bm=JSON.stringify(g);home()};e.append(t,r);F.append(e)})}
+/* ---------- storage ---------- */
+const hasCaches='caches' in window;
+const volKey=n=>new Request('./_vol/'+n+'.pdf'), txtKey=n=>new Request('./_txt/'+n+'.txt');
+const volCache=()=>caches.open('durar-vols-v1'), txtCache=()=>caches.open('durar-text-v1');
+async function isSaved(n){if(!hasCaches)return false;try{return !!(await (await volCache()).match(volKey(n)))}catch(e){return false}}
+async function saveVol(n,onp){
+  if(!hasCaches)throw new Error('no-cache');
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+  const r=await fetch('vols/'+n+'.pdf',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
+  const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
+  for(;;){const {done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(onp&&total)onp(got/total)}
+  await (await volCache()).put(volKey(n),new Response(new Blob(parts,{type:'application/pdf'})));
 }
+async function removeVol(n){if(hasCaches)await (await volCache()).delete(volKey(n))}
 
+/* ---------- search text ---------- */
 const IDX={};
 async function pagesOf(n){
   if(IDX[n])return IDX[n];
-  const m=await(await C()).match(key('txt',n));if(!m)return null;
-  return IDX[n]=(await m.text()).split('\f').map(norm);
+  let t=null;
+  try{if(hasCaches){const m=await (await txtCache()).match(txtKey(n));if(m)t=await m.text()}}catch(e){}
+  if(t===null){
+    const r=await fetch('vols/'+n+'.txt');if(!r.ok)throw new Error('HTTP '+r.status);
+    t=await r.text();
+    try{if(hasCaches)await (await txtCache()).put(txtKey(n),new Response(t,{headers:{'Content-Type':'text/plain; charset=utf-8'}}))}catch(e){}
+  }
+  RAW[n]=t.split('\f');
+  return IDX[n]=RAW[n].map(norm);
 }
-async function doSearch(qEl,R,onPick){
-  const q=norm(qEl.value.trim());R.innerHTML='';
-  if(q.length<2)return;
-  const W=q.split(' ').filter(w=>w.length>1);
-  let total=0,any=false;
-  for(let n=0;n<=16&&total<300;n++){
-    const P=await pagesOf(n);if(!P)continue;any=true;
-    P.forEach((t,i)=>{let qq=q,k=t.indexOf(q),c=0;if(k<0&&W.length>1&&W.every(w=>t.includes(w))){qq=W[0];k=t.indexOf(qq)}
-      while(k>-1&&c<2&&total<300){
-        const e=document.createElement('div');e.className='hit';
-        const h=document.createElement('small');h.textContent=name(n)+' — صفحة '+(i+1);
-        const sn=document.createElement('div');
-        const a=t.slice(Math.max(0,k-50),k).replace(/\s+/g,' '),b=t.slice(k+qq.length,k+qq.length+70).replace(/\s+/g,' ');
-        const m=document.createElement('mark');m.textContent=qq;sn.append('…'+a,m,b+'…');
-        e.append(h,sn);e.onclick=()=>onPick(n,i+1,W.length>1?W:[q]);R.append(e);
-        total++;c++;k=t.indexOf(qq,k+qq.length)}
+const RAW={};
+// build the snippet from the page's original text (search itself runs on normalized text)
+function rawSnip(n,p,k,len){
+  const raw=RAW[n][p-1]||'',map=[];
+  for(let i=0;i<raw.length;i++){const c=norm(raw[i]);for(let j=0;j<c.length;j++)map.push(i)}
+  const a=map[k]!==undefined?map[k]:0,e=(map[k+len-1]!==undefined?map[k+len-1]:a)+1;
+  return {a:raw.slice(Math.max(0,a-60),a).replace(/\s+/g,' '),m:raw.slice(a,e),b:raw.slice(e,e+80).replace(/\s+/g,' ')};
+}
+async function runSearch(raw,only,onStatus){
+  const q=norm(raw.trim());if(q.length<2)return null;
+  const W=q.split(/\s+/).filter(w=>w.length>1);
+  const out=[];const vols=only?[only]:VOLS.slice(1).map(v=>v.n);
+  for(const n of vols){
+    if(onStatus)onStatus(n);
+    let P;try{P=await pagesOf(n)}catch(e){return {error:true,out}}
+    P.forEach((t,i)=>{
+      let qq=q,k=t.indexOf(q);
+      if(k<0&&W.length>1&&W.every(w=>t.includes(w))){qq=W[0];k=t.indexOf(qq)}
+      let c=0;
+      while(k>-1&&c<3&&out.length<500){
+        out.push(Object.assign({n,p:i+1,hl:W.length>1?W:[q]},rawSnip(n,i+1,k,qq.length)));
+        c++;k=t.indexOf(qq,k+qq.length);
+      }
+    });
+    if(out.length>=500)break;
+  }
+  return {out};
+}
+function renderHits(R,res,filterN){
+  R.innerHTML='';
+  const list=filterN?res.out.filter(h=>h.n===filterN):res.out;
+  if(!list.length){const p=document.createElement('p');p.className='note';p.textContent='لا توجد نتائج. جرّب كلمة أخرى أو صيغة أقصر، فالنص مقروء آلياً وقد تختلف فيه بعض الحروف.';R.append(p);return}
+  let last=-1;
+  for(const h of list){
+    if(h.n!==last){
+      last=h.n;const g=document.createElement('div');g.className='rgroup';
+      const t=document.createElement('span');t.textContent=partName(h.n);
+      const c=document.createElement('small');c.textContent=ar(res.out.filter(x=>x.n===h.n).length)+' موضع';
+      g.append(t,c);R.append(g);
+    }
+    const b=document.createElement('button');b.type='button';b.className='hit';
+    const w=document.createElement('div');w.className='where';w.textContent=partName(h.n)+' · ص '+ar(h.p);
+    const s=document.createElement('div');s.className='snip';const mk=document.createElement('mark');mk.textContent=h.m;
+    s.append('…'+h.a,mk,h.b+'…');b.append(w,s);
+    b.onclick=()=>{closeSearch();openPart(h.n,h.p,h.hl)};
+    R.append(b);
+  }
+  if(res.out.length>=500){const p=document.createElement('p');p.className='note';p.textContent='عُرض أول ٥٠٠ موضع. أضف كلمة أخرى لتضييق النتائج.';R.prepend(p)}
+}
+let lastRes=null;
+$('#sform').addEventListener('submit',async e=>{
+  e.preventDefault();$('#q').blur();
+  const sec=$('#resSec'),R=$('#res');sec.hidden=false;$('#filterRow').hidden=true;
+  R.innerHTML='<p class="note">جاري البحث…</p>';sec.scrollIntoView({behavior:'smooth',block:'start'});
+  const res=await runSearch($('#q').value,0,n=>{R.firstChild&&(R.firstChild.textContent='جاري البحث في '+partName(n)+'…')});
+  if(!res){R.innerHTML='<p class="note">اكتب كلمة من حرفين على الأقل.</p>';return}
+  if(res.error&&!res.out.length){R.innerHTML='<p class="note">تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت ثم جرّب مرة ثانية.</p>';return}
+  lastRes=res;
+  const parts=[...new Set(res.out.map(h=>h.n))];
+  const sel=$('#fpart');sel.innerHTML='';
+  const all=document.createElement('option');all.value='0';all.textContent='كل الأجزاء';sel.append(all);
+  parts.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=partName(n)+' ('+ar(res.out.filter(h=>h.n===n).length)+')';sel.append(o)});
+  $('#rcount').textContent=res.out.length?ar(res.out.length)+' موضع في '+ar(parts.length)+' جزء':'';
+  $('#filterRow').hidden=!res.out.length;
+  renderHits(R,res,0);
+});
+$('#fpart').onchange=e=>lastRes&&renderHits($('#res'),lastRes,+e.target.value);
+$('#clearRes').onclick=()=>{$('#resSec').hidden=true;$('#q').value=''};
+
+/* ---------- home ---------- */
+const favs=()=>LS.get('favs',[]);
+async function renderHome(){
+  const lr=LS.get('lastRead',null);
+  if(lr&&lr.n){$('#contT').textContent='تابع القراءة';$('#contS').textContent=partName(lr.n)+' · ص '+ar(lr.p)}
+  else{$('#contT').textContent='ابدأ القراءة';$('#contS').textContent='من أول الجزء الأول'}
+  const F=favs();$('#favSec').hidden=!F.length;$('#favCount').textContent=F.length?ar(F.length)+' صفحة':'';
+  const FV=$('#favs');FV.innerHTML='';
+  F.forEach((x,i)=>{
+    const d=document.createElement('div');d.className='fav';
+    const g=document.createElement('button');g.className='go';g.type='button';g.textContent=partName(x.n)+' · ص '+ar(x.p);g.onclick=()=>openPart(x.n,x.p);
+    const r=document.createElement('button');r.className='btn btn-link';r.type='button';r.textContent='إزالة';
+    r.onclick=()=>{const f=favs();f.splice(i,1);LS.set('favs',f);renderHome()};
+    d.append(g,r);FV.append(d);
+  });
+  const P=$('#parts');
+  if(!P.children.length){
+    VOLS.slice(1).forEach(v=>{
+      const a=document.createElement('article');a.className='part';a.id='part'+v.n;
+      const num=document.createElement('div');num.className='num';num.textContent=ar(v.n);
+      const h=document.createElement('h3');h.textContent=partName(v.n);
+      const d=document.createElement('p');d.textContent=v.d;
+      const m=document.createElement('div');m.className='meta';
+      const row=document.createElement('div');row.className='row';
+      const rd=document.createElement('button');rd.className='btn btn-primary';rd.type='button';rd.textContent='اقرأ';rd.onclick=()=>openPart(v.n,LS.get('last'+v.n,1));
+      const fh=document.createElement('button');fh.className='btn btn-quiet';fh.type='button';fh.textContent='الفهرس';fh.onclick=()=>openPart(v.n,v.f);
+      const sv=document.createElement('button');sv.className='btn btn-quiet';sv.type='button';sv.dataset.save=v.n;
+      sv.onclick=()=>toggleSave(v.n,sv);
+      row.append(rd,fh,sv);a.append(num,h,d,m,row);P.append(a);
     });
   }
-  if(!any)R.innerHTML='<p class="note">حمّل مجلداً واحداً على الأقل ليعمل البحث.</p>';
-  else if(!total)R.innerHTML='<p class="note">لا توجد نتائج في المجلدات المحمّلة.</p>';
-  else if(total>=300){const p=document.createElement('p');p.className='note';p.textContent='عُرض أول ٣٠٠ موضع. حدّد كلمة أدق لتضييق النتائج.';R.prepend(p)}
+  for(const v of VOLS.slice(1)){
+    const saved=await isSaved(v.n),a=$('#part'+v.n),last=LS.get('last'+v.n,0);
+    a.querySelector('.meta').innerHTML='';
+    const m=a.querySelector('.meta');m.append(ar(v.p)+' صفحة · الفهرس ص '+ar(v.f)+(last>1?' · وقفت عند ص '+ar(last):''));
+    if(saved){const s=document.createElement('span');s.className='saved';s.textContent=' · محفوظ بدون إنترنت';m.append(s)}
+    const sv=a.querySelector('[data-save]');if(!sv.disabled)sv.textContent=saved?'إزالة الحفظ':'حفظ بدون إنترنت';
+  }
+  if(!hasCaches){$('#saveAll').hidden=true;document.querySelectorAll('[data-save]').forEach(b=>b.hidden=true)}
 }
-const search=()=>doSearch($('#q'),$('#res'),open);
+async function toggleSave(n,btn){
+  if(await isSaved(n)){await removeVol(n);toast('أزيل '+partName(n)+' من الحفظ');renderHome();return}
+  btn.disabled=true;
+  try{await saveVol(n,f=>btn.textContent='جاري الحفظ '+ar(Math.round(f*100))+'٪');toast('حُفظ '+partName(n)+'، ويمكن قراءته الآن بدون إنترنت')}
+  catch(e){toast('تعذّر الحفظ. تأكد من الاتصال بالإنترنت ومن وجود مساحة كافية.',3500)}
+  btn.disabled=false;renderHome();
+}
+$('#saveAll').onclick=async()=>{
+  const btn=$('#saveAll');btn.disabled=true;
+  const ban=document.createElement('div');ban.className='banner';ban.setAttribute('role','status');
+  const t=document.createElement('div');const bar=document.createElement('div');bar.className='bar';const i=document.createElement('i');bar.append(i);ban.append(t,bar);document.body.append(ban);
+  const todo=[];for(const v of VOLS)if(!(await isSaved(v.n)))todo.push(v.n);
+  const totalPages=todo.reduce((a,n)=>a+VOLS[n].p,0);let done=0,failed=0;
+  for(const n of todo){
+    t.textContent='جاري حفظ '+partName(n)+' ('+ar(todo.indexOf(n)+1)+' من '+ar(todo.length)+')';
+    try{await saveVol(n,f=>{i.style.width=((done+f*VOLS[n].p)/totalPages*100).toFixed(1)+'%'})}catch(e){failed++}
+    done+=VOLS[n].p;i.style.width=(done/totalPages*100).toFixed(1)+'%';
+  }
+  ban.remove();btn.disabled=false;
+  toast(failed?'حُفظت الأجزاء إلا '+ar(failed)+'، اضغط الزر مرة ثانية لإكمالها.':'حُفظ الكتاب كاملاً، ويمكن قراءته الآن بدون إنترنت.',3500);
+  renderHome();
+};
+$('#saveAllInfo').textContent='نحو ٣٧٠ ميجا · يفضّل على Wi‑Fi';
+$('#continue').onclick=()=>{const lr=LS.get('lastRead',null);lr&&lr.n?openPart(lr.n,lr.p):openPart(1,1)};
+$('#openTitle').onclick=()=>openPart(0,1);
 
-let pdf,cur={n:0,p:1},zoom=1,HL=[],loading=false;
-const nl=s=>s.replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
-function showTip(){
-  if(localStorage.tipShown)return;localStorage.tipShown='1';
-  const tip=document.createElement('div');tip.className='tip';
-  tip.textContent='اضغط على الصفحة لقراءة بملء الشاشة، واضغط مرة أخرى لإظهار الأزرار';
-  document.body.append(tip);
-  setTimeout(()=>{tip.style.opacity='0';setTimeout(()=>tip.remove(),400)},3200);
-}
-async function open(n,p,hl){HL=hl||[];loading=true;$('#cv').classList.add('loading');
+/* ---------- reader ---------- */
+let pdf=null,cur={n:1,p:1},zoom=1,HL=[],loading=false,MODE=LS.get('mode','beige'),openSeq=0;
+function setMode(m){MODE=m;LS.set('mode',m);$('#view').className=m;document.querySelectorAll('#modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m))}
+setMode(MODE);
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+function setLoading(on){loading=on;$('#cv').classList.toggle('loading',on)}
+async function openPart(n,p,hl,noPush){
+  const seq=++openSeq;HL=hl||[];
+  $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
+  $('#rTitle').textContent=partName(n);$('#tot').textContent='/ '+ar(VOLS[n].p);
+  if(!noPush)history.pushState({r:1},'','#v'+n+'p'+(p||1));
+  setLoading(true);$('#loader').hidden=false;
   try{
-    say();const m=await(await C()).match(key('pdf',n));
-    const src=m?{data:await m.arrayBuffer()}:{url:BASE+idOf(n)+'.pdf'};
-    pdf=await pdfjsLib.getDocument(src).promise;cur.n=n;
-    $('#home').style.display='none';$('#reader').style.display='block';
-    await go(p||+localStorage['last'+n]||1);
-    showTip();
-  }catch(e){const m='تعذّر فتح المجلد. تأكد أنه مستورد أو محمّل.';say(m);if($('#reader').style.display==='block')alert(m)}
-  finally{loading=false;$('#cv').classList.remove('loading')}
+    if(!pdf||cur.n!==n){
+      if(pdf){try{pdf.destroy()}catch(e){}pdf=null}
+      let src;
+      if(hasCaches){const m=await (await volCache()).match(volKey(n));if(m)src={data:new Uint8Array(await m.arrayBuffer())}}
+      if(!src)src={url:'vols/'+n+'.pdf',rangeChunkSize:262144};
+      const doc=await pdfjsLib.getDocument(src).promise;
+      if(seq!==openSeq){doc.destroy();return}
+      pdf=doc;cur.n=n;
+    }
+    $('#loader').hidden=true;
+    await go(p||1);
+  }catch(e){
+    $('#loader').hidden=true;setLoading(false);
+    toast('تعذّر فتح '+partName(n)+'. تأكد من الاتصال بالإنترنت، أو احفظ الجزء للقراءة بدون إنترنت.',4000);
+  }
 }
 async function go(p){
   if(!pdf)return;
-  loading=true;$('#cv').classList.add('loading');
-  p=Math.max(1,Math.min(pdf.numPages,p));cur.p=p;localStorage['last'+cur.n]=p;localStorage.lr=JSON.stringify({n:cur.n,p});updBm();
-  $('#pg').value=p;$('#tot').textContent='/ '+pdf.numPages;
-  const pg=await pdf.getPage(p),w=$('#view').clientWidth,base=pg.getViewport({scale:1}),dpr=Math.min(window.devicePixelRatio||1,2);
-  let rs=(w/base.width*zoom)*dpr;
-  const MAXPX=2600;if(base.width*rs>MAXPX)rs*=MAXPX/(base.width*rs);
+  setLoading(true);
+  p=Math.max(1,Math.min(pdf.numPages,p|0||1));cur.p=p;
+  LS.set('last'+cur.n,p);if(cur.n)LS.set('lastRead',{n:cur.n,p});
+  history.replaceState(history.state,'','#v'+cur.n+'p'+p);
+  $('#pg').value=p;updFav();
+  const pg=await pdf.getPage(p),view=$('#view'),w=view.clientWidth,base=pg.getViewport({scale:1}),dpr=Math.min(window.devicePixelRatio||1,2);
+  let rs=(w/base.width*zoom)*dpr;const MAXPX=2600;if(base.width*rs>MAXPX)rs*=MAXPX/(base.width*rs);
   const v=pg.getViewport({scale:rs}),cv=$('#cv');
-  cv.width=v.width;cv.height=v.height;cv.style.width=(v.width/dpr)+'px';
+  cv.width=v.width;cv.height=v.height;cv.style.width=(v.width/dpr)+'px';cv.style.height=(v.height/dpr)+'px';
   await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise;
   if(HL.length){
-    const tc=await pg.getTextContent(),x=cv.getContext('2d');
-    x.globalCompositeOperation='multiply';x.fillStyle='#ffd400';
-    for(const it of tc.items){
-      if(!/[\u0600-\u06FF]/.test(it.str))continue;
-      const L=it.str.length,T=nl([...it.str].reverse().join(''));
-      for(const w of HL){
-        let i=T.indexOf(w);
-        while(i>-1){
-          const a=it.transform[4]+it.width*(L-i-w.length)/L,b=it.transform[4]+it.width*(L-i)/L,h=it.height||Math.abs(it.transform[3]);
-          const[x0,y0,x1,y1]=v.convertToViewportRectangle([a,it.transform[5],b,it.transform[5]+h]);
-          x.fillRect(Math.min(x0,x1),Math.min(y0,y1),Math.abs(x1-x0),Math.abs(y1-y0));
-          i=T.indexOf(w,i+w.length);
+    try{
+      const tc=await pg.getTextContent(),x=cv.getContext('2d');
+      x.globalCompositeOperation='multiply';x.fillStyle='#ffd400';
+      for(const it of tc.items){
+        if(!/[؀-ۿ]/.test(it.str))continue;
+        const L=it.str.length,T=nl([...it.str].reverse().join(''));
+        for(const w of HL){
+          let i=T.indexOf(w);
+          while(i>-1){
+            // right-to-left text in these scans is drawn mirrored: the word starts at transform[4] and runs leftwards
+            const e0=it.transform[4],W0=it.width,mir=it.transform[0]<0;
+            const a=mir?e0-W0*(i+w.length)/L:e0+W0*(L-i-w.length)/L,b=mir?e0-W0*i/L:e0+W0*(L-i)/L,h=it.height||Math.abs(it.transform[3]);
+            const [x0,y0,x1,y1]=v.convertToViewportRectangle([a,it.transform[5],b,it.transform[5]+h]);
+            x.fillRect(Math.min(x0,x1),Math.min(y0,y1),Math.abs(x1-x0),Math.abs(y1-y0));
+            i=T.indexOf(w,i+w.length);
+          }
         }
       }
-    }
-    x.globalCompositeOperation='source-over';
+      x.globalCompositeOperation='source-over';
+    }catch(e){}
   }
-  loading=false;$('#cv').classList.remove('loading');
+  setLoading(false);
 }
-$('#ex').onclick=async()=>{
-  const btn=$('#ex'),N=pdf.numPages;
-  btn.disabled=true;
-  try{
-    const B=new PdfBuilder();
-    for(let i=1;i<=N;i++){
-      btn.textContent='جارٍ التصدير '+i+' / '+N;
-      B.addPage(await pageToBeigeJpeg(await pdf.getPage(i),1.4,.6));
-    }
-    const blob=B.finish();
-    const ok=await saveFile(blob,name(cur.n)+' - ورق بيج.pdf');
-    if(!ok)toast('تعذّر حفظ الملف.');
-  }catch(e){alert('تعذّر التصدير: '+e.message)}
-  btn.disabled=false;btn.textContent='تصدير هذا المجلد PDF بيج';
-};
-$('#sb').onclick=search;$('#q').onkeydown=e=>{if(e.key=='Enter')search()};
-function backHome(){document.body.classList.remove('immersive');$('#sOverlay').hidden=true;$('#reader').style.display='none';$('#home').style.display='block';home()}
-$('#back').onclick=backHome;$('#qBack').onclick=backHome;
-$('#nx').onclick=()=>{if(loading||!pdf)return;cur.p>=pdf.numPages&&cur.n<16?open(cur.n+1,1):go(cur.p+1)};$('#pv').onclick=()=>{if(loading||!pdf)return;cur.p<=1&&cur.n>0?open(cur.n-1,99999):go(cur.p-1)};
-$('#pg').onchange=e=>go(+e.target.value);
-$('#zi').onclick=()=>{zoom=Math.min(4,zoom+.25);go(cur.p)};$('#zo').onclick=()=>{zoom=Math.max(.5,zoom-.25);go(cur.p)};
-(function swipe(){
-  const el=$('#view');let sx=0,sy=0,st=0,touching=false;
-  el.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;touching=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now()},{passive:true});
+function next(){if(loading||!pdf)return;HL=[];if(cur.p>=pdf.numPages){if(cur.n<16)openPart(cur.n+1,1,null,true);else toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
+function prev(){if(loading||!pdf)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
+function closeReader(){$('#reader').hidden=true;$('#home').hidden=false;closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
+$('#rBack').onclick=$('#qHome').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
+window.addEventListener('popstate',()=>{const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m)openPart(+m[1],+m[2],null,true);else if(!$('#reader').hidden)closeReader()});
+$('#qNext').onclick=next;$('#qPrev').onclick=prev;
+$('#pg').onchange=e=>{HL=[];go(+e.target.value)};
+$('#zi').onclick=()=>{zoom=Math.min(4,zoom+.25);go(cur.p)};$('#zo').onclick=()=>{zoom=Math.max(.5,zoom-.25);go(cur.p)};$('#z1').onclick=()=>{zoom=1;go(cur.p)};
+(function(){
+  const el=$('#view');let sx=0,sy=0,st=0,on=false;
+  el.addEventListener('touchstart',e=>{if(e.touches.length!==1){on=false;return}on=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now()},{passive:true});
   el.addEventListener('touchend',e=>{
-    if(!touching)return;touching=false;
-    const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,dt=Date.now()-st;
+    if(!on)return;on=false;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,dt=Date.now()-st;
     if(dt>800)return;
-    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){
-      if(loading)return;
-      if(dx<0)$('#nx').click();else $('#pv').click();
-      return;
-    }
-    if(dt<300&&Math.abs(dx)<10&&Math.abs(dy)<10){
-      document.body.classList.toggle('immersive');
-    }
+    const zoomed=el.scrollWidth>el.clientWidth+4;
+    if(!zoomed&&Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){dx<0?next():prev();return}
+    if(dt<300&&Math.abs(dx)<10&&Math.abs(dy)<10)document.body.classList.toggle('immersive');
   },{passive:true});
-  el.addEventListener('click',e=>{
-    if(!('ontouchstart'in window))document.body.classList.toggle('immersive');
-  });
+  el.addEventListener('click',()=>{if(!('ontouchstart' in window))document.body.classList.toggle('immersive')});
+  document.addEventListener('keydown',e=>{if($('#reader').hidden||e.target.tagName==='INPUT')return;if(e.key==='ArrowLeft')next();if(e.key==='ArrowRight')prev()});
 })();
-$('#qMore').onclick=()=>document.body.classList.toggle('immersive');
-let MODE=localStorage.mode||'beige';
-const setMode=()=>{$('#view').className=MODE;$('#nt').textContent={beige:'ورق: بيج',white:'ورق: أبيض',night:'ورق: ليلي'}[MODE]};
-$('#nt').onclick=()=>{MODE={beige:'white',white:'night',night:'beige'}[MODE];localStorage.mode=MODE;setMode()};
-setMode();
-const isFav=()=>favs().some(x=>x.n==cur.n&&x.p==cur.p);
-const updBm=()=>{const f=isFav();$('#bm').textContent=f?'★ إزالة من المفضلة':'☆ مفضلة';$('#qFav').textContent=f?'★':'☆';$('#qFav').classList.toggle('on',f)};
-function toggleFav(){let f=favs();const i=f.findIndex(x=>x.n==cur.n&&x.p==cur.p);const added=i<0;i>-1?f.splice(i,1):f.push({n:cur.n,p:cur.p});localStorage.bm=JSON.stringify(f);updBm();toast(added?'أُضيفت الصفحة إلى المفضلة.':'أُزيلت الصفحة من المفضلة.')}
-$('#qFav').onclick=toggleFav;
-$('#qNx').onclick=()=>$('#nx').click();$('#qPv').onclick=()=>$('#pv').click();
-$('#sh').onclick=async()=>{
-  const btn=$('#sh');btn.disabled=true;
+
+/* favorites */
+const isFav=()=>favs().some(x=>x.n===cur.n&&x.p===cur.p);
+function updFav(){const f=isFav();$('#qFav').classList.toggle('on',f);$('#favPath').setAttribute('fill',f?'currentColor':'none');$('#qFav').setAttribute('aria-label',f?'إزالة من المفضلة':'إضافة للمفضلة')}
+$('#qFav').onclick=()=>{const f=favs(),i=f.findIndex(x=>x.n===cur.n&&x.p===cur.p);if(i>-1){f.splice(i,1);toast('أزيلت الصفحة من المفضلة')}else{f.unshift({n:cur.n,p:cur.p});toast('أضيفت الصفحة إلى المفضلة')}LS.set('favs',f);updFav()};
+
+/* sheet */
+function openSheet(){$('#sheetBack').hidden=false;$('#sheet').hidden=false;isSaved(cur.n).then(s=>$('#mSaveT').textContent=s?'هذا الجزء محفوظ بدون إنترنت (اضغط للإزالة)':'حفظ هذا الجزء للقراءة بدون إنترنت');$('#mFihris').hidden=!cur.n}
+function closeSheet(){$('#sheetBack').hidden=true;$('#sheet').hidden=true}
+$('#qMore').onclick=openSheet;$('#sheetBack').onclick=closeSheet;
+$('#mFihris').onclick=()=>{closeSheet();HL=[];go(VOLS[cur.n].f)};
+function citation(){return 'الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(cur.p)+'.'}
+const pageUrl=()=>location.origin+location.pathname+'#v'+cur.n+'p'+cur.p;
+async function copyText(t,okMsg){try{await navigator.clipboard.writeText(t);toast(okMsg)}catch(e){prompt('انسخ النص:',t)}}
+$('#mCite').onclick=()=>{closeSheet();copyText(citation(),'نُسخ الاستشهاد: '+partName(cur.n)+'، ص '+ar(cur.p))};
+$('#mLink').onclick=async()=>{closeSheet();const u=pageUrl(),t=citation();
+  if(navigator.share){try{await navigator.share({title:'الدرر السنية',text:t,url:u});return}catch(e){if(e.name==='AbortError')return}}
+  copyText(t+'\n'+u,'نُسخ رابط الصفحة')};
+$('#mImg').onclick=async()=>{closeSheet();
   try{
-    const pg=await pdf.getPage(cur.p),v=pg.getViewport({scale:2}),c=document.createElement('canvas');
-    c.width=v.width;c.height=v.height;
-    await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;
-    const b=await new Promise(r=>c.toBlob(r,'image/png'));
-    const ok=await saveFile(b,name(cur.n)+' - صفحة '+cur.p+'.png');
-    if(!ok)toast('تعذّر حفظ الصورة.');
-  }catch(e){alert('تعذّر المشاركة: '+e.message)}
-  btn.disabled=false;
-};
-$('#bm').onclick=toggleFav;
-function citationText(){
-  return 'الدرر السنية في الأجوبة النجدية، '+name(cur.n)+'، صفحة رقم '+cur.p+' (ترقيم ملف الطبعة الإلكترونية، وليس بالضرورة رقم الصفحة المطبوع؛ راجع صورة الصفحة للتأكد)\nالمصدر: https://archive.org/details/1241825 — الملف: '+idOf(cur.n)+'.pdf';
-}
-$('#ct').onclick=async()=>{
-  const t=citationText();
-  if(navigator.share){
-    try{await navigator.share({text:t});return}catch(e){if(e.name==='AbortError')return}
-  }
-  try{await navigator.clipboard.writeText(t);toast('تم نسخ الاستشهاد إلى الحافظة.')}
-  catch(e){alert('تعذّر النسخ التلقائي. انسخ يدوياً:\n\n'+t)}
-};
-$('#rs').onclick=async()=>{
-  for(let n=0;n<=16;n++){if(await has(n)){open(n,1);return}}
-  say('حمّل أو استورد مجلداً واحداً على الأقل لتبدأ القراءة.');
-};
-$('#exAll').onclick=async()=>{
-  const btn=$('#exAll'),vols=[];
-  for(let n=0;n<=16;n++)if(await has(n))vols.push(n);
-  if(!vols.length){say('لا توجد مجلدات محمّلة لتصديرها.');return}
-  btn.disabled=true;const B=new PdfBuilder();let done=0,totalPages=0;
-  try{
-    for(const n of vols){
-      const m=await(await C()).match(key('pdf',n));
-      const p=await pdfjsLib.getDocument({data:await m.arrayBuffer()}).promise;
-      totalPages+=p.numPages;
-    }
-    if(totalPages>250&&!confirm('عدد الصفحات '+totalPages+'، وهذا تصدير ثقيل (صور بدقة عالية لكل صفحة). قد يفشل أو يبطئ الجهاز، خصوصاً هنا في المعاينة التجريبية. تبي تكمل؟')){
-      btn.disabled=false;btn.textContent='تصدير الكتاب كاملاً PDF بيج (المجلدات المحمّلة)';return;
-    }
-    for(let vi=0;vi<vols.length;vi++){
-      const n=vols[vi],m=await(await C()).match(key('pdf',n)),p=await pdfjsLib.getDocument({data:await m.arrayBuffer()}).promise;
-      for(let i=1;i<=p.numPages;i++){
-        done++;btn.textContent='جارٍ التصدير '+done+' / '+totalPages+' ('+name(n)+')';
-        const img=await pageToBeigeJpeg(await p.getPage(i),1.1,.5);
-        B.addPage(img);
-        await new Promise(r=>setTimeout(r,0));
-      }
-    }
-    const blob=B.finish();
-    const ok=await saveFile(blob,'الدرر السنية في الأجوبة النجدية - كامل - ورق بيج.pdf');
-    if(!ok)toast('تعذّر حفظ الملف.');
-  }catch(e){alert('تعذّر التصدير — الأرجح أن الذاكرة لم تكفِ لهذا العدد من الصفحات. جرّب تصدير مجلدات أقل في كل مرة، أو من التطبيق بعد رفعه على استضافتك بدل هذه المعاينة: '+e.message)}
-  btn.disabled=false;btn.textContent='تصدير الكتاب كاملاً PDF بيج (المجلدات المحمّلة)';
-};
-$('#qSearch').onclick=()=>{$('#sOverlay').hidden=false;$('#q2').value='';$('#res2').innerHTML='';$('#q2').focus()};
-$('#q2close').onclick=()=>{$('#sOverlay').hidden=true};
-$('#q2').oninput=()=>doSearch($('#q2'),$('#res2'),(n,p,hl)=>{$('#sOverlay').hidden=true;open(n,p,hl)});
-$('#imp').onclick=()=>$('#fi').click();
-$('#fi').onchange=async e=>{
-  const c=await C();let ok=0,skipped=0;say('جارٍ الاستيراد...');
-  for(const f of e.target.files){
-    // يقبل أي اسم يبدأ برقم المجلد (٠ للتمهيد وحتى ١٦)، سواء كان الاسم الأصلي من الموقع أو أعدت تسميته بنفسك
-    const nm=f.name.match(/^0*(\d{1,2})(?!\d)/);
-    if(!nm||+nm[1]>16){skipped++;continue}
-    const n=+nm[1];
-    if(/\.txt$/i.test(f.name)){
-      await c.put(key('txt',n),new Response(f));delete IDX[n];ok++;continue;
-    }
-    if(/\.pdf$/i.test(f.name)){
-      await c.put(key('pdf',n),new Response(f));
-      try{
-        const d=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,out=[];
-        for(let i=1;i<=d.numPages;i++){
-          const tc=await(await d.getPage(i)).getTextContent();
-          out.push(tc.items.map(x=>/[\u0600-\u06FF]/.test(x.str)?[...x.str].reverse().join(''):x.str).join(' '));
-          if(i%15==0||i==d.numPages)say('فهرسة '+name(n)+': '+i+' / '+d.numPages);
-        }
-        const combined=out.join('\f');
-        if(combined.replace(/\s/g,'').length>0||!(await(await C()).match(key('txt',n))))
-          await c.put(key('txt',n),new Response(new Blob([combined])));
-      }catch(err){/* لا يوجد نص داخل الملف؛ القراءة تبقى متاحة بدون بحث لهذا المجلد */}
-      delete IDX[n];ok++;continue;
-    }
-    skipped++;
-  }
-  say(ok?('تم استيراد '+ok+' ملف'+(skipped?' (تجاهلت '+skipped+' ملف غير مُتعرَّف عليه).':'.')):'لم يُتعرَّف على أي ملف. لازم يبدأ اسم كل ملف برقم المجلد (٠ إلى ١٦).');
-  e.target.value='';home();
-};
-home();
+    const pg=await pdf.getPage(cur.p),v=pg.getViewport({scale:2}),c=document.createElement('canvas');c.width=v.width;c.height=v.height;
+    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+    await pg.render({canvasContext:x,viewport:v}).promise;
+    if(MODE==='beige'){x.globalCompositeOperation='multiply';x.fillStyle='#f2e6c6';x.fillRect(0,0,c.width,c.height)}
+    const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.9));
+    const file=new File([blob],'الدرر السنية - '+short(cur.n)+' ص'+cur.p+'.jpg',{type:'image/jpeg'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:citation()});return}
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.append(a);a.click();a.remove();
+  }catch(e){if(e.name!=='AbortError')toast('تعذّرت مشاركة الصورة')}};
+$('#mSave').onclick=async()=>{closeSheet();const n=cur.n;
+  if(await isSaved(n)){await removeVol(n);toast('أزيل '+partName(n)+' من الحفظ');return}
+  toast('جاري حفظ '+partName(n)+'…',1800);
+  try{await saveVol(n);toast('حُفظ '+partName(n)+' للقراءة بدون إنترنت')}catch(e){toast('تعذّر الحفظ. تأكد من الاتصال بالإنترنت.')}};
+
+/* in-reader search */
+function openSearch(){$('#sOverlay').hidden=false;setTimeout(()=>$('#q2').focus(),50)}
+function closeSearch(){$('#sOverlay').hidden=true}
+$('#qSearch').onclick=openSearch;$('#sClose').onclick=closeSearch;
+$('#sform2').addEventListener('submit',async e=>{
+  e.preventDefault();$('#q2').blur();const R=$('#res2');R.innerHTML='<p class="note">جاري البحث…</p>';
+  const only=$('#onlyPart').checked&&cur.n?cur.n:0;
+  const res=await runSearch($('#q2').value,only,n=>{R.firstChild&&(R.firstChild.textContent='جاري البحث في '+partName(n)+'…')});
+  if(!res){R.innerHTML='<p class="note">اكتب كلمة من حرفين على الأقل.</p>';return}
+  if(res.error&&!res.out.length){R.innerHTML='<p class="note">تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت.</p>';return}
+  renderHits(R,res,0);
+});
+window.addEventListener('resize',()=>{if(!$('#reader').hidden&&pdf&&!loading)go(cur.p)});
+
+/* start */
+renderHome();
+(function(){const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m&&+m[1]<=16){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openPart(+m[1],+m[2],null,true)}})();
 </script>
 </body>
 </html>
