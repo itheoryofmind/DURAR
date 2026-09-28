@@ -171,7 +171,7 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .stage{position:relative;display:inline-block;margin:0 auto;vertical-align:top}
 #cv{display:block;max-width:none;transition:opacity .15s}
 #cv.loading{opacity:.35}
-#view.beige{background:#f2e6c6}#view.beige #cv{mix-blend-mode:multiply}
+#view.beige{background:#f2e6c6}
 #view.white{background:#fff}
 #view.night{background:#141210}#view.night #cv{filter:invert(1) hue-rotate(180deg) brightness(.92)}
 .hot{position:absolute;inset:0}
@@ -698,7 +698,7 @@ document.addEventListener('copy',e=>{
 /* ---------- reader ---------- */
 let RT=null,pdf=null,cur={n:1,p:1},zoom=1,HL=[],loading=false,PAPER=LS.get('mode','beige'),VIEW=LS.get('view','img'),openSeq=0,FS=LS.get('fs',20);
 const wide=()=>window.matchMedia('(min-width:1000px)').matches;
-function setPaper(m){PAPER=m;LS.set('mode',m);$('#view').className=m;document.querySelectorAll('#paper button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m))}
+function setPaper(m){const ch=PAPER!==m;PAPER=m;LS.set('mode',m);$('#view').className=m;document.querySelectorAll('#paper button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m));if(ch&&pdf&&!$('#reader').hidden&&!$('#view').hidden)go(cur.p,true)}
 setPaper(PAPER);
 document.querySelectorAll('#paper button').forEach(b=>b.onclick=()=>setPaper(b.dataset.m));
 function setFS(v){FS=Math.max(15,Math.min(34,v));LS.set('fs',FS);document.documentElement.style.setProperty('--tsize',FS+'px')}
@@ -759,6 +759,8 @@ async function go(p,noText){
   const task=RT=pg.render({canvasContext:cv.getContext('2d'),viewport:v});
   try{await task.promise}catch(e){return}finally{if(RT===task)RT=null}
   if(p!==cur.p)return;
+  // beige paper is painted into the page image itself (CSS blending is not reliable on every phone)
+  if(PAPER==='beige'){const x=cv.getContext('2d');x.globalCompositeOperation='multiply';x.fillStyle='#f2e6c6';x.fillRect(0,0,cv.width,cv.height);x.globalCompositeOperation='source-over'}
   if(HL.length){
     try{
       const tc=await pg.getTextContent(),x=cv.getContext('2d');
