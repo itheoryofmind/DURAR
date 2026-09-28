@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f4c4a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>الدرر السنية في الأجوبة النجدية</title>
+<style>
+:root{--ink:#10222b;--bg:#f3f5f4;--card:#fff;--g:#0f4c4a;--gold:#b08a3e;--mut:#5d6f6d;--line:#d5dcda}
+@media(prefers-color-scheme:dark){:root{--ink:#e6eeec;--bg:#0d1719;--card:#152426;--g:#5fb3ab;--gold:#d2b165;--mut:#93a8a5;--line:#28403f}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.8 "Noto Naskh Arabic","Traditional Arabic","Geeza Pro",serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{background:var(--g);color:#fff;padding:14px 16px}
+header h1{margin:0;font-size:20px;font-weight:700}
+@media(prefers-color-scheme:dark){header{color:#0d1719}}
+main{max-width:760px;margin:0 auto;padding:14px}
+.q{display:flex;gap:8px}
+input,button{font:inherit}
+input[type=search]{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+button{border:1px solid var(--g);background:var(--g);color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer}
+@media(prefers-color-scheme:dark){button{color:#0d1719}}
+button.o{background:none;color:var(--g)}
+.note{font-size:14px;color:var(--mut);border-right:3px solid var(--gold);padding:2px 10px;margin:12px 0}
+h2{font-size:18px;margin:20px 0 6px}
+.row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0}
+.row b{flex:1;cursor:pointer}.row small{color:var(--mut)}
+.hit{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0;cursor:pointer}
+.hit small{color:var(--gold);font-weight:700}
+mark{background:#e9d9a6;color:#10222b;padding:0 2px}
+#reader{display:none}
+.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
+#pg{width:64px;text-align:center;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+#view{overflow:auto;text-align:center;padding-top:8px}
+#cv{max-width:none;box-shadow:0 0 0 1px var(--line);transition:opacity .15s}
+#cv.loading{opacity:.35}
+.beige{background:#f2e6c6}.beige #cv{mix-blend-mode:multiply}
+.white{background:#fff}
+.night{background:#111}.night #cv{filter:invert(1) hue-rotate(180deg)}
+#msg{color:#b3261e;font-size:15px}
+body.immersive header{display:none}
+body.immersive main{padding:0}
+body.immersive .bar{display:none}
+body.immersive #view{padding-top:env(safe-area-inset-top)}
+.tip{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);background:rgba(16,34,43,.92);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;z-index:29;pointer-events:none;transition:opacity .4s;max-width:88vw;text-align:center}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:rgba(16,34,43,.92);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;z-index:40;pointer-events:none;transition:opacity .4s;max-width:88vw;text-align:center}
+@media(prefers-color-scheme:dark){.tip,.toast{background:rgba(230,238,236,.94);color:#10222b}}
+.qbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:rgba(16,34,43,.88);padding:6px;border-radius:26px;z-index:20;backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(0,0,0,.25)}
+@media(prefers-color-scheme:dark){.qbar{background:rgba(230,238,236,.9)}}
+.qbar button{background:none;border:none;color:#fff;font-size:19px;line-height:1;width:42px;height:42px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qbar button:active{background:rgba(255,255,255,.18)}
+@media(prefers-color-scheme:dark){.qbar button{color:#10222b}.qbar button:active{background:rgba(0,0,0,.1)}}
+.qbar button.on{color:var(--gold)}
+.overlay{position:fixed;inset:0;background:var(--bg);z-index:35;overflow:auto;padding:14px;padding-top:calc(14px + env(safe-area-inset-top))}
+.overlay .q{margin-bottom:4px}
+
+</style>
+</head>
+<body>
+<header><h1>الدرر السنية في الأجوبة النجدية</h1></header>
+<main>
+<section id="home">
+  <div class="q"><input id="q" type="search" placeholder="ابحث بالنص، مثل: التوحيد"><button id="sb">بحث</button></div>
+  <p class="note">البحث يعمل على نص آلي مستخرج من صور الكتاب وقد يحتوي أخطاء. المرجع الوحيد هو صورة الصفحة الأصلية، فافتح النتيجة وتحقق منها.</p>
+  <div id="res"></div>
+  <div id="fav"></div>
+  <h2>المجلدات</h2>
+  <p class="note">حمّل المجلد وأنت متصل بالإنترنت ليعمل القارئ والبحث بدون إنترنت. البحث يشمل المجلدات المحمّلة فقط.</p>
+  <div class="q"><button id="imp">استيراد ملفات من جهازك</button><button class="o" id="rs">اقرأ من البداية</button></div>
+  <p class="note">يقبل الاستيراد أي اسم ملف يبدأ برقم المجلد: ٠ للتمهيد وحتى ١٦ (مثل "0.pdf" أو الاسم الأصلي من الموقع)، سواء غيّرت الاسم أو لا.</p>
+  <input id="fi" type="file" multiple accept=".pdf,.txt" hidden>
+  <div id="list"></div>
+  <div class="q"><a id="dlFull" href="download/" style="display:block;flex:1;text-align:center;text-decoration:none;border:1px solid var(--g);background:var(--g);color:#fff;border-radius:8px;padding:10px 14px">تحميل الكتاب كاملاً PDF بيج (ملف واحد)</a></div>
+  <button class="o" id="exAll" hidden>تصدير</button>
+  <p id="msg"></p>
+</section>
+<section id="reader">
+  <div class="bar">
+    <button class="o" id="back">رجوع</button>
+    <button id="nx">التالي</button><input id="pg" type="number" min="1"><span id="tot"></span><button id="pv">السابق</button>
+    <button class="o" id="zi">+</button><button class="o" id="zo">−</button>
+    <button class="o" id="nt">ورق</button><button class="o" id="bm">☆ مفضلة</button><button class="o" id="ct">مشاركة الاستشهاد</button><button class="o" id="sh">مشاركة صورة الصفحة</button><button class="o" id="ex">تصدير هذا المجلد PDF بيج</button>
+  </div>
+  <div id="view"><canvas id="cv"></canvas></div>
+  <div class="qbar">
+    <button id="qBack" title="الرئيسية">🏠</button>
+    <button id="qPv" title="الصفحة السابقة">›</button>
+    <button id="qSearch" title="بحث">🔍</button>
+    <button id="qFav" title="مفضلة">☆</button>
+    <button id="qNx" title="الصفحة التالية">‹</button>
+    <button id="qMore" title="المزيد">⋯</button>
+  </div>
+  <div id="sOverlay" class="overlay" hidden>
+    <div class="q"><input id="q2" type="search" placeholder="ابحث بالنص، مثل: التوحيد"><button class="o" id="q2close">إغلاق</button></div>
+    <p class="note">البحث يشمل المجلدات المحمّلة فقط. اختر نتيجة للانتقال إليها مباشرة.</p>
+    <div id="res2"></div>
+  </div>
+</section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+// إذا رفعت ملفات الـ PDF على استضافتك، غيّر العنوان التالي إلى مسارها (مثل 'books/')
+const BASE='https://archive.org/download/1241825/';
+const ORD=['التمهيد','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
+const $=s=>document.querySelector(s);
+const name=n=>n?'المجلد '+ORD[n]:ORD[0];
+const idOf=n=>n?String(n).padStart(2,'0')+'_'+(n==1?41814:41813+n):'00_41814';
+const C=()=>caches.open('durar-data');
+const key=(t,n)=>new Request('./_d/'+t+'/'+idOf(n));
+const norm=s=>s.normalize('NFKC').replace(/[\u064B-\u0652\u0670\u0640]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+const say=t=>$('#msg').textContent=t||'';
+function toast(msg,ms){
+  const el=document.createElement('div');el.className='toast';el.textContent=msg;
+  document.body.append(el);
+  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),400)},ms||2200);
+}
+async function saveFile(blob,filename){
+  try{
+    if(window.claude&&window.claude.use){
+      const d=await window.claude.use('downloads');
+      if(d){await d.save({filename,data:blob});return true}
+    }
+  }catch(e){}
+  try{
+    const f=new File([blob],filename,{type:blob.type});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return true}
+  }catch(e){}
+  try{
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();return true
+  }catch(e){}
+  return false;
+}
+async function pageToBeigeJpeg(pg,scale,quality){
+  const v=pg.getViewport({scale}),c=document.createElement('canvas');
+  c.width=Math.round(v.width);c.height=Math.round(v.height);
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+  await pg.render({canvasContext:x,viewport:v}).promise;
+  x.globalCompositeOperation='multiply';x.fillStyle='#f2e6c6';x.fillRect(0,0,c.width,c.height);
+  const b=await new Promise(r=>c.toBlob(r,'image/jpeg',quality));
+  return {w:c.width,h:c.height,data:new Uint8Array(await b.arrayBuffer())};
+}
+class PdfBuilder{
+  constructor(){this.parts=[];this.pos=0;this.offs=[];this.enc=new TextEncoder();this.push('%PDF-1.4\n');this.next=3;this.kids=[]}
+  push(z){const b=typeof z==='string'?this.enc.encode(z):z;this.parts.push(b);this.pos+=b.length}
+  obj(id,body){this.offs[id]=this.pos;this.push(id+' 0 obj\n'+body+'\nendobj\n')}
+  addPage(img){
+    const id=this.next;this.next+=3;this.kids.push(id);
+    const cs='q '+img.w+' 0 0 '+img.h+' 0 0 cm /Im Do Q';
+    this.obj(id,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+img.w+' '+img.h+'] /Resources << /XObject << /Im '+(id+2)+' 0 R >> >> /Contents '+(id+1)+' 0 R >>');
+    this.obj(id+1,'<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream');
+    this.offs[id+2]=this.pos;
+    this.push((id+2)+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+img.w+' /Height '+img.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+img.data.length+' >>\nstream\n');
+    this.push(img.data);this.push('\nendstream\nendobj\n');
+  }
+  finish(){
+    this.obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
+    this.obj(2,'<< /Type /Pages /Kids ['+this.kids.map(k=>k+' 0 R').join(' ')+'] /Count '+this.kids.length+' >>');
+    const xr=this.pos,total=this.next;
+    let t='xref\n0 '+total+'\n0000000000 65535 f \n';
+    for(let k=1;k<total;k++)t+=String(this.offs[k]||0).padStart(10,'0')+' 00000 n \n';
+    this.push(t+'trailer\n<< /Size '+total+' /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF');
+    return new Blob(this.parts,{type:'application/pdf'});
+  }
+}
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+
+async function has(n){return !!(await(await C()).match(key('pdf',n)))}
+async function fetchTo(url,c,k,btn){
+  const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);
+  const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),ch=[];let got=0;
+  for(;;){const{done,value}=await rd.read();if(done)break;ch.push(value);got+=value.length;
+    if(btn&&total)btn.textContent=Math.round(got/total*100)+'%'}
+  await c.put(k,new Response(new Blob(ch)));
+}
+async function dl(n,btn){
+  say();btn.disabled=true;btn.textContent='...';
+  try{const c=await C();
+    await fetchTo(BASE+idOf(n)+'.pdf',c,key('pdf',n),btn);
+    await fetchTo(BASE+idOf(n)+'_djvu.txt',c,key('txt',n));
+    delete IDX[n];
+  }catch(e){say('المتصفح منع التحميل المباشر من archive.org ('+e.message+'). استخدم زر «استيراد ملفات من جهازك» بعد تنزيل الملفات من صفحة الكتاب.')}
+  home();
+}
+async function del(n){const c=await C();await c.delete(key('pdf',n));await c.delete(key('txt',n));delete IDX[n];home()}
+
+const favs=()=>JSON.parse(localStorage.bm||'[]');
+async function home(){
+  const L=$('#list');L.innerHTML='';
+  for(let n=0;n<=16;n++){
+    const d=await has(n),r=document.createElement('div');r.className='row';
+    const t=document.createElement('b');t.textContent=name(n);t.onclick=()=>{if(d)open(n)};
+    const s=document.createElement('small');s.textContent=d?('محمّل'+(localStorage['last'+n]?' — آخر صفحة '+localStorage['last'+n]:'')):'';
+    const rd=document.createElement('button');rd.textContent='قراءة';rd.onclick=()=>open(n);
+    const b=document.createElement('button');b.className=d?'o':'';b.textContent=d?'حذف':'تحميل';
+    b.onclick=()=>d?del(n):dl(n,b);
+    r.append(t,s,...(d?[rd]:[]),b);L.append(r);
+  }
+  const F=$('#fav');F.innerHTML='';const f=favs();
+  const lr=JSON.parse(localStorage.lr||'null');
+  if(lr){const e=document.createElement('div');e.className='row';const t=document.createElement('b');t.textContent='تابع القراءة: '+name(lr.n)+' — صفحة '+lr.p;t.onclick=()=>open(lr.n,lr.p);e.append(t);F.append(e)}
+  if(f.length){const h=document.createElement('h2');h.textContent='المفضلة';F.append(h);
+    f.forEach((x,i)=>{const e=document.createElement('div');e.className='row';const t=document.createElement('b');t.textContent=name(x.n)+' — صفحة '+x.p;t.onclick=()=>open(x.n,x.p);const r=document.createElement('button');r.className='o';r.textContent='إزالة';r.onclick=()=>{const g=favs();g.splice(i,1);localStorage.bm=JSON.stringify(g);home()};e.append(t,r);F.append(e)})}
+}
+
+const IDX={};
+async function pagesOf(n){
+  if(IDX[n])return IDX[n];
+  const m=await(await C()).match(key('txt',n));if(!m)return null;
+  return IDX[n]=(await m.text()).split('\f').map(norm);
+}
+async function doSearch(qEl,R,onPick){
+  const q=norm(qEl.value.trim());R.innerHTML='';
+  if(q.length<2)return;
+  const W=q.split(' ').filter(w=>w.length>1);
+  let total=0,any=false;
+  for(let n=0;n<=16&&total<300;n++){
+    const P=await pagesOf(n);if(!P)continue;any=true;
+    P.forEach((t,i)=>{let qq=q,k=t.indexOf(q),c=0;if(k<0&&W.length>1&&W.every(w=>t.includes(w))){qq=W[0];k=t.indexOf(qq)}
+      while(k>-1&&c<2&&total<300){
+        const e=document.createElement('div');e.className='hit';
+        const h=document.createElement('small');h.textContent=name(n)+' — صفحة '+(i+1);
+        const sn=document.createElement('div');
+        const a=t.slice(Math.max(0,k-50),k).replace(/\s+/g,' '),b=t.slice(k+qq.length,k+qq.length+70).replace(/\s+/g,' ');
+        const m=document.createElement('mark');m.textContent=qq;sn.append('…'+a,m,b+'…');
+        e.append(h,sn);e.onclick=()=>onPick(n,i+1,W.length>1?W:[q]);R.append(e);
+        total++;c++;k=t.indexOf(qq,k+qq.length)}
+    });
+  }
+  if(!any)R.innerHTML='<p class="note">حمّل مجلداً واحداً على الأقل ليعمل البحث.</p>';
+  else if(!total)R.innerHTML='<p class="note">لا توجد نتائج في المجلدات المحمّلة.</p>';
+  else if(total>=300){const p=document.createElement('p');p.className='note';p.textContent='عُرض أول ٣٠٠ موضع. حدّد كلمة أدق لتضييق النتائج.';R.prepend(p)}
+}
+const search=()=>doSearch($('#q'),$('#res'),open);
+
+let pdf,cur={n:0,p:1},zoom=1,HL=[],loading=false;
+const nl=s=>s.replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+function showTip(){
+  if(localStorage.tipShown)return;localStorage.tipShown='1';
+  const tip=document.createElement('div');tip.className='tip';
+  tip.textContent='اضغط على الصفحة لقراءة بملء الشاشة، واضغط مرة أخرى لإظهار الأزرار';
+  document.body.append(tip);
+  setTimeout(()=>{tip.style.opacity='0';setTimeout(()=>tip.remove(),400)},3200);
+}
+async function open(n,p,hl){HL=hl||[];loading=true;$('#cv').classList.add('loading');
+  try{
+    say();const m=await(await C()).match(key('pdf',n));
+    const src=m?{data:await m.arrayBuffer()}:{url:BASE+idOf(n)+'.pdf'};
+    pdf=await pdfjsLib.getDocument(src).promise;cur.n=n;
+    $('#home').style.display='none';$('#reader').style.display='block';
+    await go(p||+localStorage['last'+n]||1);
+    showTip();
+  }catch(e){const m='تعذّر فتح المجلد. تأكد أنه مستورد أو محمّل.';say(m);if($('#reader').style.display==='block')alert(m)}
+  finally{loading=false;$('#cv').classList.remove('loading')}
+}
+async function go(p){
+  if(!pdf)return;
+  loading=true;$('#cv').classList.add('loading');
+  p=Math.max(1,Math.min(pdf.numPages,p));cur.p=p;localStorage['last'+cur.n]=p;localStorage.lr=JSON.stringify({n:cur.n,p});updBm();
+  $('#pg').value=p;$('#tot').textContent='/ '+pdf.numPages;
+  const pg=await pdf.getPage(p),w=$('#view').clientWidth,base=pg.getViewport({scale:1}),dpr=Math.min(window.devicePixelRatio||1,2);
+  let rs=(w/base.width*zoom)*dpr;
+  const MAXPX=2600;if(base.width*rs>MAXPX)rs*=MAXPX/(base.width*rs);
+  const v=pg.getViewport({scale:rs}),cv=$('#cv');
+  cv.width=v.width;cv.height=v.height;cv.style.width=(v.width/dpr)+'px';
+  await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise;
+  if(HL.length){
+    const tc=await pg.getTextContent(),x=cv.getContext('2d');
+    x.globalCompositeOperation='multiply';x.fillStyle='#ffd400';
+    for(const it of tc.items){
+      if(!/[\u0600-\u06FF]/.test(it.str))continue;
+      const L=it.str.length,T=nl([...it.str].reverse().join(''));
+      for(const w of HL){
+        let i=T.indexOf(w);
+        while(i>-1){
+          const a=it.transform[4]+it.width*(L-i-w.length)/L,b=it.transform[4]+it.width*(L-i)/L,h=it.height||Math.abs(it.transform[3]);
+          const[x0,y0,x1,y1]=v.convertToViewportRectangle([a,it.transform[5],b,it.transform[5]+h]);
+          x.fillRect(Math.min(x0,x1),Math.min(y0,y1),Math.abs(x1-x0),Math.abs(y1-y0));
+          i=T.indexOf(w,i+w.length);
+        }
+      }
+    }
+    x.globalCompositeOperation='source-over';
+  }
+  loading=false;$('#cv').classList.remove('loading');
+}
+$('#ex').onclick=async()=>{
+  const btn=$('#ex'),N=pdf.numPages;
+  btn.disabled=true;
+  try{
+    const B=new PdfBuilder();
+    for(let i=1;i<=N;i++){
+      btn.textContent='جارٍ التصدير '+i+' / '+N;
+      B.addPage(await pageToBeigeJpeg(await pdf.getPage(i),1.4,.6));
+    }
+    const blob=B.finish();
+    const ok=await saveFile(blob,name(cur.n)+' - ورق بيج.pdf');
+    if(!ok)toast('تعذّر حفظ الملف.');
+  }catch(e){alert('تعذّر التصدير: '+e.message)}
+  btn.disabled=false;btn.textContent='تصدير هذا المجلد PDF بيج';
+};
+$('#sb').onclick=search;$('#q').onkeydown=e=>{if(e.key=='Enter')search()};
+function backHome(){document.body.classList.remove('immersive');$('#sOverlay').hidden=true;$('#reader').style.display='none';$('#home').style.display='block';home()}
+$('#back').onclick=backHome;$('#qBack').onclick=backHome;
+$('#nx').onclick=()=>{if(loading||!pdf)return;cur.p>=pdf.numPages&&cur.n<16?open(cur.n+1,1):go(cur.p+1)};$('#pv').onclick=()=>{if(loading||!pdf)return;cur.p<=1&&cur.n>0?open(cur.n-1,99999):go(cur.p-1)};
+$('#pg').onchange=e=>go(+e.target.value);
+$('#zi').onclick=()=>{zoom=Math.min(4,zoom+.25);go(cur.p)};$('#zo').onclick=()=>{zoom=Math.max(.5,zoom-.25);go(cur.p)};
+(function swipe(){
+  const el=$('#view');let sx=0,sy=0,st=0,touching=false;
+  el.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;touching=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now()},{passive:true});
+  el.addEventListener('touchend',e=>{
+    if(!touching)return;touching=false;
+    const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,dt=Date.now()-st;
+    if(dt>800)return;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){
+      if(loading)return;
+      if(dx<0)$('#nx').click();else $('#pv').click();
+      return;
+    }
+    if(dt<300&&Math.abs(dx)<10&&Math.abs(dy)<10){
+      document.body.classList.toggle('immersive');
+    }
+  },{passive:true});
+  el.addEventListener('click',e=>{
+    if(!('ontouchstart'in window))document.body.classList.toggle('immersive');
+  });
+})();
+$('#qMore').onclick=()=>document.body.classList.toggle('immersive');
+let MODE=localStorage.mode||'beige';
+const setMode=()=>{$('#view').className=MODE;$('#nt').textContent={beige:'ورق: بيج',white:'ورق: أبيض',night:'ورق: ليلي'}[MODE]};
+$('#nt').onclick=()=>{MODE={beige:'white',white:'night',night:'beige'}[MODE];localStorage.mode=MODE;setMode()};
+setMode();
+const isFav=()=>favs().some(x=>x.n==cur.n&&x.p==cur.p);
+const updBm=()=>{const f=isFav();$('#bm').textContent=f?'★ إزالة من المفضلة':'☆ مفضلة';$('#qFav').textContent=f?'★':'☆';$('#qFav').classList.toggle('on',f)};
+function toggleFav(){let f=favs();const i=f.findIndex(x=>x.n==cur.n&&x.p==cur.p);const added=i<0;i>-1?f.splice(i,1):f.push({n:cur.n,p:cur.p});localStorage.bm=JSON.stringify(f);updBm();toast(added?'أُضيفت الصفحة إلى المفضلة.':'أُزيلت الصفحة من المفضلة.')}
+$('#qFav').onclick=toggleFav;
+$('#qNx').onclick=()=>$('#nx').click();$('#qPv').onclick=()=>$('#pv').click();
+$('#sh').onclick=async()=>{
+  const btn=$('#sh');btn.disabled=true;
+  try{
+    const pg=await pdf.getPage(cur.p),v=pg.getViewport({scale:2}),c=document.createElement('canvas');
+    c.width=v.width;c.height=v.height;
+    await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;
+    const b=await new Promise(r=>c.toBlob(r,'image/png'));
+    const ok=await saveFile(b,name(cur.n)+' - صفحة '+cur.p+'.png');
+    if(!ok)toast('تعذّر حفظ الصورة.');
+  }catch(e){alert('تعذّر المشاركة: '+e.message)}
+  btn.disabled=false;
+};
+$('#bm').onclick=toggleFav;
+function citationText(){
+  return 'الدرر السنية في الأجوبة النجدية، '+name(cur.n)+'، صفحة رقم '+cur.p+' (ترقيم ملف الطبعة الإلكترونية، وليس بالضرورة رقم الصفحة المطبوع؛ راجع صورة الصفحة للتأكد)\nالمصدر: https://archive.org/details/1241825 — الملف: '+idOf(cur.n)+'.pdf';
+}
+$('#ct').onclick=async()=>{
+  const t=citationText();
+  if(navigator.share){
+    try{await navigator.share({text:t});return}catch(e){if(e.name==='AbortError')return}
+  }
+  try{await navigator.clipboard.writeText(t);toast('تم نسخ الاستشهاد إلى الحافظة.')}
+  catch(e){alert('تعذّر النسخ التلقائي. انسخ يدوياً:\n\n'+t)}
+};
+$('#rs').onclick=async()=>{
+  for(let n=0;n<=16;n++){if(await has(n)){open(n,1);return}}
+  say('حمّل أو استورد مجلداً واحداً على الأقل لتبدأ القراءة.');
+};
+$('#exAll').onclick=async()=>{
+  const btn=$('#exAll'),vols=[];
+  for(let n=0;n<=16;n++)if(await has(n))vols.push(n);
+  if(!vols.length){say('لا توجد مجلدات محمّلة لتصديرها.');return}
+  btn.disabled=true;const B=new PdfBuilder();let done=0,totalPages=0;
+  try{
+    for(const n of vols){
+      const m=await(await C()).match(key('pdf',n));
+      const p=await pdfjsLib.getDocument({data:await m.arrayBuffer()}).promise;
+      totalPages+=p.numPages;
+    }
+    if(totalPages>250&&!confirm('عدد الصفحات '+totalPages+'، وهذا تصدير ثقيل (صور بدقة عالية لكل صفحة). قد يفشل أو يبطئ الجهاز، خصوصاً هنا في المعاينة التجريبية. تبي تكمل؟')){
+      btn.disabled=false;btn.textContent='تصدير الكتاب كاملاً PDF بيج (المجلدات المحمّلة)';return;
+    }
+    for(let vi=0;vi<vols.length;vi++){
+      const n=vols[vi],m=await(await C()).match(key('pdf',n)),p=await pdfjsLib.getDocument({data:await m.arrayBuffer()}).promise;
+      for(let i=1;i<=p.numPages;i++){
+        done++;btn.textContent='جارٍ التصدير '+done+' / '+totalPages+' ('+name(n)+')';
+        const img=await pageToBeigeJpeg(await p.getPage(i),1.1,.5);
+        B.addPage(img);
+        await new Promise(r=>setTimeout(r,0));
+      }
+    }
+    const blob=B.finish();
+    const ok=await saveFile(blob,'الدرر السنية في الأجوبة النجدية - كامل - ورق بيج.pdf');
+    if(!ok)toast('تعذّر حفظ الملف.');
+  }catch(e){alert('تعذّر التصدير — الأرجح أن الذاكرة لم تكفِ لهذا العدد من الصفحات. جرّب تصدير مجلدات أقل في كل مرة، أو من التطبيق بعد رفعه على استضافتك بدل هذه المعاينة: '+e.message)}
+  btn.disabled=false;btn.textContent='تصدير الكتاب كاملاً PDF بيج (المجلدات المحمّلة)';
+};
+$('#qSearch').onclick=()=>{$('#sOverlay').hidden=false;$('#q2').value='';$('#res2').innerHTML='';$('#q2').focus()};
+$('#q2close').onclick=()=>{$('#sOverlay').hidden=true};
+$('#q2').oninput=()=>doSearch($('#q2'),$('#res2'),(n,p,hl)=>{$('#sOverlay').hidden=true;open(n,p,hl)});
+$('#imp').onclick=()=>$('#fi').click();
+$('#fi').onchange=async e=>{
+  const c=await C();let ok=0,skipped=0;say('جارٍ الاستيراد...');
+  for(const f of e.target.files){
+    // يقبل أي اسم يبدأ برقم المجلد (٠ للتمهيد وحتى ١٦)، سواء كان الاسم الأصلي من الموقع أو أعدت تسميته بنفسك
+    const nm=f.name.match(/^0*(\d{1,2})(?!\d)/);
+    if(!nm||+nm[1]>16){skipped++;continue}
+    const n=+nm[1];
+    if(/\.txt$/i.test(f.name)){
+      await c.put(key('txt',n),new Response(f));delete IDX[n];ok++;continue;
+    }
+    if(/\.pdf$/i.test(f.name)){
+      await c.put(key('pdf',n),new Response(f));
+      try{
+        const d=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,out=[];
+        for(let i=1;i<=d.numPages;i++){
+          const tc=await(await d.getPage(i)).getTextContent();
+          out.push(tc.items.map(x=>/[\u0600-\u06FF]/.test(x.str)?[...x.str].reverse().join(''):x.str).join(' '));
+          if(i%15==0||i==d.numPages)say('فهرسة '+name(n)+': '+i+' / '+d.numPages);
+        }
+        const combined=out.join('\f');
+        if(combined.replace(/\s/g,'').length>0||!(await(await C()).match(key('txt',n))))
+          await c.put(key('txt',n),new Response(new Blob([combined])));
+      }catch(err){/* لا يوجد نص داخل الملف؛ القراءة تبقى متاحة بدون بحث لهذا المجلد */}
+      delete IDX[n];ok++;continue;
+    }
+    skipped++;
+  }
+  say(ok?('تم استيراد '+ok+' ملف'+(skipped?' (تجاهلت '+skipped+' ملف غير مُتعرَّف عليه).':'.')):'لم يُتعرَّف على أي ملف. لازم يبدأ اسم كل ملف برقم المجلد (٠ إلى ١٦).');
+  e.target.value='';home();
+};
+home();
+</script>
+</body>
+</html>

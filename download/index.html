@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f4c4a">
+<title>تحميل الدرر السنية كاملة</title>
+<style>
+:root{--ink:#10222b;--bg:#f3f5f4;--card:#fff;--g:#0f4c4a;--on-g:#fff;--gold:#b08a3e;--mut:#5d6f6d;--line:#d5dcda;--ok:#1f6b3a;--bad:#a3261e;--track:#e3e8e6}
+@media(prefers-color-scheme:dark){:root{--ink:#e6eeec;--bg:#0d1719;--card:#152426;--g:#5fb3ab;--on-g:#0d1719;--gold:#d2b165;--mut:#93a8a5;--line:#28403f;--ok:#8fd0a3;--bad:#f0938a;--track:#23393a}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.8 "Noto Naskh Arabic","Traditional Arabic","Geeza Pro",serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{background:var(--g);color:var(--on-g);padding:14px 16px;display:flex;align-items:center;gap:12px}
+header a{color:inherit;text-decoration:none;font-size:15px;border:1px solid currentColor;border-radius:8px;padding:2px 10px}
+header h1{margin:0;font-size:20px;flex:1}
+main{max-width:620px;margin:0 auto;padding:18px 16px;display:flex;flex-direction:column;gap:16px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.facts div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 4px}
+.facts b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.facts span{color:var(--mut);font-size:14px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.btn{display:block;text-align:center;text-decoration:none;font:inherit;font-size:18px;font-weight:700;border:1px solid var(--g);background:var(--g);color:var(--on-g);border-radius:8px;padding:12px;cursor:pointer;width:100%}
+.btn.o{background:none;color:var(--g);font-weight:400;font-size:16px}
+.btn[aria-disabled=true],.btn:disabled{opacity:.45;pointer-events:none}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.track{height:8px;background:var(--track);border-radius:4px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--g);transition:width .3s}
+@media(prefers-reduced-motion:reduce){.fill{transition:none}}
+p{margin:0}
+.note{font-size:14px;color:var(--mut);border-right:3px solid var(--gold);padding:2px 10px}
+#st{font-variant-numeric:tabular-nums}
+#st.ok{color:var(--ok)}#st.bad{color:var(--bad)}
+h2{font-size:18px;margin:0}
+ul{margin:0;padding-inline-start:20px}
+code{font-family:inherit;background:var(--track);border-radius:4px;padding:0 6px;white-space:nowrap}
+</style>
+</head>
+<body>
+<header><h1>تحميل الكتاب كاملاً</h1><a href="../">الموقع</a></header>
+<main>
+  <div class="facts">
+    <div><b>١٦</b><span>جزءاً مع التمهيد</span></div>
+    <div><b>٨٠٧٩</b><span>صفحة</span></div>
+    <div><b>٣٦٢</b><span>ميجابايت</span></div>
+  </div>
+
+  <section class="box" aria-live="polite">
+    <a class="btn" id="go" href="full.pdf" aria-disabled="true">حمّل الكتاب كاملاً (ملف واحد)</a>
+    <p id="st">جاري تجهيز صفحة التحميل…</p>
+    <p class="note">اتصل بشبكة Wi‑Fi. عند سؤال Safari اختر «تنزيل»، وستجد الملف في تطبيق الملفات داخل مجلد التنزيلات.</p>
+  </section>
+
+  <section class="box">
+    <h2>إذا لم يبدأ التحميل</h2>
+    <p class="note">هذه الطريقة تجمع الكتاب داخل الصفحة أولاً ثم تحفظه، وتحتاج أن تبقى الصفحة مفتوحة حتى تنتهي.</p>
+    <button class="btn o" id="alt" type="button">جمّع الكتاب ثم احفظه</button>
+    <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+    <p id="st2"></p>
+  </section>
+
+  <section class="box">
+    <h2>داخل الملف</h2>
+    <ul>
+      <li>صور الصفحات بدقة المسح الأصلية، باللون البيج.</li>
+      <li>البحث في النص يعمل على الآيفون والأندرويد.</li>
+      <li>التنقل بالبحث: اكتب <code>الجزء 7 صفحة 400</code> أو <code>فهرس الجزء الثاني</code>، وأول نتيجة هي المطلوبة.</li>
+      <li>فهرس جانبي لبداية كل جزء وصفحة فهرسه، وترقيم مثل <code>ج2 ص20</code>.</li>
+    </ul>
+    <p class="note">النص المخفي للبحث مقروء آلياً وقد يحتوي أخطاء، فالمعتمد في النقل صورة الصفحة. المصدر: archive.org/details/1241825</p>
+  </section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const toAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+function st(el,msg,cls){el.textContent=msg;el.className=cls||""}
+
+(async()=>{
+  if(!('serviceWorker' in navigator)){st($("st"),"متصفحك لا يدعم التحميل المباشر. استخدم الطريقة الثانية تحت.","bad");return}
+  try{
+    await navigator.serviceWorker.register("sw.js",{scope:"./"});
+    await navigator.serviceWorker.ready;
+    if(!navigator.serviceWorker.controller){
+      let tried=false;try{tried=sessionStorage.getItem("durar-reloaded")==="1"}catch(_){}
+      if(!tried){try{sessionStorage.setItem("durar-reloaded","1")}catch(_){}location.reload();return}
+      st($("st"),"لم يجهز التحميل المباشر. استخدم الطريقة الثانية تحت.","bad");return;
+    }
+    $("go").setAttribute("aria-disabled","false");
+    st($("st"),"جاهز. اضغط الزر لبدء التحميل.","ok");
+  }catch(e){st($("st"),"لم يجهز التحميل المباشر. استخدم الطريقة الثانية تحت.","bad")}
+})();
+$("go").addEventListener("click",()=>{st($("st"),"بدأ التحميل. تابع تقدمه من زر التنزيلات في Safari.","ok")});
+
+async function sha256(buf){
+  if(!(window.crypto&&crypto.subtle))return null;
+  const d=await crypto.subtle.digest("SHA-256",buf);
+  return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+$("alt").addEventListener("click",async()=>{
+  const btn=$("alt");btn.disabled=true;const out=$("st2");
+  try{
+    const m=await (await fetch("../book/manifest.json",{cache:"no-store"})).json();
+    const blobs=[];let done=0;
+    for(let i=0;i<m.parts.length;i++){
+      const p=m.parts[i];st(out,`جاري الجمع: القطعة ${toAr(i+1)} من ${toAr(m.parts.length)}`);
+      let ok=false,last;
+      for(let a=1;a<=3&&!ok;a++){
+        try{
+          const r=await fetch(p.u,{cache:"no-store"});if(!r.ok)throw new Error("http "+r.status);
+          const buf=await r.arrayBuffer();if(buf.byteLength!==p.s)throw new Error("size");
+          const h=await sha256(buf);if(h&&h!==p.h)throw new Error("hash");
+          blobs.push(new Blob([buf]));ok=true;
+        }catch(e){last=e;await new Promise(r=>setTimeout(r,1500))}
+      }
+      if(!ok)throw last;
+      done+=p.s;$("fill").style.width=(done/m.total*100).toFixed(1)+"%";
+    }
+    const book=new Blob(blobs,{type:"application/pdf"});
+    if(book.size!==m.total)throw new Error("total");
+    const a=document.createElement("a");a.href=URL.createObjectURL(book);a.download=m.filename;
+    document.body.appendChild(a);a.click();a.remove();
+    st(out,"اكتمل الجمع وتحقق من سلامة كل القطع. اختر «تنزيل» إذا سألك Safari.","ok");
+  }catch(e){
+    st(out,"توقف الجمع ("+(e&&e.message||e)+"). تأكد من الاتصال واضغط الزر مرة ثانية.","bad");
+  }finally{btn.disabled=false}
+});
+</script>
+</body>
+</html>
