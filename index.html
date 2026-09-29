@@ -401,6 +401,10 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .news .nh{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .news .nh b{font-family:var(--display);font-size:19px;color:var(--brass)}
 .news ul{margin:6px 0 0;padding-inline-start:20px;line-height:1.9;font-size:15px}
+.topicbtn{display:block;margin:10px auto 0;border:0;background:none;color:var(--brass);font:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:6px 10px}
+.tgrp{margin:0 0 16px}
+.tgrp h3{font-family:var(--display);font-size:19px;color:var(--brass);margin:0 0 8px}
+.tgrp .chips{justify-content:flex-start}
 .fld{display:block;margin:0 0 12px}
 .fld>span{display:block;font-size:14px;font-weight:600;margin-bottom:5px}
 .fld select,.fld textarea,.fld input[type=text]{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
@@ -438,11 +442,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="wrap searchbar">
     <form class="searchbox" id="sform" role="search">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="ابحث في الكتاب، أو اكتب الجزء والصفحة: ٨/١٥٠" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
+      <input id="q" type="search" placeholder="ابحث في الكتاب… أو ٨/١٥٠" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
       <button class="btn btn-primary" type="submit">بحث</button>
     </form>
     <label class="exact"><input type="checkbox" id="exact"> العبارة بنصها (لا الكلمات متفرقة)</label>
     <div class="chips" id="chips"></div>
+    <button class="topicbtn" id="openTopics" type="button">تصفّح بالموضوع ←</button>
   </div>
 
   <main class="home wrap">
@@ -696,6 +701,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <p class="hint">تستطيع التبديل في أي وقت من الزر أعلى القارئ.</p>
 </div>
 
+<!-- Topics overlay -->
+<div class="overlay" id="topicOverlay" hidden role="dialog" aria-label="تصفح بالموضوع">
+  <div class="head"><h2 style="flex:1">تصفّح بالموضوع</h2><button class="icon" id="topicClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="body"><p class="note">كتب الدرر السنية مصنّفة، اضغط على أي كتاب لتنتقل إلى أوله.</p><div id="topicList"></div></div>
+</div>
+
 <!-- TOC overlay -->
 <div class="overlay" id="tocOverlay" hidden role="dialog" aria-label="أبواب الكتاب">
   <div class="head"><h2 style="flex:1">أبواب الكتاب</h2><button class="icon" id="tocClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
@@ -706,7 +717,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='9';
-const APP_VER='2026-09-29-1119';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1130';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1730,6 +1741,7 @@ const NEWS=[
   'رابط الفقرة: حدّد نصاً واضغط «رابط»، فمن يفتحه يرى الفقرة نفسها مظلّلة.',
   'البحث بالجزء والصفحة: اكتب في البحث مثل ٨/١٥٠ أو «الجزء الثامن ص ١٥٠».',
   'فوائد القرّاء: أرسل فائدة وقفت عليها، وتُنشر بعد مراجعتها.',
+  'تصفّح بالموضوع: تحت البحث، كتب الدرر مصنّفة (العقيدة، العبادات، المعاملات…) تنقلك إلى أول كل كتاب.',
   'زر «رجوع» يعيدك إلى القائمة التي فتحت منها الصفحة (الفهارس، الأبواب، البحث).']}
 ];
 function renderNews(){
@@ -1741,6 +1753,25 @@ function renderNews(){
 }
 $('#newsOk').onclick=()=>{LS.set('newsSeen',NEWS[0].d);$('#newsSec').hidden=true};
 renderNews();
+/* ---------- browse by subject: the book's own «كتب», grouped; each opens where it begins ---------- */
+const TOPICS=[
+ ['العقيدة',[['العقائد',1,29],['التوحيد',2,5],['الأسماء والصفات',3,5]]],
+ ['العبادات',[['الطهارة',4,135],['الصلاة',4,196],['الجنائز',5,72],['الزكاة',5,169],['الصيام',5,267],['الحج',5,363]]],
+ ['المعاملات',[['البيع',6,5],['الوقف',7,5],['الوصايا',7,105],['الفرائض',7,129],['العتق',7,152]]],
+ ['الأسرة',[['النكاح',7,163],['الصداق',7,213],['الطلاق',7,277],['الظهار',7,342],['العِدد',7,351],['الرضاع',7,369]]],
+ ['الجنايات والقضاء',[['الجنايات',7,380],['الديات',7,400],['الحدود',7,423],['الأطعمة',7,468],['الأيمان والنذور',7,511],['القضاء',7,529],['الشهادات',7,584]]],
+ ['الجهاد والردة',[['الجهاد',8,5],['حكم المرتد',9,353]]],
+ ['الردود والتفسير والنصائح',[['مختصر الردود',11,5],['تفسير القرآن',13,5],['النصائح',14,5],['البيان الواضح',15,5],['تراجم أصحاب الرسائل',16,314]]]
+];
+function openTopics(){
+  const L=$('#topicList');
+  if(!L.children.length)TOPICS.forEach(([g,items])=>{const d=el('div','tgrp');d.append(el('h3',null,g));const c=el('div','chips');
+    items.forEach(([t,n,p])=>{const b=el('button','chip',t);b.type='button';b.title=partName(n)+' · ص '+ar(p);
+      b.onclick=()=>{const ov=$('#topicOverlay'),y=ov.scrollTop;ov.hidden=true;openPart(n,p).then(()=>setBack('رجوع إلى الموضوعات',()=>{ov.hidden=false;ov.scrollTop=y}))};c.append(b)});
+    d.append(c);L.append(d)});
+  $('#topicOverlay').hidden=false;
+}
+$('#openTopics').onclick=openTopics;$('#topicClose').onclick=()=>{$('#topicOverlay').hidden=true};
 function fbInit(){$('#fbSec').hidden=!FBON();$('#mFaw').hidden=!FBON();$('#fwSend').hidden=!FBON();$('#qReport').hidden=!FBON();$('#selRep').hidden=!FBON()}
 let FBK=null;
 function openFb(kind){
@@ -1812,6 +1843,7 @@ function openNav(){
   it($('#contT').textContent,()=>{closeNav();$('#continue').click()});
   it('ابحث في الكتاب',()=>{closeNav();window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>$('#q').focus(),350)});
   it('أبواب الكتاب',()=>{closeNav();$('#openToc').click()});
+  it('تصفّح بالموضوع',()=>{closeNav();openTopics()});
   it('خزانة الأجزاء',()=>goSec('shelfSec'));
   grp('الفهارس');
   it('فهرس المسائل',()=>{closeNav();openIdx('q')});
