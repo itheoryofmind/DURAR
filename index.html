@@ -290,6 +290,40 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .bio{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--brass-soft);border-radius:12px;padding:10px 14px}
 .about .links{display:flex;flex-wrap:wrap;gap:8px}
 .aboutq{font-family:var(--text);font-size:17px;line-height:2;margin:0;border-inline-start:3px solid var(--brass);padding-inline-start:12px}
+.treecard{display:flex;align-items:center;gap:14px;width:100%;margin-top:10px;text-align:start;border:1px solid var(--brass);border-radius:16px;padding:14px 16px;color:var(--on-brown);background:radial-gradient(120% 140% at 100% 0%,#5a3a22,#2a1a0e)}
+.treecard svg{color:var(--gold);flex:none}
+.treecard b{display:block;font-family:var(--display);font-size:21px}
+.treecard small{font-size:13px;opacity:.8}
+.tree{position:relative;padding:6px 0 20px}
+.tree svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.tree svg.links path{fill:none;stroke:var(--brass);stroke-width:1.2;opacity:.35}
+.tree svg.links path.on{opacity:1;stroke-width:2.2}
+.tree.focus svg.links path:not(.on){opacity:.08}
+.trow{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;margin:0 0 26px;position:relative;z-index:1}
+.gen{position:absolute;inset-inline-start:0;top:-18px;font-size:11px;color:var(--muted)}
+.tnode{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:6px 10px;font-family:var(--display);font-size:15px;line-height:1.35;text-align:center;max-width:150px}
+.tnode small{display:block;font-family:var(--ui);font-size:11px;color:var(--muted)}
+.tnode.root{background:var(--brown);color:var(--on-brown);border-color:var(--brown)}
+.tnode.root small{color:var(--gold)}
+.tree.focus .tnode{opacity:.35}
+.tree.focus .tnode.sel,.tree.focus .tnode.rel{opacity:1}
+.tnode.sel{box-shadow:0 0 0 2px var(--brass)}
+.tsep{font-size:13px;color:var(--muted);text-align:center;margin:10px 0}
+.tline{position:relative;padding-inline-start:26px}
+.tline::before{content:"";position:absolute;inset-inline-start:9px;top:0;bottom:0;width:2px;background:var(--brass-soft)}
+.tcent{font-family:var(--display);font-size:20px;color:var(--brass);margin:14px 0 6px;position:relative}
+.titem{position:relative;display:flex;justify-content:space-between;gap:10px;width:100%;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:9px 12px;margin-bottom:8px;font-family:var(--display);font-size:17px}
+.titem::before{content:"";position:absolute;inset-inline-start:-22px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--brass)}
+.titem span:last-child{font-family:var(--ui);font-size:13px;color:var(--muted);flex:none}
+.sch{position:fixed;inset-inline:0;bottom:0;z-index:78;background:var(--raised);border-top:2px solid var(--brass);border-radius:18px 18px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(0,0,0,.25);max-height:62vh;overflow:auto;max-width:820px;margin:0 auto}
+.sch h3{font-family:var(--display);font-size:22px;margin:0 0 4px}
+.sch .yrs{font-size:14px;color:var(--muted);margin:0 0 8px}
+.sch .yrs button{border:0;background:none;color:var(--brass);padding:0;font:inherit;text-decoration:underline}
+.sch h4{font-family:var(--display);font-size:17px;margin:10px 0 4px;color:var(--brass)}
+.sch .chips{margin:0}
+.sch .qt{font-family:var(--text);font-size:15px;line-height:1.9;margin:4px 0;color:var(--ink)}
+.sch .qt button{border:0;background:none;color:var(--brass);font-size:12px;padding:0 4px}
+.sch .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -338,6 +372,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
         <button class="action main" id="continue" type="button"><b id="contT">ابدأ القراءة</b><span id="contS">من أول الجزء الأول</span></button>
         <button class="action" id="openToc" type="button"><b>أبواب الكتاب</b><span>الأجزاء والكتب والأبواب وفهارسها</span></button>
       </div>
+      <button class="treecard" id="openTree" type="button"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="24" cy="8" r="4"/><circle cx="12" cy="24" r="4"/><circle cx="36" cy="24" r="4"/><circle cx="6" cy="40" r="4"/><circle cx="20" cy="40" r="4"/><circle cx="36" cy="40" r="4"/><path d="M22 11 14 21M26 11l8 10M11 28 7 36M13 28l6 8M36 28v8"/></svg><span><b>شجرة العلماء والخط الزمني</b><small>من أخذ عن مَن، وسنوات الوفاة، كما في تراجم الكتاب</small></span></button>
       <div class="idxcards">
         <button class="idxcard" type="button" data-tab="q"><b>المسائل</b><span>كل سؤال في الكتاب وموضع جوابه</span></button>
         <button class="idxcard" type="button" data-tab="s"><b>العلماء</b><span>أجوبة كل عالم ورسائله وأقواله</span></button>
@@ -486,6 +521,17 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   </div>
 </div>
 
+<!-- Scholars tree / timeline -->
+<div class="overlay" id="treeOverlay" hidden role="dialog" aria-label="شجرة العلماء">
+  <div class="head"><h2 style="flex:1">شجرة العلماء</h2><button class="icon" id="treeClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="body">
+    <div class="tabs" role="tablist" style="grid-template-columns:1fr 1fr"><button type="button" data-t="tree" role="tab">الشجرة</button><button type="button" data-t="time" role="tab">الخط الزمني</button></div>
+    <p class="note" id="treeNote">مأخوذة من «كتاب تراجم أصحاب تلك الرسائل والأجوبة» في الجزء السادس عشر. كل خيط بين عالمين مذكور نصاً في ترجمة أحدهما، وكل سنة مكتوبة في ترجمته، ومعها صفحتها. اضغط على أي عالم.</p>
+    <div id="treeView"></div>
+    <div id="sch" class="sch" hidden></div>
+  </div>
+</div>
+
 <!-- Reading mode chooser -->
 <div class="sheet-back" id="chooseBack" hidden></div>
 <div class="sheet" id="choose" hidden role="dialog" aria-label="طريقة القراءة">
@@ -508,7 +554,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='7';
-const APP_VER='2026-09-29-0236';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0447';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -820,7 +866,7 @@ $('#saveAll').onclick=async()=>{
     try{await saveVol(n,f=>{i.style.width=((done+f*VOLS[n].p)/totalPages*100).toFixed(1)+'%'})}catch(e){failed++}
     done+=VOLS[n].p;i.style.width=(done/totalPages*100).toFixed(1)+'%';
   }
-  try{await fihris();await heads();await meta();await idx()}catch(e){}
+  try{await fihris();await heads();await meta();await idx();await ulama()}catch(e){}
   ban.remove();btn.disabled=false;
   toast(failed?'حُفظت الأجزاء إلا '+ar(failed)+'، اضغط الزر مرة ثانية لإكمالها.':'حُفظ الكتاب كاملاً، ويمكن قراءته الآن بدون إنترنت.',3500);
   renderHome();
@@ -1287,7 +1333,7 @@ $('#quoteBtn').onclick=async()=>{
 async function renderAbout(){
   const L=$('#aboutLinks');L.innerHTML='';
   [['تقريظات الكتاب',1,5],['تمهيد الجامع',1,11],['تنبيهات الجامع',1,24],['بيان الأجزاء',16,494],['تراجم أصحاب الرسائل',16,314]].forEach(([t,n,p])=>{const b=el('button','btn btn-quiet',t);b.type='button';b.onclick=()=>openPart(n,p,null,false,'txt');L.append(b)});
-  try{const T=await textOf(1);const x=T.p[22];if(x&&!(x[0]&2)){const t=x.slice(1).filter(i=>typeof i==='string')[0];$('#aboutQ').textContent='«'+t.replace(/^[^.]{0,20}\.\s*/,'')+'»';   // the page opens with the end of the previous sentence$('#aboutSrc').textContent='من تمهيد الجامع عبدالرحمن بن قاسم، الجزء الأول، ص ٢٢'}}catch(e){}
+  try{const T=await textOf(1);const x=T.p[22];if(x&&!(x[0]&2)){const t=x.slice(1).filter(i=>typeof i==='string')[0];$('#aboutQ').textContent='«'+t.replace(/^[^.]{0,20}\.\s*/,'')+'»';$('#aboutSrc').textContent='من تمهيد الجامع عبدالرحمن بن قاسم، الجزء الأول، ص ٢٢'}}catch(e){}
 }
 
 /* ---------- backup of the reader's own data ---------- */
@@ -1309,6 +1355,83 @@ $('#bkFile').onchange=async e=>{
   }catch(err){toast('الملف غير صالح',3000)}
   e.target.value='';
 };
+
+/* ---------- scholars: tree and timeline (from the biographies in part 16) ---------- */
+const ulama=()=>getJSON('data/ulama.json');
+let TR={tab:'tree',sel:null,D:null};
+const shortName=n=>n.replace(/^الشيخ\s+/,'');
+const pg=(p,ap)=>'ص '+ar(p)+(ap?' تقريباً':'');
+$('#openTree').onclick=()=>{$('#treeOverlay').hidden=false;TR.sel=null;renderTree()};
+$('#treeClose').onclick=()=>{$('#treeOverlay').hidden=true};
+document.querySelectorAll('#treeOverlay .tabs button').forEach(b=>b.onclick=()=>{TR.tab=b.dataset.t;TR.sel=null;renderTree()});
+window.addEventListener('resize',()=>{if(!$('#treeOverlay').hidden&&TR.tab==='tree')drawLinks()});
+async function renderTree(){
+  document.querySelectorAll('#treeOverlay .tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===TR.tab));
+  const V=$('#treeView');V.innerHTML='';$('#sch').hidden=true;
+  let D;try{D=TR.D=await ulama()}catch(e){V.append(el('p','note','تعذّر التحميل. تأكد من الاتصال بالإنترنت.'));return}
+  const byId={};D.nodes.forEach(n=>byId[n.id]=n);TR.byId=byId;
+  const yr=n=>n.d?n.d[0]:(n.b?n.b[0]+60:9999);
+  if(TR.tab==='tree'){
+    // generations: longest chain of teachers; a scholar with no teacher listed sits just above his first students
+    const par={},kid={};D.nodes.forEach(n=>{par[n.id]=[];kid[n.id]=[]});D.edges.forEach(([a,b])=>{par[b].push(a);kid[a].push(b)});
+    const lv={};const L=i=>lv[i]!=null?lv[i]:(lv[i]=par[i].length?1+Math.max(...par[i].map(L)):0);D.nodes.forEach(n=>L(n.id));
+    D.nodes.forEach(n=>{if(!par[n.id].length&&kid[n.id].length&&n.id!=='miaw')lv[n.id]=Math.min(...kid[n.id].map(k=>lv[k]))-1});
+    const iso=D.nodes.filter(n=>!par[n.id].length&&!kid[n.id].length);
+    const rows=[];D.nodes.forEach(n=>{if(iso.includes(n))return;(rows[lv[n.id]]=rows[lv[n.id]]||[]).push(n)});
+    const T=el('div','tree');T.id='tree';
+    rows.forEach((r,i)=>{if(!r)return;r.sort((a,b)=>yr(a)-yr(b));const row=el('div','trow');r.forEach(n=>row.append(tnode(n)));T.append(row)});
+    if(iso.length){T.append(el('p','tsep','وفي التراجم أيضاً (لم يُذكر أن أحداً منهم أخذ عن غيرهم من أصحاب هذه التراجم):'));const row=el('div','trow');iso.sort((a,b)=>yr(a)-yr(b)).forEach(n=>row.append(tnode(n)));T.append(row)}
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','links');T.prepend(svg);
+    V.append(T);requestAnimationFrame(drawLinks);
+  }else{
+    const L=el('div','tline');let cent=0;
+    [...D.nodes].sort((a,b)=>yr(a)-yr(b)).forEach(n=>{
+      const y=n.d?n.d[0]:n.b?n.b[0]:null,c=y?Math.floor(y/100)+1:0;
+      if(c&&c!==cent){cent=c;L.append(el('div','tcent','القرن '+['','','','','','','','','','','','','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر'][c]+' الهجري'))}
+      const b=el('button','titem');b.type='button';b.append(el('span',null,shortName(n.name)),el('span',null,n.d?'ت '+ar(n.d[0])+'هـ':n.b?'وُلد '+ar(n.b[0])+'هـ':''));b.onclick=()=>showScholar(n.id);L.append(b);
+    });
+    V.append(L);V.append(el('p','note','الترتيب بسنة الوفاة كما في الترجمة، ومن لم تُذكر وفاته في الكتاب رُتّب بسنة مولده، ومن لم يُذكر له تاريخ ففي آخر القائمة.'));
+  }
+}
+function tnode(n){
+  const b=el('button','tnode'+(n.id==='miaw'?' root':''));b.type='button';b.dataset.id=n.id;
+  b.append(shortName(n.name));if(n.d)b.append(el('small',null,'ت '+ar(n.d[0])+'هـ'));else if(n.b)b.append(el('small',null,'وُلد '+ar(n.b[0])+'هـ'));
+  b.onclick=()=>showScholar(n.id);return b;
+}
+function drawLinks(){
+  const T=$('#tree');if(!T)return;const svg=T.querySelector('svg.links');svg.innerHTML='';const box=T.getBoundingClientRect();
+  const pos=id=>{const e=T.querySelector('[data-id="'+id+'"]');if(!e)return null;const r=e.getBoundingClientRect();return {x:r.left-box.left+r.width/2,top:r.top-box.top,bot:r.bottom-box.top}};
+  for(const [a,b] of TR.D.edges){const A=pos(a),B=pos(b);if(!A||!B)continue;
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');const my=(A.bot+B.top)/2;
+    p.setAttribute('d',`M${A.x},${A.bot} C${A.x},${my} ${B.x},${my} ${B.x},${B.top}`);p.dataset.a=a;p.dataset.b=b;svg.append(p)}
+  if(TR.sel)focusTree(TR.sel);
+}
+function focusTree(id){
+  const T=$('#tree');if(!T)return;T.classList.toggle('focus',!!id);
+  T.querySelectorAll('.tnode').forEach(n=>n.classList.remove('sel','rel'));T.querySelectorAll('path').forEach(p=>p.classList.remove('on'));
+  if(!id)return;const me=T.querySelector('[data-id="'+id+'"]');if(me)me.classList.add('sel');
+  T.querySelectorAll('path').forEach(p=>{if(p.dataset.a===id||p.dataset.b===id){p.classList.add('on');const o=p.dataset.a===id?p.dataset.b:p.dataset.a;const e=T.querySelector('[data-id="'+o+'"]');if(e)e.classList.add('rel')}});
+}
+function showScholar(id){
+  const D=TR.D,n=TR.byId[id];TR.sel=id;focusTree(id);
+  const P=$('#sch');P.innerHTML='';P.hidden=false;
+  const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.style.float='left';x.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{P.hidden=true;TR.sel=null;focusTree(null)};
+  P.append(x,el('h3',null,n.name));
+  const yrs=el('p','yrs');const go=(p)=>()=>{$('#treeOverlay').hidden=true;openPart(16,p,null,false,'txt')};
+  if(n.b){yrs.append('وُلد سنة '+ar(n.b[0])+'هـ (');const b=el('button',null,pg(n.b[1],n.b[2]));b.onclick=go(n.b[1]);yrs.append(b,')')}
+  if(n.b&&n.d)yrs.append(' · ');
+  if(n.d){yrs.append('توفي سنة '+ar(n.d[0])+'هـ (');const b=el('button',null,pg(n.d[1],n.d[2]));b.onclick=go(n.d[1]);yrs.append(b,')')}
+  if(!n.b&&!n.d)yrs.append('لم تُذكر سنة مولده ولا وفاته في ترجمته.');
+  P.append(yrs);
+  const rel=(title,list)=>{if(!list.length)return;P.append(el('h4',null,title));const c=el('div','chips');list.forEach(([o,p])=>{const b=el('button','chip',shortName(TR.byId[o].name));b.type='button';b.title='مذكور في ص '+ar(p);b.onclick=()=>showScholar(o);c.append(b)});P.append(c)};
+  rel('أخذ عن (ممن لهم ترجمة في الكتاب)',D.edges.filter(e=>e[1]===id).map(e=>[e[0],e[2]]));
+  rel('أخذ عنه (ممن لهم ترجمة في الكتاب)',D.edges.filter(e=>e[0]===id).map(e=>[e[1],e[2]]));
+  const quote=(title,qs)=>{if(!qs.length)return;P.append(el('h4',null,title));qs.slice(0,6).forEach(([p,ap,t])=>{const q=el('p','qt');q.append('«'+t+'»');const b=el('button',null,pg(p,ap));b.type='button';b.onclick=go(p);q.append(b);P.append(q)})};
+  quote('من ترجمته: شيوخه',n.t);quote('من ترجمته: تلاميذه',n.s);
+  const acts=el('div','acts');const bio=el('button','btn btn-primary','اقرأ ترجمته كاملة');bio.type='button';bio.onclick=go(n.page);acts.append(bio);
+  if(n.idx){const a=el('button','btn btn-quiet','أجوبته وأقواله في الكتاب');a.type='button';a.onclick=()=>{$('#treeOverlay').hidden=true;IX.tab='s';IX.sub=n.idx;$('#idxq').value='';$('#idxOverlay').hidden=false;renderIdx()};acts.append(a)}
+  P.append(acts);P.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
 
 /* add to home screen: a small hint, shown until dismissed */
 (function(){
