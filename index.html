@@ -342,6 +342,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .hlitem .go{flex:1;text-align:start;border:1px solid var(--line);background:var(--raised);border-radius:12px;padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}
 .hlitem .go .q2{display:block;font-family:var(--text);line-height:1.9}
 .hlitem .go small{display:block;color:var(--muted);margin-top:4px;font-size:12.5px}
+.refhint{font-size:14px;color:var(--muted);margin:10px 2px 0}
+.refhint+.exact{margin-top:6px}
 .exact{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);margin:10px 2px 0}
 .sprog{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
 .sprog .bar{background:var(--brass-soft)}.sprog .bar i{background:var(--brass)}
@@ -442,9 +444,10 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="wrap searchbar">
     <form class="searchbox" id="sform" role="search">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="ابحث في الكتاب… أو ٨/١٥٠" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
+      <input id="q" type="search" placeholder="ابحث في الكتاب…" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
       <button class="btn btn-primary" type="submit">بحث</button>
     </form>
+    <p class="refhint">للانتقال إلى صفحة: اكتب الجزء/الصفحة، مثل ٨/١٥٠</p>
     <label class="exact"><input type="checkbox" id="exact"> العبارة بنصها (لا الكلمات متفرقة)</label>
     <div class="chips" id="chips"></div>
     <button class="topicbtn" id="openTopics" type="button">تصفّح بالموضوع ←</button>
@@ -717,7 +720,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='9';
-const APP_VER='2026-09-29-1442';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1453';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
