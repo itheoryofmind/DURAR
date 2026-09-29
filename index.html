@@ -217,6 +217,7 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .q{color:var(--verse);font-family:var(--display);font-size:1.08em}
 .qu{font-family:"UthmanicHafs","Amiri",serif;font-size:1.1em;line-height:2.3}
 .qb{font-size:0}
+.fn{font-size:.58em;color:var(--muted);opacity:.75;font-family:var(--ui);margin-inline-start:1px;vertical-align:super;line-height:0}
 .ed{color:var(--muted);font-family:var(--ui);font-size:.72em}
 .tbody p.edt{text-indent:0;text-align:center;color:var(--muted);font-family:var(--ui);font-size:.72em}
 .qb::after{content:attr(data-c);font-size:calc(var(--tsize) * 1.08);color:var(--brass);margin-inline:2px}
@@ -593,7 +594,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='7';
-const APP_VER='2026-09-29-0452';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0501';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -919,8 +920,15 @@ function richInline(s,hl,inQ,rep){
   const f=document.createDocumentFragment();let buf='',node=f,qspan=null,ed=null,edParent=null;
   if(inQ){qspan=el('span','q');f.append(qspan);node=qspan}
   const flush=()=>{if(buf){appendHL(node,buf,hl);buf=''}};
-  let k=-1,skip=false;
+  let k=-1,skip=false,sup=null;
+  // footnote numbers of the digital edition after a hadith or a verse (its takhrij notes, not carried here): small and muted
+  s=s.replace(/(["}]|"،)\s?(\d{1,2})(?=[\s.،؛:؟,]|$)/g,'$1\u0001$2\u0002');
+  // the digital edition's straight quotation marks, shown as the print has them: « »  (only when they pair up)
+  {const q=s.split('"');if(q.length>1&&q.length%2===1)s=q.map((x,i)=>i%2?'«'+x.trim()+'»':x).join('')}
   for(const ch of s){
+    if(ch==='\u0001'){flush();sup=el('sup','fn');sup.title='رقم حاشية في النسخة الرقمية، والحاشية غير منقولة هنا';node.append(sup);continue}
+    if(ch==='\u0002'){if(sup){sup.textContent=buf;buf=''}sup=null;continue}
+    if(sup){buf+=ch;continue}
     if(ch==='{'&&!qspan&&!ed){flush();k++;qspan=el('span','q');const b=el('span','qb','{');b.dataset.c='﴿';qspan.append(b);f.append(qspan);node=qspan;
       // the verse in the Uthmani script of the King Fahd Complex, when the quotation matches it word for word
       if(rep&&rep[k]!=null){qspan.append(el('span','qu',rep[k]));skip=true}
