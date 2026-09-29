@@ -717,7 +717,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='9';
-const APP_VER='2026-09-29-1146';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1223';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -929,8 +929,8 @@ async function renderHome(){
   }
   if(!hasCaches){$('#saveAll').hidden=true}
 }
-function resume(lr){RESTORE=lr;openPart(lr.n,lr.p)}
-$('#continue').onclick=()=>{const lr=LS.get('lastRead',null);lr&&lr.n?resume(lr):openPart(1,1)};
+function resume(lr){RESTORE=lr;READING=true;openPart(lr.n,lr.p)}
+$('#continue').onclick=()=>{const lr=LS.get('lastRead',null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(1,1)}};
 
 /* page of the day: chosen by the date among pages with checked text */
 async function daily(){
@@ -1199,7 +1199,7 @@ function appendPages(to){
   TX.to=Math.max(TX.to,to);
   if(TX.to>=VOLS[n].p&&!box.querySelector('.partend')){
     const e=el('div','partend');e.append(el('p','rule','❖'),el('p',null,'تم '+partName(n)));
-    if(n&&n<16){const b=el('button','btn btn-primary','ابدأ '+partName(n+1));b.type='button';b.onclick=()=>openPart(n+1,1);e.append(b)}
+    if(n&&n<16){const b=el('button','btn btn-primary','ابدأ '+partName(n+1));b.type='button';b.onclick=()=>{READING=!EXC;openPart(n+1,1)};e.append(b)}
     box.append(e);
   }
 }
@@ -1237,7 +1237,7 @@ async function renderText(){
 function savePlace(){
   const tv=$('#tview');if(tv.hidden||TX.n<1||TX.n!==cur.n||$('#reader').hidden)return;
   let blk=null;for(const b of $('#tpage').children){if(!b.dataset.p)continue;if(!blk||b.offsetTop<=tv.scrollTop+2)blk=b;else break}
-  if(!blk)return;const f=Math.max(0,Math.min(0.999,(tv.scrollTop-blk.offsetTop)/Math.max(1,blk.offsetHeight)));
+  if(!blk||!isReading(TX.n,+blk.dataset.p))return;const f=Math.max(0,Math.min(0.999,(tv.scrollTop-blk.offsetTop)/Math.max(1,blk.offsetHeight)));
   LS.set('lastRead',{n:TX.n,p:+blk.dataset.p,f:+f.toFixed(3)});
 }
 let RESTORE=null;
@@ -1330,8 +1330,13 @@ function loadPdf(n){
   })();
   PDFLOAD={n,p:job};return job;
 }
+/* a page opened from the daily page, a search, an index, a link… is a visit: the reading place («تابع القراءة», the plan)
+   moves only once the reader reads on from it (two pages away); «تابع القراءة», the plan and turning parts are reading */
+let READING=false,EXC=null;
+function isReading(n,p){if(EXC&&n===EXC.n&&Math.abs(p-EXC.p)>=2)EXC=null;return !EXC}
 async function openPart(n,p,hl,noPush,view){
   if(!LS.get('chosen',0)&&!view){return chooseMode(()=>openPart(n,p,hl,noPush,VIEW))}
+  EXC=READING?null:{n,p};READING=false;
   const seq=++openSeq;HL=hl||[];CMP=false;clearBack();
   if(view){VIEW=view;LS.set('view2',view)}
   $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
@@ -1344,7 +1349,7 @@ async function openPart(n,p,hl,noPush,view){
   await go(p||1);
 }
 function setPage(p){
-  planProgress(cur.n,p);cur.p=p;LS.set('last'+cur.n,p);if(cur.n){const lr=LS.get('lastRead',null);if(!lr||lr.n!==cur.n||lr.p!==p)LS.set('lastRead',{n:cur.n,p,f:0})}
+  const rd=cur.n&&isReading(cur.n,p);if(rd)planProgress(cur.n,p);cur.p=p;if(rd){LS.set('last'+cur.n,p);const lr=LS.get('lastRead',null);if(!lr||lr.n!==cur.n||lr.p!==p)LS.set('lastRead',{n:cur.n,p,f:0})}
   history.replaceState(history.state,'','#v'+cur.n+'p'+p);
   $('#pg').value=p;updFav();
 }
@@ -1413,8 +1418,8 @@ async function buildHot(H,n,p,still){
   H.classList.add('show');setTimeout(()=>H.classList.remove('show'),1500);
   if(!LS.get('hotTip',0)){LS.set('hotTip',1);toast('اضغط على أي موضوع في الفهرس لتنتقل إلى صفحته',3500)}
 }
-function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16)openPart(cur.n+1,1,null,true);else toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
-function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
+function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16){READING=!EXC;openPart(cur.n+1,1,null,true)}else if(cur.n>=16)toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
+function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1){READING=!EXC;openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}}else go(cur.p-1)}
 function closeReader(){clearTimeout(TX.sv);savePlace();clearBack();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{if(!openHash(location.hash,false)&&!$('#reader').hidden)closeReader()});
@@ -1539,7 +1544,7 @@ function renderPlan(){
   if(done<TOTAL){const go1=el('button','btn btn-primary',done+1>a?'تابع ورد اليوم':'اقرأ ورد اليوم');go1.type='button';
   go1.onclick=()=>{const t=fromG(Math.min(TOTAL,done+1)),lr=LS.get('lastRead',null);
     // where the reader stopped, if that is within the plan's next pages; otherwise the first unread page
-    if(lr&&lr.n&&gidx(lr.n,lr.p)>=done&&gidx(lr.n,lr.p)<=done+3)resume(lr);else openPart(t.n,t.p)};row.append(go1)}
+    if(lr&&lr.n&&gidx(lr.n,lr.p)>=done&&gidx(lr.n,lr.p)<=done+3)resume(lr);else{READING=true;openPart(t.n,t.p)}};row.append(go1)}
   B.append(row);
 }
 $('#planEdit').onclick=()=>{if(confirm('إلغاء الخطة الحالية واختيار مدة جديدة؟')){LS.set('plan',null);renderPlan()}};
