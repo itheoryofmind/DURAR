@@ -174,6 +174,8 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 
 /* ---------- Reader ---------- */
 #reader{position:fixed;inset:0;z-index:40;background:var(--ground);display:flex;flex-direction:column}
+.backchip{max-width:calc(100% - 20px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:absolute;top:calc(58px + env(safe-area-inset-top));inset-inline-start:10px;z-index:44;border:1px solid var(--brass);background:var(--raised);color:var(--brass);border-radius:18px;padding:7px 14px;font:inherit;font-size:14px;font-weight:600;box-shadow:0 3px 12px rgba(0,0,0,.18);cursor:pointer}
+.backchip[hidden]{display:none}
 .rtop{display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top)) 8px 6px;background:var(--surface);border-bottom:1px solid var(--line)}
 .rtop .ttl{flex:1;min-width:0;font-family:var(--display);font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .icon{border:0;background:none;width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
@@ -534,6 +536,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <div class="modes" role="group" aria-label="طريقة العرض"><button type="button" data-v="img">صور</button><button type="button" data-v="txt">نص</button></div>
     <div class="pgbox"><label for="pg" class="count">ص</label><input id="pg" type="number" inputmode="numeric" min="1"><span id="tot" class="num"></span></div>
   </div>
+  <button class="backchip" id="backChip" type="button" hidden></button>
   <div class="panes" id="panes">
     <div id="tview" hidden><div class="tpage" id="tpage"></div></div>
     <div id="view" class="beige"><button class="cmpx" id="cmpX" type="button" hidden>إغلاق المقارنة ✕</button><div class="stage" id="stage"><canvas id="cv"></canvas><div class="hot" id="hot"></div></div><div class="loader" id="loader" hidden>جاري التحميل…</div></div>
@@ -669,7 +672,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-1012';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1017';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -802,7 +805,8 @@ function renderHits(R,res,filterN){
     if(h.src==='o'){w.append(el('span','tag','في صورة الصفحة'));s.classList.add('onote');s.textContent='وردت الكلمة في صورة هذه الصفحة، ونصها غير متاح. اضغط لعرض الصورة.'}
     else s.append('…'+h.a,el('mark',null,h.m),h.b+'…');
     b.append(w,s);
-    b.onclick=()=>{closeSearch();openPart(h.n,h.p,h.hl)};
+    b.onclick=()=>{const fromOv=!$('#sOverlay').hidden,ov=$('#sOverlay'),y=ov.scrollTop;closeSearch();
+      openPart(h.n,h.p,h.hl).then(()=>{if(fromOv)setBack('رجوع إلى نتائج البحث',()=>{ov.hidden=false;ov.scrollTop=y})})};
     frag.append(b);
   }
   R.append(frag);
@@ -898,7 +902,17 @@ document.querySelectorAll('.idxcard').forEach(b=>b.onclick=()=>openIdx(b.dataset
 document.querySelectorAll('#idxOverlay .tabs button').forEach(b=>b.onclick=()=>{IX.tab=b.dataset.tab;IX.sub=null;$('#idxq').value='';renderIdx()});
 $('#idxClose').onclick=()=>{$('#idxOverlay').hidden=true};
 let idxT;$('#idxq').addEventListener('input',()=>{clearTimeout(idxT);idxT=setTimeout(renderIdx,200)});
-function goFromIdx(v,p){$('#idxOverlay').hidden=true;openPart(v,p)}
+/* ---------- «رجوع»: back to the list a page was opened from (an index, the contents, the tree, the search) ---------- */
+let BACK=null;
+function setBack(label,fn){BACK=fn;const b=$('#backChip');b.textContent='→ '+label;b.hidden=false}
+function clearBack(){BACK=null;$('#backChip').hidden=true}
+$('#backChip').onclick=()=>{const f=BACK;clearBack();if(f)f()};
+function goFromIdx(v,p){
+  const ov=$('#idxOverlay'),y=ov.scrollTop,st={tab:IX.tab,sub:IX.sub,q:$('#idxq').value};
+  const T={q:'فهرس المسائل',s:'فهرس العلماء',a:'فهرس الآيات'};
+  const label=st.sub!=null&&st.tab==='s'?'رجوع إلى نصوص الشيخ':st.sub!=null&&st.tab==='a'?'رجوع إلى آيات السورة':'رجوع إلى '+(T[st.tab]||'الفهرس');
+  ov.hidden=true;openPart(v,p).then(()=>setBack(label,async()=>{IX.tab=st.tab;IX.sub=st.sub;$('#idxq').value=st.q;ov.hidden=false;await renderIdx();ov.scrollTop=y}));
+}
 function iitem(v,p,text,kind,extra,ap){
   const b=el('button','iitem');b.type='button';const w=el('div','w');w.append(partName(v)+' · ص '+ar(p)+(ap?' تقريباً':''));
   if(kind)w.append(el('span','k',kind));if(extra)w.append(el('span','k',extra));
@@ -961,7 +975,7 @@ async function renderToc(focus){
   for(const v of VOLS.slice(1)){
     const h=el('h5',null,partName(v.n));h.id='toc'+v.n;box.append(h);
     box.append(el('p','note',v.d));
-    const add=(t,p)=>{const b=el('button');b.type='button';b.append(el('span',null,t),el('span',null,'ص '+ar(p)));b.onclick=()=>{$('#tocOverlay').hidden=true;openPart(v.n,p)};box.append(b)};
+    const add=(t,p)=>{const b=el('button');b.type='button';b.append(el('span',null,t),el('span',null,'ص '+ar(p)));b.onclick=()=>{const ov=$('#tocOverlay'),y=ov.scrollTop;ov.hidden=true;openPart(v.n,p).then(()=>setBack('رجوع إلى الأبواب',()=>{ov.hidden=false;ov.scrollTop=y}))};box.append(b)};
     add('أول الجزء',1);add('الفهرس المطبوع (اضغط فيه على الموضوع)',v.f);
     H.filter(x=>x[0]===v.n).forEach(x=>add(x[2],x[1]));
   }
@@ -1245,7 +1259,7 @@ function loadPdf(n){
 }
 async function openPart(n,p,hl,noPush,view){
   if(!LS.get('chosen',0)&&!view){return chooseMode(()=>openPart(n,p,hl,noPush,VIEW))}
-  const seq=++openSeq;HL=hl||[];CMP=false;
+  const seq=++openSeq;HL=hl||[];CMP=false;clearBack();
   if(view){VIEW=view;LS.set('view2',view)}
   $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
   $('#tocOverlay').hidden=true;
@@ -1328,7 +1342,7 @@ async function buildHot(H,n,p,still){
 }
 function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16)openPart(cur.n+1,1,null,true);else toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
 function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
-function closeReader(){clearTimeout(TX.sv);savePlace();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
+function closeReader(){clearTimeout(TX.sv);savePlace();clearBack();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m)openPart(+m[1],+m[2],null,true);else if(!$('#reader').hidden)closeReader()});
 $('#mNext').onclick=()=>{closeSheet();next()};$('#mPrev').onclick=()=>{closeSheet();prev()};
@@ -1776,7 +1790,7 @@ function showScholar(id){
   const P=$('#sch');P.innerHTML='';P.hidden=false;
   const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{P.hidden=true;TR.sel=null;focusTree(null)};
   const hd=el('div','schhd');hd.append(el('h3',null,n.name),x);P.append(hd);   // the close button stays in view however long the entry is
-  const yrs=el('p','yrs');const go=(p)=>()=>{$('#treeOverlay').hidden=true;openPart(16,p,null,false,'txt')};
+  const yrs=el('p','yrs');const go=(p)=>()=>{const ov=$('#treeOverlay'),sel=TR.sel;ov.hidden=true;openPart(16,p,null,false,'txt').then(()=>setBack('رجوع إلى شجرة العلماء',()=>{ov.hidden=false;if(sel)showScholar(sel)}))};
   if(n.b){yrs.append('وُلد سنة '+ar(n.b[0])+'هـ (');const b=el('button',null,pg(n.b[1],n.b[2]));b.onclick=go(n.b[1]);yrs.append(b,')')}
   if(n.b&&n.d)yrs.append(' · ');
   if(n.d){yrs.append('توفي سنة '+ar(n.d[0])+'هـ (');const b=el('button',null,pg(n.d[1],n.d[2]));b.onclick=go(n.d[1]);yrs.append(b,')')}
