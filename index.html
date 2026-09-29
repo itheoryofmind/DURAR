@@ -717,7 +717,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='9';
-const APP_VER='2026-09-29-1439';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1442';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1741,7 +1741,7 @@ async function renderFawaid(){
 $('#fwSend').onclick=()=>openFb('fawaid');
 $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
-const NEWS=[
+const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
  {d:'2026-09-29',items:[
   'حواشي المطبوع: تحت الصفحة التي فيها حاشية زرّ «حاشية المطبوع» يعرضها كما طُبعت.',
   'رابط الفقرة: حدّد نصاً واضغط «رابط»، فمن يفتحه يرى الفقرة نفسها مظلّلة.',
@@ -1751,11 +1751,15 @@ const NEWS=[
   'زر «رجوع» يعيدك إلى القائمة التي فتحت منها الصفحة (الفهارس، الأبواب، البحث).']}
 ];
 function renderNews(){
-  // 'newsAck' is written only when the reader presses «حسناً», so each copy (Safari, the home-screen app) shows the card until it is dismissed there.
-  // A copy with no record at all sees the latest notice while it is recent (≤ 30 days), since an installed app's storage can look «new» after an update.
-  let seen=LS.get('newsAck',null);const latest=NEWS[0].d;
-  if(seen===null){if((Date.now()-Date.parse(latest))/864e5<=30)seen=NEWS[1]?NEWS[1].d:'0';else{LS.set('newsAck',latest);return}}
-  const fresh=NEWS.filter(x=>x.d>seen);if(!fresh.length)return;
+  // Each copy (Safari, the home-screen app) keeps its own record:
+  //   'since'   — when this copy was first opened; a notice older than that is not «new» to it, so a newcomer never sees past notices.
+  //   'newsAck' — the latest notice dismissed with «حسناً» in this copy.
+  // Unseen notices from several updates are merged into ONE card, newest first; they never appear one after another.
+  // Copies that existed before 'since' was introduced cannot be told from newcomers by their storage, so until 2026-10-06 they count as older readers.
+  let since=LS.get('since',null);
+  if(since===null){since=Date.now()<Date.parse('2026-10-06')?'2026-09-28':new Date().toISOString();LS.set('since',since)}
+  const ack=LS.get('newsAck','');const from=ack>since?ack:since;
+  const fresh=NEWS.filter(x=>x.d>from);if(!fresh.length)return;
   const L=$('#newsList');L.innerHTML='';fresh.flatMap(x=>x.items).slice(0,8).forEach(t=>L.append(el('li',null,t)));$('#newsSec').hidden=false;
 }
 $('#newsOk').onclick=()=>{LS.set('newsAck',NEWS[0].d);$('#newsSec').hidden=true};
