@@ -13,6 +13,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap">
+<meta property="og:type" content="book">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:site_name" content="الدرر السنية">
+<meta property="og:title" content="الدرر السنية في الأجوبة النجدية">
+<meta property="og:description" content="الكتاب كاملاً في ستة عشر جزءاً: نصه وصور صفحاته، مع البحث وفهارس المسائل والعلماء والآيات، ويُقرأ بدون إنترنت.">
+<meta property="og:url" content="https://itheoryofmind.github.io/DURAR/">
+<meta property="og:image" content="https://itheoryofmind.github.io/DURAR/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <title>الدرر السنية في الأجوبة النجدية</title>
 <style>
 :root{
@@ -283,7 +292,26 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .plan .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .plan .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
 .plan .opts button{border:1px solid var(--line);background:var(--raised);border-radius:10px;padding:8px 4px;font-size:14px}
-.quotebtn{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:46;border:0;border-radius:20px;background:var(--brass);color:#1a1209;font-weight:600;padding:9px 18px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.selbar{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:46;display:flex;gap:6px;align-items:center;background:var(--raised);border:1px solid var(--line);border-radius:24px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.28);white-space:nowrap;max-width:calc(100vw - 20px)}
+.selbar[hidden]{display:none}
+.selbar .hc{border:0;border-radius:18px;padding:8px 12px;font:inherit;font-size:14px;font-weight:600;color:#2a1a0c;cursor:pointer}
+.hc.c-f,.hlt.c-f,.bar.c-f{background:rgba(232,188,86,.55)}
+.hc.c-d,.hlt.c-d,.bar.c-d{background:rgba(124,176,112,.48)}
+.hc.c-r,.hlt.c-r,.bar.c-r{background:rgba(222,128,116,.45)}
+.hc.hdel{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.hc.on{outline:2px solid var(--ink);outline-offset:1px}
+.quotebtn{border:0;border-radius:18px;background:var(--brass);color:#1a1209;font-weight:600;padding:8px 14px;font:inherit;font-size:14px}
+.hlt{border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone;color:inherit;cursor:pointer}
+.hlt.flash{animation:hlf 1.6s ease 2}
+@keyframes hlf{50%{box-shadow:0 0 0 4px var(--brass)}}
+.hlfilter{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.hlfilter button{border:1px solid var(--line);background:var(--raised);color:var(--ink);border-radius:16px;padding:5px 12px;font:inherit;font-size:13px}
+.hlfilter button.on{background:var(--ink);color:var(--ground)}
+.hlitem{display:flex;gap:10px;align-items:stretch;margin-bottom:8px}
+.hlitem .bar{width:5px;border-radius:3px;flex:none;align-self:stretch;height:auto;margin:0}
+.hlitem .go{flex:1;text-align:start;border:1px solid var(--line);background:var(--raised);border-radius:12px;padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}
+.hlitem .go .q2{display:block;font-family:var(--text);line-height:1.9}
+.hlitem .go small{display:block;color:var(--muted);margin-top:4px;font-size:12.5px}
 .exact{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);margin:10px 2px 0}
 .sprog{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
 .sprog .bar{background:var(--brass-soft)}.sprog .bar i{background:var(--brass)}
@@ -404,7 +432,14 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <section id="favSec" hidden>
       <div class="section-head"><h2>المفضلة والتعليقات</h2><span class="count" id="favCount"></span></div>
       <div class="favs" id="favs"></div>
-      <button class="btn btn-quiet" id="exportNotes" type="button" style="margin-top:10px">تصدير تعليقاتي في ملف</button>
+      <button class="btn btn-quiet" id="exportNotes" type="button" style="margin-top:10px">تصدير تعليقاتي وتظليلاتي في ملف</button>
+    </section>
+
+    <section id="hlSec" hidden>
+      <div class="section-head"><h2>تظليلاتي</h2><span class="count" id="hlCount"></span></div>
+      <div class="hlfilter" id="hlFilter"></div>
+      <div id="hlList"></div>
+      <button class="btn btn-quiet" id="exportHl" type="button" style="margin-top:6px">تصدير تعليقاتي وتظليلاتي في ملف</button>
     </section>
 
     <section>
@@ -455,7 +490,11 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <div id="tview" hidden><div class="tpage" id="tpage"></div></div>
     <div id="view" class="beige"><div class="stage" id="stage"><canvas id="cv"></canvas><div class="hot" id="hot"></div></div><div class="loader" id="loader" hidden>جاري التحميل…</div></div>
   </div>
-  <button class="quotebtn" id="quoteBtn" type="button" hidden>بطاقة اقتباس</button>
+  <div class="selbar" id="selBar" hidden>
+    <button class="hc c-f" data-c="f" type="button">فائدة</button><button class="hc c-d" data-c="d" type="button">دليل</button><button class="hc c-r" data-c="r" type="button">للمراجعة</button>
+    <button class="hc hdel" id="hlDel" type="button" hidden>إزالة</button>
+    <button class="quotebtn" id="quoteBtn" type="button">بطاقة اقتباس</button>
+  </div>
   <nav class="qbar" aria-label="أدوات القراءة">
     <button class="icon" id="qHome" aria-label="الرئيسية"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button>
     <button class="icon" id="qPrev" aria-label="الصفحة السابقة"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></button>
@@ -554,7 +593,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='7';
-const APP_VER='2026-09-29-0447';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0452';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -927,7 +966,7 @@ function pageBlock(T,n,p){
   hd.append(el('span','pgline'),ib);b.append(hd);
   const st=el('div','istage');st.hidden=true;b.append(st);
   const body=el('div','tbody');b.append(body);
-  if(x){x.u=(T.u&&T.u[p])||null;pageItemsDom(x,body);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
+  if(x){x.u=(T.u&&T.u[p])||null;pageItemsDom(x,body);applyHls(body,n,p);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
   else{
     ib.hidden=true;st.hidden=false;st.dataset.auto='1';IO.observe(st);
     if(isIdx)body.append(el('p','nonote','الفهرس المطبوع: اضغط على الموضوع لتنتقل إلى صفحته.'));
@@ -1164,7 +1203,7 @@ async function buildHot(H,n,p,still){
 }
 function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16)openPart(cur.n+1,1,null,true);else toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
 function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
-function closeReader(){$('#reader').hidden=true;$('#home').hidden=false;$('#quoteBtn').hidden=true;renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
+function closeReader(){$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=$('#qHome').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m)openPart(+m[1],+m[2],null,true);else if(!$('#reader').hidden)closeReader()});
 $('#qNext').onclick=next;$('#qPrev').onclick=prev;
@@ -1285,23 +1324,121 @@ $('#planEdit').onclick=()=>{if(confirm('إلغاء الخطة الحالية و�
 function planProgress(n,p){const P=LS.get('plan',null);if(!P||!n)return;const g=gidx(n,p);if(g===(P.done||0)+1||(g>(P.done||0)&&g<=(P.done||0)+3)){P.done=g;LS.set('plan',P)}}
 
 /* ---------- notes export ---------- */
-$('#exportNotes').onclick=async()=>{
-  const N=notes(),keys=Object.keys(N).filter(k=>N[k]).sort((a,b)=>{const [n1,p1]=a.split(':').map(Number),[n2,p2]=b.split(':').map(Number);return n1-n2||p1-p2});
-  if(!keys.length){toast('لا توجد تعليقات بعد. اكتب تعليقك من قائمة «⋯» داخل الصفحة.',3500);return}
-  let t='فوائدي من الدرر السنية في الأجوبة النجدية\n\n',last=0;
-  for(const k of keys){const [n,p]=k.split(':').map(Number);if(n!==last){t+='\n— '+partName(n)+' —\n';last=n}t+='ص '+ar(p)+': '+N[k]+'\n'}
+async function exportNotes(){
+  const N=notes(),H=hls(),byNum=(a,b)=>{const [n1,p1]=a.split(':').map(Number),[n2,p2]=b.split(':').map(Number);return n1-n2||p1-p2};
+  const keys=[...new Set([...Object.keys(N).filter(k=>N[k]),...Object.keys(H).filter(k=>H[k].length)])].sort(byNum);
+  if(!keys.length){toast('لا توجد تعليقات ولا تظليلات بعد.',3000);return}
+  let t='فوائدي من الدرر السنية في الأجوبة النجدية\n',last=0;
+  for(const k of keys){const [n,p]=k.split(':').map(Number);if(n!==last){t+='\n— '+partName(n)+' —\n';last=n}
+    t+='\nص '+ar(p)+':\n';if(N[k])t+='  تعليق: '+N[k]+'\n';
+    for(const h of (H[k]||[]))t+='  ['+HLC[h.c]+'] «'+hlShow(h.t)+'»\n'}
   const file=new File([t],'فوائدي من الدرر السنية.txt',{type:'text/plain'});
   try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});return}}catch(e){if(e.name==='AbortError')return}
   const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;document.body.append(a);a.click();a.remove();
-};
+}
+$('#exportNotes').onclick=exportNotes;$('#exportHl').onclick=exportNotes;
+
+/* ---------- coloured highlighters: kept on this device; anchored by the exact wording and its occurrence on the page ---------- */
+const HLC={f:'فائدة',d:'دليل',r:'للمراجعة'};let HLEDIT=null,HLF='';
+const hls=()=>LS.get('hls',{})||{};
+const hlShow=t=>t.replace(/\{/g,'﴿').replace(/\}/g,'﴾').replace(/\s+/g,' ').trim();
+function bodyText(body){                                   // the page text exactly as its text nodes hold it
+  const w=document.createTreeWalker(body,NodeFilter.SHOW_TEXT);const a=[];let s='';
+  while(w.nextNode()){a.push([w.currentNode,s.length]);s+=w.currentNode.data}
+  return {a,s};
+}
+function offsetIn(body,node,off){const r=document.createRange();r.setStart(body,0);r.setEnd(node,off);return r.toString().length}
+function wrapRange(body,st,en,h){
+  const {a}=bodyText(body);
+  for(const [nd,o] of a){
+    const e=o+nd.data.length;if(e<=st||o>=en)continue;
+    let t=nd;const s0=Math.max(0,st-o),e0=Math.min(nd.data.length,en-o);
+    if(e0<t.data.length)t.splitText(e0);if(s0>0)t=t.splitText(s0);
+    if(!/\S/.test(t.data)&&t.parentElement.closest('.hlt'))continue;
+    const sp=el('span','hlt c-'+h.c);sp.dataset.id=h.i;sp.title=HLC[h.c];t.replaceWith(sp);sp.append(t);
+  }
+}
+function findOcc(S,t,o){let i=-1;for(let k=0;k<=o;k++){i=S.indexOf(t,i+1);if(i<0)return -1}return i}
+function applyHls(body,n,p){
+  const L=hls()[n+':'+p];if(!L||!L.length)return;
+  for(const h of L){const {s}=bodyText(body);const i=findOcc(s,h.t,h.o);if(i>=0)wrapRange(body,i,i+h.t.length,h)}
+}
+function unwrapHl(id){
+  document.querySelectorAll('.hlt[data-id="'+id+'"]').forEach(sp=>{const par=sp.parentNode;sp.replaceWith(...sp.childNodes);par.normalize()});
+}
+function hideSelBar(){HLEDIT=null;$('#selBar').hidden=true}
+function showSelBar(edit){
+  const b=$('#selBar');b.hidden=false;$('#hlDel').hidden=!edit;$('#quoteBtn').hidden=!!edit;
+  b.querySelectorAll('.hc[data-c]').forEach(x=>x.classList.toggle('on',!!edit&&HLEDIT&&HLEDIT.c===x.dataset.c));
+}
+function addHl(c){
+  const s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount)return;
+  const r=s.getRangeAt(0),e1=(r.startContainer.nodeType===1?r.startContainer:r.startContainer.parentElement).closest('.tbody'),
+        e2=(r.endContainer.nodeType===1?r.endContainer:r.endContainer.parentElement).closest('.tbody');
+  if(!e1||e1!==e2){toast('ظلّل داخل صفحة واحدة، ثم أكمل في الصفحة التالية.',3000);return}
+  const blk=e1.closest('.pgblk'),p=+blk.dataset.p,n=TX.n,k=n+':'+p;
+  let st=offsetIn(e1,r.startContainer,r.startOffset),en=offsetIn(e1,r.endContainer,r.endOffset);
+  const S=bodyText(e1).s;while(st<en&&/\s/.test(S[st]))st++;while(en>st&&/\s/.test(S[en-1]))en--;
+  while(st>0&&/[\u0621-\u065F\u0670-\u06D3\w]/.test(S[st-1]))st--;while(en<S.length&&/[\u0621-\u065F\u0670-\u06D3\w]/.test(S[en]))en++;   // whole words
+  if(en-st<2)return;
+  const t=S.slice(st,en);let o=0,i=-1;while((i=S.indexOf(t,i+1))>=0&&i<st)o++;
+  const H=hls(),L=H[k]||[];
+  // a new highlight replaces any highlight it overlaps
+  const keep=[];for(const h of L){const j=findOcc(S,h.t,h.o);if(j>=0&&j<en&&j+h.t.length>st)unwrapHl(h.i);else keep.push(h)}
+  const h={i:Date.now().toString(36)+Math.random().toString(36).slice(2,5),c,t,o,d:Date.now()};
+  // occurrence indexes of the kept ones are unchanged: the page text itself does not change
+  keep.push(h);H[k]=keep;LS.set('hls',H);
+  s.removeAllRanges();wrapRange(e1,st,en,h);hideSelBar();renderHls();
+  toast('ظُلّل: '+HLC[c]);
+}
+function editHl(id,c){
+  const H=hls();for(const k in H){const h=H[k].find(x=>x.i===id);if(!h)continue;
+    if(c){h.c=c;document.querySelectorAll('.hlt[data-id="'+id+'"]').forEach(sp=>{sp.className='hlt c-'+c;sp.title=HLC[c]})}
+    else{H[k]=H[k].filter(x=>x.i!==id);if(!H[k].length)delete H[k];unwrapHl(id)}
+    LS.set('hls',H);break}
+  hideSelBar();renderHls();
+}
+$('#selBar').querySelectorAll('.hc[data-c]').forEach(b=>b.onclick=()=>{if(HLEDIT)editHl(HLEDIT.i,b.dataset.c);else addHl(b.dataset.c)});
+$('#hlDel').onclick=()=>{if(HLEDIT)editHl(HLEDIT.i,null)};
+$('#tview').addEventListener('click',e=>{
+  const sp=e.target.closest('.hlt');const s=document.getSelection();
+  if(sp&&(!s||s.isCollapsed)){const id=sp.dataset.id,c=(sp.className.match(/c-(\w)/)||[])[1];HLEDIT={i:id,c};showSelBar(true);return}
+  if(HLEDIT)hideSelBar();
+});
+$('#tview').addEventListener('scroll',()=>{if(HLEDIT)hideSelBar()},{passive:true});
+function renderHls(){
+  const H=hls(),all=[];for(const k in H){const [n,p]=k.split(':').map(Number);for(const h of H[k])all.push([n,p,h])}
+  $('#hlSec').hidden=!all.length;if(!all.length)return;
+  all.sort((a,b)=>b[2].d-a[2].d);
+  $('#hlCount').textContent=ar(all.length);
+  const F=$('#hlFilter');F.innerHTML='';
+  [['','الكل'],...Object.entries(HLC)].forEach(([c,t])=>{const cnt=c?all.filter(x=>x[2].c===c).length:all.length;if(c&&!cnt)return;
+    const b=el('button',HLF===c?'on':null,t+' '+ar(cnt));b.type='button';b.onclick=()=>{HLF=c;renderHls()};F.append(b)});
+  const Lst=$('#hlList');Lst.innerHTML='';
+  const shown=all.filter(x=>!HLF||x[2].c===HLF);
+  shown.slice(0,60).forEach(([n,p,h])=>{
+    const d=el('div','hlitem');const bar=el('span','bar c-'+h.c);
+    const g=el('button','go');g.type='button';let q=hlShow(h.t);if(q.length>220)q=q.slice(0,220).replace(/\s\S*$/,'')+' …';
+    g.append(el('span','q2','«'+q+'»'),el('small',null,HLC[h.c]+' · '+partName(n)+' · ص '+ar(p)));
+    g.onclick=()=>openHl(n,p,h.i);d.append(bar,g);Lst.append(d);
+  });
+  if(shown.length>60)Lst.append(el('p','muted','وغيرها '+ar(shown.length-60)+' في الملف المصدَّر.'));
+}
+async function openHl(n,p,id){
+  await openPart(n,p,null,false,'txt');
+  for(let i=0;i<30;i++){const sp=document.querySelector('#tview .hlt[data-id="'+id+'"]');
+    if(sp){sp.scrollIntoView({block:'center'});document.querySelectorAll('.hlt[data-id="'+id+'"]').forEach(x=>{x.classList.remove('flash');void x.offsetWidth;x.classList.add('flash')});return}
+    await new Promise(r=>setTimeout(r,120))}
+}
+renderHls();
 
 /* ---------- quote card ---------- */
 document.addEventListener('selectionchange',()=>{
-  const s=document.getSelection(),b=$('#quoteBtn');
-  const ok=s&&!s.isCollapsed&&$('#tview').contains(s.anchorNode)&&s.toString().trim().length>3&&!$('#reader').hidden;
-  b.hidden=!ok;
+  const s=document.getSelection(),b=$('#selBar');
+  const ok=s&&!s.isCollapsed&&$('#tview').contains(s.anchorNode)&&s.toString().trim().length>1&&!$('#reader').hidden;
+  if(ok){HLEDIT=null;showSelBar(false)}else if(!HLEDIT)b.hidden=true;
 });
-$('#quoteBtn').addEventListener('pointerdown',e=>e.preventDefault());   // keep the selection
+$('#selBar').addEventListener('pointerdown',e=>e.preventDefault());   // keep the selection
 $('#quoteBtn').onclick=async()=>{
   const s=document.getSelection();let t=s.toString().replace(/\s+/g,' ').trim();if(!t)return;
   if(t.length>700)t=t.slice(0,700).replace(/\s\S*$/,'')+' …';
@@ -1337,7 +1474,7 @@ async function renderAbout(){
 }
 
 /* ---------- backup of the reader's own data ---------- */
-const BK_KEYS=k=>/^(favs|notes|plan|lastRead|last\d+|mode|fs|view2|chosen)$/.test(k);
+const BK_KEYS=k=>/^(favs|notes|hls|plan|lastRead|last\d+|mode|fs|view2|chosen)$/.test(k);
 $('#bkSave').onclick=async()=>{
   const d={app:'durar',saved:new Date().toISOString(),data:{}};
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(BK_KEYS(k))d.data[k]=localStorage.getItem(k)}}catch(e){}
@@ -1351,7 +1488,7 @@ $('#bkFile').onchange=async e=>{
   try{const d=JSON.parse(await f.text());if(d.app!=='durar'||!d.data)throw 0;
     if(!confirm('سيتم استبدال بياناتك الحالية بما في الملف. متابعة؟'))return;
     for(const [k,v] of Object.entries(d.data))if(BK_KEYS(k))localStorage.setItem(k,v);
-    toast('استُرجعت بياناتك');renderHome();renderPlan();
+    toast('استُرجعت بياناتك');renderHome();renderPlan();renderHls();
   }catch(err){toast('الملف غير صالح',3000)}
   e.target.value='';
 };
