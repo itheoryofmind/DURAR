@@ -181,7 +181,7 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .icon{border:0;background:none;width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .icon:active{background:var(--brass-soft)}
 .pgbox{display:flex;align-items:center;gap:4px;font-size:14px;color:var(--muted)}
-.pgbox input{width:58px;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--raised);padding:4px}
+.pgbox input{width:62px;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--raised);padding:4px;font-size:16px;color:var(--ink)}   /* 16px: iPhone does not zoom the page on focus */
 .modes{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
 .modes button{border:0;background:var(--raised);padding:5px 10px;font-size:14px}
 .modes button[aria-pressed=true]{background:var(--brown);color:var(--on-brown)}
@@ -672,7 +672,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-1017';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1024';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1349,7 +1349,11 @@ $('#mNext').onclick=()=>{closeSheet();next()};$('#mPrev').onclick=()=>{closeShee
 $('#qToc').onclick=()=>{renderToc(cur.n||1);$('#tocOverlay').hidden=false};
 $('#qNote').onclick=()=>{openSheet(true);setTimeout(()=>$('#note').focus(),60)};
 $('#qReport').onclick=()=>openFb('page');
-$('#pg').onchange=e=>{HL=[];go(+e.target.value)};
+// jump to a page: on Enter, on «تم» of the phone keypad (blur) or on change; once per value
+function jumpTo(){const v=+$('#pg').value|0;if(!v||v===cur.p&&TX.n===cur.n)return;HL=[];clearBack();go(v).then(()=>setTimeout(()=>scrollToPage(cur.p),350))}
+$('#pg').addEventListener('change',jumpTo);$('#pg').addEventListener('blur',jumpTo);
+$('#pg').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#pg').blur()}});
+$('#pg').addEventListener('focus',()=>setTimeout(()=>$('#pg').select(),30));
 function setZoom(z){zoom=z;document.documentElement.style.setProperty('--iz',zoom);if(!$('#view').hidden)paintMain(cur.p);if(VIEW==='img'){TX.n=-1;renderText()}}
 $('#zi').onclick=()=>setZoom(Math.min(3,zoom+.25));$('#zo').onclick=()=>setZoom(Math.max(.5,zoom-.25));$('#z1').onclick=()=>setZoom(1);
 function swipe(box){
