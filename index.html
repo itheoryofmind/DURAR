@@ -237,7 +237,9 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 body.immersive .rtop{display:none}
 
 .qbar{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:2px;background:rgba(59,38,22,.94);color:#f6ecd8;padding:5px;border-radius:28px;box-shadow:0 4px 16px rgba(0,0,0,.25);backdrop-filter:blur(6px);z-index:45}
-.qbar .icon{color:inherit;width:46px;height:46px}
+.qbar .icon{color:inherit;width:54px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:18px}
+.qbar .icon small{font-size:10.5px;line-height:1;opacity:.9;font-family:var(--ui)}
+.qbar .icon[hidden]{display:none}
 .qbar .icon:active{background:rgba(255,255,255,.15)}
 .qbar .icon.on{color:#e7c27a}
 .loader{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:var(--muted);pointer-events:none}
@@ -245,6 +247,8 @@ body.immersive .rtop{display:none}
 .sheet-back{position:fixed;inset:0;background:rgba(20,12,6,.45);z-index:70}
 .sheet{position:fixed;inset-inline:0;bottom:0;z-index:71;background:var(--surface);border-radius:18px 18px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:82vh;overflow:auto;box-shadow:0 -6px 24px rgba(0,0,0,.2);max-width:640px;margin:0 auto}
 .sheet .grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 10px}
+.sheet.noteonly #imgOpts,.sheet.noteonly #txtOpts,.sheet.noteonly .menu{display:none!important}
+.sheet:not(.noteonly) .notesec{display:none}
 .sheethead{position:sticky;top:-10px;z-index:2;background:var(--surface);display:flex;justify-content:center;align-items:center;margin:-10px -16px 0;padding:10px 16px 0}
 .sheethead .icon{position:absolute;inset-inline-end:6px;top:4px}
 .notebar{display:flex;justify-content:flex-start;margin:8px 0 4px}
@@ -308,6 +312,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .hc.c-f,.hlt.c-f,.bar.c-f{background:rgba(232,188,86,.55)}
 .hc.c-d,.hlt.c-d,.bar.c-d{background:rgba(124,176,112,.48)}
 .hc.c-r,.hlt.c-r,.bar.c-r{background:rgba(222,128,116,.45)}
+.hc.hrep{background:transparent;color:var(--clay);border:1px solid var(--clay)}
 .hc.hdel{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .hc.on{outline:2px solid var(--ink);outline-offset:1px}
 .quotebtn{border:0;border-radius:18px;background:var(--brass);color:#1a1209;font-weight:600;padding:8px 14px;font:inherit;font-size:14px}
@@ -528,15 +533,16 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="selbar" id="selBar" hidden>
     <button class="hc c-f" data-c="f" type="button">فائدة</button><button class="hc c-d" data-c="d" type="button">دليل</button><button class="hc c-r" data-c="r" type="button">للمراجعة</button>
     <button class="hc hdel" id="hlDel" type="button" hidden>إزالة</button>
-    <button class="quotebtn" id="quoteBtn" type="button">بطاقة اقتباس</button>
+    <button class="quotebtn" id="quoteBtn" type="button">اقتباس</button>
+    <button class="hc hrep" id="selRep" type="button">تنبيه</button>
   </div>
   <nav class="qbar" aria-label="أدوات القراءة">
-    <button class="icon" id="qHome" aria-label="الرئيسية"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button>
-    <button class="icon" id="qPrev" aria-label="الصفحة السابقة"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></button>
-    <button class="icon" id="qSearch" aria-label="بحث"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
-    <button class="icon" id="qFav" aria-label="إضافة للمفضلة"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path id="favPath" d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.4l-5.6 2.9 1.1-6.2L3 9.7l6.2-.9z"/></svg></button>
-    <button class="icon" id="qNext" aria-label="الصفحة التالية"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 6-6 6 6 6"/></svg></button>
-    <button class="icon" id="qMore" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
+    <button class="icon" id="qToc" aria-label="أبواب الكتاب"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><small>الأبواب</small></button>
+    <button class="icon" id="qSearch" aria-label="بحث"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><small>بحث</small></button>
+    <button class="icon" id="qFav" aria-label="إضافة للمفضلة"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path id="favPath" d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.4l-5.6 2.9 1.1-6.2L3 9.7l6.2-.9z"/></svg><small>مفضلة</small></button>
+    <button class="icon" id="qNote" aria-label="تعليق على الصفحة"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="m13 7 4 4"/></svg><small>تعليق</small></button>
+    <button class="icon" id="qReport" aria-label="تنبيه على خطأ"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg><small>تنبيه</small></button>
+    <button class="icon" id="qMore" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><small>المزيد</small></button>
   </nav>
 </section>
 
@@ -554,13 +560,13 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <h4>حجم الخط <small id="fsVal" class="count"></small></h4>
     <div class="seg"><button type="button" id="fo">أصغر</button><button type="button" id="f1">متوسط</button><button type="button" id="fi">أكبر</button></div>
   </div>
-  <h4>تعليقك على هذه الصفحة</h4>
+  <div class="notesec"><h4>تعليقك على هذه الصفحة</h4>
   <textarea class="notebox" id="note" placeholder="اكتب فائدة أو ملاحظة، تُحفظ على جهازك فقط"></textarea>
-  <div class="notebar"><button type="button" class="btn btn-primary" id="noteSave">حفظ والرجوع للصفحة</button></div>
+  <div class="notebar"><button type="button" class="btn btn-primary" id="noteSave">حفظ والرجوع للصفحة</button></div></div>
   <div class="menu">
     <button type="button" id="mFihris"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>فهرس هذا الجزء (اضغط على الموضوع للانتقال)</button>
-    <button type="button" id="mReport" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>تنبيه على خطأ في هذه الصفحة</button>
-    <button type="button" id="mToc"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h6v14H4zM14 5h6v14h-6z"/></svg>أبواب الكتاب</button>
+    <button type="button" id="mPrev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>الصفحة السابقة</button>
+    <button type="button" id="mNext"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg>الصفحة التالية</button>
     <button type="button" id="mIdx"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5zM9 8h6M9 12h6M9 16h3"/></svg>فهارس المسائل والعلماء والآيات</button>
     <button type="button" id="mCopy"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>نسخ نص الصفحة مع الاستشهاد</button>
     <button type="button" id="mCite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h4v4c0 3-2 5-4 6M15 7h4v4c0 3-2 5-4 6"/></svg>نسخ الاستشهاد بهذه الصفحة</button>
@@ -655,7 +661,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-0853';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0900';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1315,9 +1321,12 @@ async function buildHot(H,n,p,still){
 function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16)openPart(cur.n+1,1,null,true);else toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
 function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
 function closeReader(){clearTimeout(TX.sv);savePlace();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
-$('#rBack').onclick=$('#qHome').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
+$('#rBack').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m)openPart(+m[1],+m[2],null,true);else if(!$('#reader').hidden)closeReader()});
-$('#qNext').onclick=next;$('#qPrev').onclick=prev;
+$('#mNext').onclick=()=>{closeSheet();next()};$('#mPrev').onclick=()=>{closeSheet();prev()};
+$('#qToc').onclick=()=>{renderToc(cur.n||1);$('#tocOverlay').hidden=false};
+$('#qNote').onclick=()=>{openSheet(true);setTimeout(()=>$('#note').focus(),60)};
+$('#qReport').onclick=()=>openFb('page');
 $('#pg').onchange=e=>{HL=[];go(+e.target.value)};
 function setZoom(z){zoom=z;document.documentElement.style.setProperty('--iz',zoom);if(!$('#view').hidden)paintMain(cur.p);if(VIEW==='img'){TX.n=-1;renderText()}}
 $('#zi').onclick=()=>setZoom(Math.min(3,zoom+.25));$('#zo').onclick=()=>setZoom(Math.max(.5,zoom-.25));$('#z1').onclick=()=>setZoom(1);
@@ -1342,8 +1351,8 @@ function updFav(){const f=isFav();$('#qFav').classList.toggle('on',f);$('#favPat
 $('#qFav').onclick=()=>{const f=favs(),i=f.findIndex(x=>x.n===cur.n&&x.p===cur.p);if(i>-1){f.splice(i,1);toast('أزيلت الصفحة من المفضلة')}else{f.unshift({n:cur.n,p:cur.p});toast('أضيفت الصفحة إلى المفضلة')}LS.set('favs',f);updFav()};
 
 /* sheet */
-function openSheet(){
-  $('#sheetBack').hidden=false;$('#sheet').hidden=false;
+function openSheet(noteOnly){
+  $('#sheetBack').hidden=false;$('#sheet').hidden=false;$('#sheet').classList.toggle('noteonly',!!noteOnly);
   $('#imgOpts').hidden=VIEW!=='img'&&$('#view').hidden;$('#txtOpts').hidden=VIEW!=='txt';
   isSaved(cur.n).then(s=>$('#mSaveT').textContent=s?'هذا الجزء محفوظ بدون إنترنت (اضغط للإزالة)':'حفظ هذا الجزء للقراءة بدون إنترنت');
   $('#mFihris').hidden=!cur.n;$('#mCopy').hidden=!cur.n;$('#note').value=notes()[cur.n+':'+cur.p]||'';
@@ -1352,11 +1361,11 @@ function closeSheet(){
   if(!$('#sheet').hidden){const M=notes(),k=cur.n+':'+cur.p,v=$('#note').value.trim();if(v)M[k]=v;else delete M[k];LS.set('notes',M)}
   $('#sheetBack').hidden=true;$('#sheet').hidden=true;
 }
-$('#qMore').onclick=openSheet;$('#sheetBack').onclick=closeSheet;$('#sheetClose').onclick=closeSheet;
+$('#qMore').onclick=()=>openSheet();$('#sheetBack').onclick=closeSheet;$('#sheetClose').onclick=closeSheet;
 $('#noteSave').onclick=()=>{$('#note').blur();const had=$('#note').value.trim();closeSheet();if(had)toast('حُفظ تعليقك على هذه الصفحة')};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 $('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VIEW==='txt')await setView('img');go(VOLS[cur.n].f)};
-$('#mToc').onclick=()=>{closeSheet();renderToc(cur.n);$('#tocOverlay').hidden=false};
+
 $('#mIdx').onclick=()=>{closeSheet();openIdx()};
 function citation(p){return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
 const pageUrl=()=>location.origin+location.pathname+'#v'+cur.n+'p'+cur.p;
@@ -1481,7 +1490,7 @@ function unwrapHl(id){
 }
 function hideSelBar(){HLEDIT=null;$('#selBar').hidden=true}
 function showSelBar(edit){
-  const b=$('#selBar');b.hidden=false;$('#hlDel').hidden=!edit;$('#quoteBtn').hidden=!!edit;
+  const b=$('#selBar');b.hidden=false;$('#hlDel').hidden=!edit;$('#quoteBtn').hidden=!!edit;$('#selRep').hidden=!!edit||!FBON();
   b.querySelectorAll('.hc[data-c]').forEach(x=>x.classList.toggle('on',!!edit&&HLEDIT&&HLEDIT.c===x.dataset.c));
 }
 function addHl(c){
@@ -1512,6 +1521,7 @@ function editHl(id,c){
   hideSelBar();renderHls();
 }
 $('#selBar').querySelectorAll('.hc[data-c]').forEach(b=>b.onclick=()=>{if(HLEDIT)editHl(HLEDIT.i,b.dataset.c);else addHl(b.dataset.c)});
+$('#selRep').onclick=()=>{openFb('page');hideSelBar()};
 $('#hlDel').onclick=()=>{if(HLEDIT)editHl(HLEDIT.i,null)};
 $('#tview').addEventListener('click',e=>{
   const sp=e.target.closest('.hlt');const s=document.getSelection();
@@ -1584,7 +1594,7 @@ $('#quoteBtn').onclick=async()=>{
 // the addresses are set once the site's own e-mail exists; until then the forms stay hidden
 const FB={page:'report@dorarnajdiah.com',notes:'feedback@dorarnajdiah.com'};
 const FBON=()=>!!(FB.page&&FB.notes)||LS.get('fbtest',0);
-function fbInit(){$('#fbSec').hidden=!FBON();$('#mReport').hidden=!FBON()}
+function fbInit(){$('#fbSec').hidden=!FBON();$('#qReport').hidden=!FBON();$('#selRep').hidden=!FBON()}
 let FBK=null;
 function openFb(kind){
   FBK=kind;const pageRep=kind==='page';
@@ -1594,14 +1604,15 @@ function openFb(kind){
   T.append(new Option('اختر…',''));opts.forEach(o=>T.append(new Option(o,o)));
   $('#fbImgReq').textContent=pageRep?'(اختيارية)':'(مطلوبة)';
   const R=$('#fbRef');R.hidden=!pageRep;
-  if(pageRep){const sel=(document.getSelection()||'').toString().trim();
-    R.textContent=partName(cur.n)+' · ص '+ar(cur.p)+(sel?' · النص المحدد: «'+sel.slice(0,200)+'»':'');FBK={kind,n:cur.n,p:cur.p,sel}}
+  if(pageRep){const S=document.getSelection(),sel=(S||'').toString().trim();
+    // the page of the selected words, else the page being read
+    let pp=cur.p;try{const nd=S&&S.anchorNode,e=nd&&(nd.nodeType===1?nd:nd.parentElement),blk=e&&e.closest('.pgblk');if(sel&&blk)pp=+blk.dataset.p}catch(e){}
+    R.textContent=partName(cur.n)+' · ص '+ar(pp)+(sel?' · النص المحدد: «'+sel.slice(0,200)+'»':'');FBK={kind,n:cur.n,p:pp,sel}}
   document.querySelectorAll('#fbForm .fld').forEach(f=>f.classList.remove('bad'));
   $('#fbBack').hidden=false;$('#fb').hidden=false;
 }
 function closeFb(){$('#fbBack').hidden=true;$('#fb').hidden=true}
 $('#fbOpen').onclick=()=>openFb('notes');
-$('#mReport').onclick=()=>{closeSheet();openFb('page')};
 $('#fbClose').onclick=closeFb;$('#fbBack').onclick=closeFb;
 // a phone photo is made smaller before sending (the e-mail service limits the size)
 async function shrink(file){
