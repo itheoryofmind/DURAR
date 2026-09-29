@@ -217,6 +217,9 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .q{color:var(--verse);font-family:var(--display);font-size:1.08em}
 .qu{font-family:"UthmanicHafs","Amiri",serif;font-size:1.1em;line-height:2.3}
 .qb{font-size:0}
+.gap{all:unset;display:inline-block;cursor:pointer;margin-inline:3px;color:var(--clay);font-family:var(--ui);font-size:.72em;line-height:1;vertical-align:middle;border:1px dashed var(--clay);border-radius:8px;padding:2px 6px}
+.gap::before{content:'في المطبوع زيادة'}
+.pghd .approx.diff{color:var(--clay);font-weight:600}
 .fn{font-size:.58em;color:var(--muted);opacity:.75;font-family:var(--ui);margin-inline-start:1px;vertical-align:super;line-height:0}
 .ed{color:var(--muted);font-family:var(--ui);font-size:.72em}
 .tbody p.edt{text-indent:0;text-align:center;color:var(--muted);font-family:var(--ui);font-size:.72em}
@@ -594,7 +597,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='7';
-const APP_VER='2026-09-29-0501';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0504';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -926,6 +929,7 @@ function richInline(s,hl,inQ,rep){
   // the digital edition's straight quotation marks, shown as the print has them: « »  (only when they pair up)
   {const q=s.split('"');if(q.length>1&&q.length%2===1)s=q.map((x,i)=>i%2?'«'+x.trim()+'»':x).join('')}
   for(const ch of s){
+    if(ch==='\u0003'){flush();const g=el('button','gap');g.type='button';g.setAttribute('aria-label','هنا في المطبوع كلام ليس في النص');g.onclick=e=>{e.stopPropagation();midNote(0,1)};node.append(g);continue}
     if(ch==='\u0001'){flush();sup=el('sup','fn');sup.title='رقم حاشية في النسخة الرقمية، والحاشية غير منقولة هنا';node.append(sup);continue}
     if(ch==='\u0002'){if(sup){sup.textContent=buf;buf=''}sup=null;continue}
     if(sup){buf+=ch;continue}
@@ -947,12 +951,18 @@ function appendHL(node,text,hl){
     if(/\S/.test(w)&&hl.some(h=>norm(w).includes(h)))node.append(el('mark',null,w));else node.append(w);
   }
 }
+function midNote(words,places){
+  toast((places>1?'في المطبوع في '+ar(places)+' مواضع من هذه الصفحة':'في المطبوع في هذا الموضع')+' كلامٌ'+(words?' (نحو '+ar(words)+' كلمات)':'')+' ليس في النص الرقمي، ظهر عند مقابلة النص بالصورة. المعتمد الصورة: اضغط «قارن بالصورة».',7000);
+}
 /* ---------- continuous reading: pages follow one another, each headed by its printed page number ---------- */
 const TX={n:-1,from:0,to:0,T:null,lock:false,raf:0};
 function pageItemsDom(x,body){
   const items=x.slice(1);let hasVerse=false,inQ=!!(x[0]&4);
   const U={};for(const [ii,k,t] of (x.u||[]))(U[ii]=U[ii]||{})[k]=t;
-  let cur=-1;const rich=t=>{const f=richInline(t,HL,inQ,U[cur]);inQ=f.inQ;return f};
+  // places where the printed page has words the digital text lacks: a mark at that place (\u0003 is turned into it)
+  const M={};for(const [ii,pos,w] of (x.m||[]))(M[ii]=M[ii]||[]).push(pos);
+  const mark=(t,i)=>{if(typeof t!=='string'||!M[i])return t;for(const pos of M[i].sort((a,b)=>b-a))t=t.slice(0,pos)+'\u0003'+t.slice(pos);return t};
+  let cur=-1;const rich=t=>{const f=richInline(mark(t,cur),HL,inQ,U[cur]);inQ=f.inQ;return f};
   items.forEach((it,i)=>{cur=i;
     if(typeof it==='string'&&isVerse(it)){hasVerse=true;const P=el('p','verse');P.append(rich(it));body.append(P);return}
     if(typeof it==='string'){const P=el('p');if(i===0&&(x[0]&1))P.className='cont';else if(/^بسم الله الرحمن الر ?حيم\.?$/.test(it.trim()))P.className='bsm';P.append(rich(it));body.append(P)}
@@ -971,10 +981,12 @@ function pageBlock(T,n,p){
   const hd=el('div','pghd');const ib=el('button','pgimg',x?'قارن بالصورة':'');ib.type='button';
   hd.append(el('span','pgno','ص '+ar(p)));
   if(x&&(x[0]&2)){const a=el('button','approx','≈ حدود تقريبية');a.type='button';a.onclick=()=>toast('نص هذه الصفحة كاملاً في موضعه، لكن لم تكتمل مطابقة أول الصفحة أو آخرها مع الصورة، فقد يكون أول سطر أو آخره من الصفحة المجاورة. عند العزو راجع الصورة.',7000);hd.append(a)}
+  const mid=MID&&MID[n+':'+p];
+  if(x&&mid){const a=el('button','approx diff','يخالف المطبوع');a.type='button';a.onclick=()=>midNote(mid.reduce((s,m)=>s+m[2],0),mid.length);hd.append(a)}
   hd.append(el('span','pgline'),ib);b.append(hd);
   const st=el('div','istage');st.hidden=true;b.append(st);
   const body=el('div','tbody');b.append(body);
-  if(x){x.u=(T.u&&T.u[p])||null;pageItemsDom(x,body);applyHls(body,n,p);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
+  if(x){x.u=(T.u&&T.u[p])||null;x.m=mid||null;pageItemsDom(x,body);applyHls(body,n,p);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
   else{
     ib.hidden=true;st.hidden=false;st.dataset.auto='1';IO.observe(st);
     if(isIdx)body.append(el('p','nonote','الفهرس المطبوع: اضغط على الموضوع لتنتقل إلى صفحته.'));
@@ -1038,9 +1050,10 @@ function scrollToPage(p){
   if(m)m.scrollIntoView({block:'center'});else tv.scrollTop=b.offsetTop-4;
   setTimeout(()=>{TX.lock=false},200);
 }
+let MID=null;const midP=getJSON('data/mid.json').then(d=>{MID=d||{}}).catch(()=>{MID={}});
 async function renderText(){
   const n=cur.n,p=cur.p,box=$('#tpage');
-  let T;try{T=n?await textOf(n):{p:[]}}catch(e){box.innerHTML='';TX.n=-1;box.append(emptyText('تعذّر تحميل النص. تأكد من الاتصال بالإنترنت، أو اعرض الصورة.',true));return}
+  let T;try{T=n?await textOf(n):{p:[]};await Promise.race([midP,new Promise(r=>setTimeout(r,1500))])}catch(e){box.innerHTML='';TX.n=-1;box.append(emptyText('تعذّر تحميل النص. تأكد من الاتصال بالإنترنت، أو اعرض الصورة.',true));return}
   if(n!==cur.n)return;
   if(TX.n!==n||TX.mode!==VIEW||p<TX.from||p>TX.to||HL.length){
     box.innerHTML='';TX.n=n;TX.T=T;TX.mode=VIEW;box.classList.toggle('imgmode',VIEW==='img');TX.from=Math.max(1,p-1);TX.to=TX.from-1;
