@@ -151,6 +151,8 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
 .stats span{font-size:12.5px;color:var(--muted)}
 @media (max-width:440px){.stats{grid-template-columns:repeat(2,1fr)}}
 footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:var(--muted)}
+footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size:12.5px;line-height:1.9;opacity:.85}
+.rh{font-size:.82em;opacity:.8;white-space:nowrap}
 
 .favs{display:flex;flex-direction:column;gap:8px}
 .fav{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
@@ -378,9 +380,9 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <svg class="pattern" aria-hidden="true" width="100%" height="100%"><defs><pattern id="gp" width="56" height="56" patternUnits="userSpaceOnUse"><g fill="none" stroke="#e7c27a" stroke-width="1"><path d="M28 4 34 22 52 28 34 34 28 52 22 34 4 28 22 22Z"/><rect x="16" y="16" width="24" height="24" transform="rotate(45 28 28)"/><rect x="16" y="16" width="24" height="24"/></g></pattern></defs><rect width="100%" height="100%" fill="url(#gp)"/></svg>
     <div class="wrap">
       <svg class="star" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2"><rect x="22" y="22" width="56" height="56"/><rect x="22" y="22" width="56" height="56" transform="rotate(45 50 50)"/><circle cx="50" cy="50" r="12"/><circle cx="50" cy="50" r="4" fill="currentColor"/></g></svg>
-      <p class="eyebrow">جمع: عبدالرحمن بن محمد بن قاسم العاصمي النجدي الحنبلي (١٣١٢–١٣٩٢هـ)</p>
+      <p class="eyebrow">جمع: عبدالرحمن بن محمد بن قاسم العاصمي النجدي الحنبلي (١٣١٢–١٣٩٢هـ) <span class="rh">رحمه الله</span></p>
       <h1>الدرر السنية<br>في الأجوبة النجدية</h1>
-      <p class="subtitle">مجموعة رسائل ومسائل علماء نجد الأعلام، من عصر الشيخ محمد بن عبدالوهاب إلى عصر الجامع</p>
+      <p class="subtitle">مجموعة رسائل ومسائل علماء نجد الأعلام، من عصر الشيخ محمد بن عبدالوهاب <span class="rh">رحمه الله</span> إلى عصر الجامع</p>
       <p class="hijri" id="hijri"></p>
     </div>
     <div class="najdi" aria-hidden="true"></div>
@@ -497,7 +499,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <p>تصحيح: الصفحات ٤١–١٢٠ من الجزء الثامن كانت مقلوبة الترتيب في المسح الأصلي، وهي هنا وفي ملف التحميل بترتيب الطبعة. وصف الأجزاء منقول من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦).</p>
     </section>
   </main>
-  <footer><p class="rule">❖</p><p>الدرر السنية في الأجوبة النجدية</p></footer>
+  <footer><p class="rule">❖</p><p>الدرر السنية في الأجوبة النجدية</p><p class="waqf">هذا العمل وقفٌ لله تعالى، عنّي وعن والديّ، وعن جامع الكتاب ومؤلفي رسائله، وعن كل من خدمه أو أسهم في نشره أو قرأه وانتفع به، وعن المسلمين والمسلمات الأحياء منهم والأموات، ومن له حقٌّ علينا.</p></footer>
 </div>
 
 <!-- ============ READER ============ -->
@@ -634,7 +636,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-0749';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0753';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
