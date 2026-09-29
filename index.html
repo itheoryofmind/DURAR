@@ -391,6 +391,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .fw q{display:block;font-family:var(--text);font-size:17px;line-height:1.9;quotes:"«" "»"}
 .fw .src{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--muted)}
 .fw .src button{border:0;background:none;padding:0;color:var(--brass);font:inherit;text-decoration:underline;cursor:pointer}
+.fnwrap{margin:6px 0 4px}
+.fnbtn{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:14px;padding:3px 12px;font:inherit;font-size:13px;cursor:pointer}
+.fnbtn::before{content:'⁽¹⁾ ';color:var(--brass)}
+.fnbtn.on{color:var(--brass);border-color:var(--brass)}
+.fnimg{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+.fnimg canvas{width:100%;height:auto;display:block;border-radius:6px}
 .fld{display:block;margin:0 0 12px}
 .fld>span{display:block;font-size:14px;font-weight:600;margin-bottom:5px}
 .fld select,.fld textarea,.fld input[type=text]{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
@@ -534,6 +540,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="trust">
         <div class="card"><b>الصورة هي الأصل</b><span>صور الصفحات من المسح الأصلي بلا أي تعديل، واللون البيج طبقة عرض فقط. أرقام الصفحات تطابق المطبوع، فيصح العزو إليها.</span></div>
         <div class="card"><b>نص مطابَق صفحةً صفحة</b><span>النص من المكتبة الشاملة (الطبعة السادسة ١٤١٧هـ). قُرئ أول كل صفحة وآخرها من صورتها قراءة جديدة وطوبق من الجهتين، وما لم تكتمل مطابقة حدوده عُلِّم «≈ حدود تقريبية».</span></div>
+        <div class="card"><b>حواشي المطبوع</b><span>حواشي الجامع في أسفل الصفحات ليست في النص الرقمي، فتُعرض كما طُبعت: صورةً مقتطعة من الصفحة نفسها، بزر «حاشية المطبوع» تحت نص الصفحة.</span></div>
         <div class="card"><b>مقابلة وسط الصفحة</b><span>قُرئت كل صفحة من صورتها كاملة وقوبلت بالنص، فما ظهر فيه نقص عن المطبوع أو مخالفة له، وأكّده فحص مستقل بالنظر في الصورة، عُلِّم في موضعه بـ«في المطبوع زيادة» أو «يخالف المطبوع». والنص نفسه لم يُغيَّر.</span></div>
         <div class="card"><b>الآيات بالرسم العثماني</b><span>تُعرض الآية المستشهد بها بخط مصحف المدينة (مجمع الملك فهد لطباعة المصحف الشريف)، متى طابقت كلماتها نص الآية المعزوّ إليها كلمة كلمة، وإلا بقيت كما في النص.</span></div>
         <div class="card"><b>فهارس تعمل باللمس</b><span>أرقام الصفحات في فهارس الأجزاء قُرئت وروجعت، فاضغط على أي موضوع في الفهرس المطبوع لتنتقل إلى صفحته.</span></div>
@@ -690,8 +697,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='8';
-const APP_VER='2026-09-29-1035';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='9';
+const APP_VER='2026-09-29-1109';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1096,7 +1103,11 @@ function pageBlock(T,n,p){
   hd.append(el('span','pgline'),ib);b.append(hd);
   const st=el('div','istage');st.hidden=true;b.append(st);
   const body=el('div','tbody');b.append(body);
-  if(x){x.u=(T.u&&T.u[p])||null;x.m=mid||null;pageItemsDom(x,body);applyHls(body,n,p);ib.onclick=()=>{if(wide()){openCompare(p);return}st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
+  if(x){x.u=(T.u&&T.u[p])||null;x.m=mid||null;pageItemsDom(x,body);applyHls(body,n,p);
+    // the printed page's footnotes (not in the digital text): shown as they are printed, cut from the page image
+    const fa=FN&&FN[n+':'+p];
+    if(fa){const w=el('div','fnwrap'),fb=el('button','fnbtn','حاشية المطبوع');fb.type='button';const fs=el('div','fnimg');fs.hidden=true;
+      fb.onclick=()=>{fs.hidden=!fs.hidden;fb.classList.toggle('on',!fs.hidden);if(!fs.hidden&&!fs.dataset.done)fnImage(fs,n,p,fa)};w.append(fb,fs);b.append(w)}ib.onclick=()=>{if(wide()){openCompare(p);return}st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
   else{
     // a page with no digital text (title pages, pictures, the printed index): one quiet line, its image on request
     b.classList.add('notext');ib.textContent='اعرض الصورة';
@@ -1123,6 +1134,19 @@ async function pumpRQ(){
     await drawInline(j.st,j.n,j.p);
   }
   RQbusy=false;
+}
+async function fnImage(st,n,p,[a,b]){
+  st.dataset.done='1';st.innerHTML='<div class="iload">جاري تحميل الحاشية…</div>';
+  try{
+    if(!pdf||pdf._n!==n)await loadPdf(n);
+    const pg=await pdf.getPage(p),base=pg.getViewport({scale:1}),dpr=Math.min(window.devicePixelRatio||1,2);
+    const w=st.clientWidth||Math.min(680,window.innerWidth-36);let rs=w/base.width*dpr;if(base.width*rs>2200)rs=2200/base.width;
+    const v=pg.getViewport({scale:rs}),full=document.createElement('canvas');full.width=v.width;full.height=v.height;
+    await pg.render({canvasContext:full.getContext('2d'),viewport:v}).promise;
+    const y0=Math.floor(a*v.height),y1=Math.ceil(b*v.height),cv=document.createElement('canvas');cv.width=v.width;cv.height=Math.max(1,y1-y0);
+    const x=cv.getContext('2d');x.drawImage(full,0,y0,v.width,y1-y0,0,0,v.width,y1-y0);paintPaper(x,cv);if(PAPER==='night')cv.className='night';
+    full.width=0;full.height=0;st.innerHTML='';st.append(cv);
+  }catch(e){st.dataset.done='';st.innerHTML='<div class="iload">تعذّر تحميل الحاشية، اضغط للمحاولة</div>';st.onclick=()=>{st.onclick=null;fnImage(st,n,p,[a,b])}}
 }
 async function drawInline(st,n,p){
   try{
@@ -1164,9 +1188,10 @@ function scrollToPage(p){
   setTimeout(()=>{TX.lock=false},200);
 }
 let MID=null;const midP=getJSON('data/mid.json').then(d=>{MID=d||{}}).catch(()=>{MID={}});
+let FN=null;const fnP=getJSON('data/fn.json').then(d=>{FN=d||{}}).catch(()=>{FN={}});
 async function renderText(){
   const n=cur.n,p=cur.p,box=$('#tpage');
-  let T;try{T=n?await textOf(n):{p:[]};await Promise.race([midP,new Promise(r=>setTimeout(r,1500))])}catch(e){box.innerHTML='';TX.n=-1;box.append(emptyText('تعذّر تحميل النص. تأكد من الاتصال بالإنترنت، أو اعرض الصورة.',true));return}
+  let T;try{T=n?await textOf(n):{p:[]};await Promise.race([Promise.all([midP,fnP]),new Promise(r=>setTimeout(r,1500))])}catch(e){box.innerHTML='';TX.n=-1;box.append(emptyText('تعذّر تحميل النص. تأكد من الاتصال بالإنترنت، أو اعرض الصورة.',true));return}
   if(n!==cur.n)return;
   if(TX.n!==n||TX.mode!==VIEW||p<TX.from||p>TX.to||HL.length){
     box.innerHTML='';TX.n=n;TX.T=T;TX.mode=VIEW;box.classList.toggle('imgmode',VIEW==='img');TX.from=Math.max(1,p-1);TX.to=TX.from-1;
