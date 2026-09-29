@@ -397,6 +397,10 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .fnbtn.on{color:var(--brass);border-color:var(--brass)}
 .fnimg{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
 .fnimg canvas{width:100%;height:auto;display:block;border-radius:6px}
+.news{border-color:var(--brass)}
+.news .nh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.news .nh b{font-family:var(--display);font-size:19px;color:var(--brass)}
+.news ul{margin:6px 0 0;padding-inline-start:20px;line-height:1.9;font-size:15px}
 .fld{display:block;margin:0 0 12px}
 .fld>span{display:block;font-size:14px;font-weight:600;margin-bottom:5px}
 .fld select,.fld textarea,.fld input[type=text]{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
@@ -434,7 +438,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="wrap searchbar">
     <form class="searchbox" id="sform" role="search">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="ابحث في نص الكتاب كاملاً" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
+      <input id="q" type="search" placeholder="ابحث في الكتاب، أو اكتب الجزء والصفحة: ٨/١٥٠" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off">
       <button class="btn btn-primary" type="submit">بحث</button>
     </form>
     <label class="exact"><input type="checkbox" id="exact"> العبارة بنصها (لا الكلمات متفرقة)</label>
@@ -454,6 +458,10 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <button class="btn btn-primary" id="installBtn" type="button" hidden>ثبّت</button>
       <button class="icon" id="installX" type="button" aria-label="إخفاء"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
+
+    <section id="newsSec" hidden>
+      <div class="card news"><div class="nh"><b>الجديد في الموقع</b><button class="btn btn-link" id="newsOk" type="button">حسناً</button></div><ul id="newsList"></ul></div>
+    </section>
 
     <section>
       <div class="actions">
@@ -698,7 +706,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='9';
-const APP_VER='2026-09-29-1109';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1113';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -840,7 +848,16 @@ function renderHits(R,res,filterN){
 }
 let lastRes=null;
 function progressBar(R){const w=el('div','sprog');const t=el('p','note','جاري البحث…');const b=el('div','bar');const i=el('i');b.append(i);w.append(t,b);R.before(w);return {t,i,done(){w.remove()}}}
+function parseRef(q){
+  let t=' '+q.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[()«»"]/g,' ').replace(/\s+/g,' ')+' ';
+  for(let i=16;i>=1;i--)t=t.replace(new RegExp('(الجزء|جزء|ج)\\s*'+ORD[i]+'(?=\\s)','g'),'ج '+i);
+  let m=t.match(/(?:الجزء|جزء|جـ|ج)\s*\.?\s*(\d{1,2})\D{0,14}?(?:الصفحة|صفحة|ص)\s*\.?\s*(\d{1,4})/)||t.match(/^\D{0,24}?\s(\d{1,2})\s*[\/\\]\s*(\d{1,4})\s*\D{0,3}$/);
+  if(!m)return null;const n=+m[1],p=+m[2];
+  return n>=1&&n<=16&&p>=1&&p<=VOLS[n].p?{n,p}:null;
+}
+function openRef(r){toast('الانتقال إلى '+partName(r.n)+' · ص '+ar(r.p),1800);openPart(r.n,r.p)}
 async function homeSearch(v){
+  {const r=parseRef(v);if(r){openRef(r);return}}
   const sec=$('#resSec'),R=$('#res');sec.hidden=false;$('#filterRow').hidden=true;
   R.innerHTML='';const pr=progressBar(R);sec.scrollIntoView({behavior:'smooth',block:'start'});
   // results appear part by part while the rest of the book is still loading
@@ -1194,7 +1211,7 @@ async function renderText(){
   let T;try{T=n?await textOf(n):{p:[]};await Promise.race([Promise.all([midP,fnP]),new Promise(r=>setTimeout(r,1500))])}catch(e){box.innerHTML='';TX.n=-1;box.append(emptyText('تعذّر تحميل النص. تأكد من الاتصال بالإنترنت، أو اعرض الصورة.',true));return}
   if(n!==cur.n)return;
   if(TX.n!==n||TX.mode!==VIEW||p<TX.from||p>TX.to||HL.length){
-    box.innerHTML='';TX.n=n;TX.T=T;TX.mode=VIEW;box.classList.toggle('imgmode',VIEW==='img');TX.from=Math.max(1,p-1);TX.to=TX.from-1;
+    box.innerHTML='';TX.n=n;TX.T=T;TX.mode=VIEW;box.classList.toggle('imgmode',VIEW==='img');TX.from=Math.max(1,p-2);TX.to=TX.from-1;
     appendPages(Math.min(VOLS[n].p,p+3));
   }
   // short pages (title pages, pages without text) must not leave the screen empty
@@ -1218,7 +1235,7 @@ function onTScroll(){
   clearTimeout(TX.sv);TX.sv=setTimeout(savePlace,350);
   if(tv.scrollTop+tv.clientHeight>tv.scrollHeight-1800&&TX.to<VOLS[TX.n].p)appendPages(Math.min(VOLS[TX.n].p,TX.to+3));
   if(TX.lock)return;
-  if(tv.scrollTop<900&&TX.from>1)prependPages(Math.max(1,TX.from-2));
+  if(tv.scrollTop<2600&&TX.from>1)prependPages(Math.max(1,TX.from-3));   // well before the top: iPhone ignores a jump made at the very top
   const y=tv.scrollTop+tv.clientHeight*0.3;let p=TX.from;
   for(const b of $('#tpage').children){if(!b.dataset.p)continue;if(b.offsetTop<=y)p=+b.dataset.p;else break}
   if(p!==cur.p){HL=[];setPage(p);releaseFar();if(!$('#view').hidden&&pdf){clearTimeout(TX.pt);TX.pt=setTimeout(()=>paintMain(cur.p),250)}}
@@ -1471,7 +1488,9 @@ function openSearch(){$('#sOverlay').hidden=false;setTimeout(()=>$('#q2').focus(
 function closeSearch(){$('#sOverlay').hidden=true}
 $('#qSearch').onclick=openSearch;$('#sClose').onclick=closeSearch;
 $('#sform2').addEventListener('submit',async e=>{
-  e.preventDefault();$('#q2').blur();const R=$('#res2');R.innerHTML='';R.append(el('p','note','جاري البحث…'));
+  e.preventDefault();$('#q2').blur();
+  {const r=parseRef($('#q2').value);if(r){closeSearch();openRef(r);return}}
+  const R=$('#res2');R.innerHTML='';R.append(el('p','note','جاري البحث…'));
   const only=$('#onlyPart').checked&&cur.n?cur.n:0;
   R.innerHTML='';const pr=progressBar(R);
   const res=await runSearch($('#q2').value,only,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=((n-1)/16*100)+'%'},$('#exact2').checked,r=>{if(r.out.length)renderHits(R,r,0)});
@@ -1704,6 +1723,24 @@ async function renderFawaid(){
 }
 $('#fwSend').onclick=()=>openFb('fawaid');
 $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
+/* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
+const NEWS=[
+ {d:'2026-09-29',items:[
+  'حواشي المطبوع: تحت الصفحة التي فيها حاشية زرّ «حاشية المطبوع» يعرضها كما طُبعت.',
+  'رابط الفقرة: حدّد نصاً واضغط «رابط»، فمن يفتحه يرى الفقرة نفسها مظلّلة.',
+  'البحث بالجزء والصفحة: اكتب في البحث مثل ٨/١٥٠ أو «الجزء الثامن ص ١٥٠».',
+  'فوائد القرّاء: أرسل فائدة وقفت عليها، وتُنشر بعد مراجعتها.',
+  'زر «رجوع» يعيدك إلى القائمة التي فتحت منها الصفحة (الفهارس، الأبواب، البحث).']}
+];
+function renderNews(){
+  let seen=LS.get('newsSeen',null);const latest=NEWS[0].d;
+  if(seen===null){if(LS.get('chosen',0)||LS.get('lastRead',null))seen='2026-09-28';     // a reader from before this notice
+    else{LS.set('newsSeen',latest);return}}                                            // a first visit has nothing «new»
+  const fresh=NEWS.filter(x=>x.d>seen);if(!fresh.length)return;
+  const L=$('#newsList');L.innerHTML='';fresh.flatMap(x=>x.items).slice(0,8).forEach(t=>L.append(el('li',null,t)));$('#newsSec').hidden=false;
+}
+$('#newsOk').onclick=()=>{LS.set('newsSeen',NEWS[0].d);$('#newsSec').hidden=true};
+renderNews();
 function fbInit(){$('#fbSec').hidden=!FBON();$('#mFaw').hidden=!FBON();$('#fwSend').hidden=!FBON();$('#qReport').hidden=!FBON();$('#selRep').hidden=!FBON()}
 let FBK=null;
 function openFb(kind){
