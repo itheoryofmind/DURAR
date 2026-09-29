@@ -380,6 +380,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .dlist .dgrp{font-size:12px;font-weight:600;color:var(--muted);padding:12px 18px 4px}
 .dlist button{display:block;width:100%;text-align:start;border:0;background:none;color:var(--ink);font:inherit;font-size:16px;padding:10px 18px;cursor:pointer}
 .dlist button:active{background:var(--raised)}
+.fwinv{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}
+.fwinv p{margin:0;font-size:14.5px;color:var(--muted);flex:1;min-width:180px}
+.fw{background:var(--raised);border:1px solid var(--line);border-inline-start:3px solid var(--brass);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.fw q{display:block;font-family:var(--text);font-size:17px;line-height:1.9;quotes:"«" "»"}
+.fw .src{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--muted)}
+.fw .src button{border:0;background:none;padding:0;color:var(--brass);font:inherit;text-decoration:underline;cursor:pointer}
 .fld{display:block;margin:0 0 12px}
 .fld>span{display:block;font-size:14px;font-weight:600;margin-bottom:5px}
 .fld select,.fld textarea,.fld input[type=text]{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
@@ -470,6 +476,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
         <p id="dailyTxt"></p>
         <button class="btn btn-quiet" id="dailyGo" type="button">اقرأ الصفحة كاملة</button>
       </div>
+    </section>
+
+    <section id="fwSec">
+      <div class="section-head"><h2>فوائد القرّاء</h2><span class="count" id="fwCount"></span></div>
+      <div id="fwList"></div>
+      <div class="card fwinv"><p>وقفت على فائدة في الكتاب؟ أرسلها، وتُنشر هنا بعد مراجعتها.</p><button class="btn btn-quiet" id="fwSend" type="button">أرسل فائدة</button></div>
     </section>
 
     <section id="favSec" hidden>
@@ -578,6 +590,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <button type="button" id="mFihris"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>فهرس هذا الجزء (اضغط على الموضوع للانتقال)</button>
     <button type="button" id="mPrev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>الصفحة السابقة</button>
     <button type="button" id="mNext"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg>الصفحة التالية</button>
+    <button type="button" id="mFaw" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>أرسل فائدة من هذه الصفحة</button>
     <button type="button" id="mIdx"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5zM9 8h6M9 12h6M9 16h3"/></svg>فهارس المسائل والعلماء والآيات</button>
     <button type="button" id="mCopy"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>نسخ نص الصفحة مع الاستشهاد</button>
     <button type="button" id="mCite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h4v4c0 3-2 5-4 6M15 7h4v4c0 3-2 5-4 6"/></svg>نسخ الاستشهاد بهذه الصفحة</button>
@@ -639,10 +652,10 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <h4 id="fbTitle">أرسل ملاحظة</h4>
   <p class="fbref" id="fbRef" hidden></p>
   <form id="fbForm" method="POST" enctype="multipart/form-data" target="fbFrame" novalidate>
-    <label class="fld"><span>نوع الملاحظة</span><select id="fbType" name="النوع"></select></label>
-    <label class="fld"><span>الملاحظة</span><textarea id="fbMsg" name="الملاحظة" rows="4" placeholder="اكتب ما لاحظته بإيجاز"></textarea></label>
-    <label class="fld"><span>صورة توضّح الملاحظة <small id="fbImgReq"></small></span><input type="file" id="fbImg" name="attachment" accept="image/*"></label>
-    <label class="fld"><span>للتواصل معك <small>(اختياري)</small></span><input type="text" id="fbWho" name="المرسل" placeholder="الاسم أو البريد أو الجوال" autocomplete="off"></label>
+    <label class="fld" id="fbTypeF"><span>نوع الملاحظة</span><select id="fbType" name="النوع"></select></label>
+    <label class="fld"><span id="fbMsgL">الملاحظة</span><textarea id="fbMsg" name="الملاحظة" rows="4" placeholder="اكتب ما لاحظته بإيجاز"></textarea></label>
+    <label class="fld" id="fbImgF"><span>صورة توضّح الملاحظة <small id="fbImgReq"></small></span><input type="file" id="fbImg" name="attachment" accept="image/*"></label>
+    <label class="fld"><span id="fbWhoL">للتواصل معك <small>(اختياري)</small></span><input type="text" id="fbWho" name="المرسل" placeholder="الاسم أو البريد أو الجوال" autocomplete="off"></label>
     <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
     <p class="note">يُرفق معها تلقائياً: رقم إصدار الموقع ونوع الجهاز، لتسهيل المتابعة.</p>
     <button type="submit" class="btn btn-primary" id="fbSend">إرسال</button>
@@ -672,7 +685,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-1024';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1030';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1620,17 +1633,34 @@ $('#quoteBtn').onclick=async()=>{
 // the addresses are set once the site's own e-mail exists; until then the forms stay hidden
 const FB={page:'report@dorarnajdiah.com',notes:'feedback@dorarnajdiah.com'};
 const FBON=()=>!!(FB.page&&FB.notes)||LS.get('fbtest',0);
-function fbInit(){$('#fbSec').hidden=!FBON();$('#qReport').hidden=!FBON();$('#selRep').hidden=!FBON()}
+/* ---------- فوائد القرّاء: sent by readers, published only after review (data/fawaid.json: [{t, n?, p?, by?}]) ---------- */
+async function renderFawaid(){
+  let L=[];try{const r=await fetch('data/fawaid.json?'+APP_VER,{cache:'no-cache'});if(r.ok)L=await r.json()}catch(e){}
+  const box=$('#fwList');box.innerHTML='';$('#fwCount').textContent=L.length?ar(L.length):'';
+  if(!L.length){$('#fwSec').hidden=!FBON();return}
+  $('#fwSec').hidden=false;
+  L.slice().reverse().forEach(f=>{const d=el('div','fw');d.append(el('q',null,f.t));const s=el('div','src');
+    if(f.n&&f.p){const g=el('button',null,partName(f.n)+' · ص '+ar(f.p));g.type='button';g.onclick=()=>openPart(f.n,f.p,null,false,'txt');s.append(g)}
+    if(f.by)s.append(el('span',null,'أرسلها: '+f.by));if(s.children.length)d.append(s);box.append(d)});
+}
+$('#fwSend').onclick=()=>openFb('fawaid');
+$('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
+function fbInit(){$('#fbSec').hidden=!FBON();$('#mFaw').hidden=!FBON();$('#fwSend').hidden=!FBON();$('#qReport').hidden=!FBON();$('#selRep').hidden=!FBON()}
 let FBK=null;
 function openFb(kind){
-  FBK=kind;const pageRep=kind==='page';
-  $('#fbTitle').textContent=pageRep?'تنبيه على خطأ في هذه الصفحة':'أرسل ملاحظة';
+  FBK=kind;const pageRep=kind==='page'||kind==='fawaid',faw=kind==='fawaid';
+  $('#fbTitle').textContent=faw?'أرسل فائدة':kind==='page'?'تنبيه على خطأ في هذه الصفحة':'أرسل ملاحظة';
+  $('#fbTypeF').hidden=faw;$('#fbImgF').hidden=faw;
+  $('#fbMsgL').textContent=faw?'الفائدة':'الملاحظة';$('#fbMsg').placeholder=faw?'انقل الفائدة، ولك أن تذكر وجهها':'اكتب ما لاحظته بإيجاز';
+  $('#fbWho').placeholder=faw?'اسمك كما تحب أن يظهر':'الاسم أو البريد أو الجوال';
+  $('#fbWhoL').innerHTML=faw?'اسمك إن أحببت ذكره معها <small>(اختياري)</small>':'للتواصل معك <small>(اختياري)</small>';
   const T=$('#fbType');T.innerHTML='';
+  if(faw){T.append(new Option('فائدة للنشر','فائدة للنشر'));T.value='فائدة للنشر'}else{
   const opts=pageRep?['النص يخالف صورة الصفحة','خطأ في آية','حدود الصفحة (بدايتها أو نهايتها)','أخرى']:['تجربة المستخدم','تقنية','شرعية'];
-  T.append(new Option('اختر…',''));opts.forEach(o=>T.append(new Option(o,o)));
+  T.append(new Option('اختر…',''));opts.forEach(o=>T.append(new Option(o,o)));}
   $('#fbImgReq').textContent=pageRep?'(اختيارية)':'(مطلوبة)';
-  const R=$('#fbRef');R.hidden=!pageRep;
-  if(pageRep){const S=document.getSelection(),sel=(S||'').toString().trim();
+  const R=$('#fbRef');R.hidden=!pageRep||(faw&&$('#reader').hidden);
+  if(pageRep&&!(faw&&$('#reader').hidden)){const S=document.getSelection(),sel=(S||'').toString().trim();
     // the page of the selected words, else the page being read
     let pp=cur.p;try{const nd=S&&S.anchorNode,e=nd&&(nd.nodeType===1?nd:nd.parentElement),blk=e&&e.closest('.pgblk');if(sel&&blk)pp=+blk.dataset.p}catch(e){}
     R.textContent=partName(cur.n)+' · ص '+ar(pp)+(sel?' · النص المحدد: «'+sel.slice(0,200)+'»':'');FBK={kind,n:cur.n,p:pp,sel}}
@@ -1650,19 +1680,20 @@ async function shrink(file){
 }
 $('#fbForm').addEventListener('submit',async e=>{
   e.preventDefault();
-  const pageRep=FBK&&FBK.kind==='page',F=$('#fbForm'),img=$('#fbImg');let ok=true;
+  const kind=typeof FBK==='string'?FBK:FBK&&FBK.kind,faw=kind==='fawaid',at=FBK&&typeof FBK==='object'?FBK:null;
+  const pageRep=kind==='page',F=$('#fbForm'),img=$('#fbImg');let ok=true;
   const need=[[$('#fbType'),v=>!!v],[$('#fbMsg'),v=>v.trim().length>=3]];
-  if(!pageRep)need.push([img,()=>img.files&&img.files.length>0]);
+  if(!pageRep&&!faw)need.push([img,()=>img.files&&img.files.length>0]);
   for(const [x,t] of need){const bad=!t(x.value);x.closest('.fld').classList.toggle('bad',bad);if(bad)ok=false}
-  if(!ok){toast(pageRep?'اختر نوع الخطأ واكتب وصفه.':'اختر نوع الملاحظة واكتبها وأرفق صورة توضّحها.',3000);return}
+  if(!ok){toast(faw?'اكتب الفائدة.':pageRep?'اختر نوع الخطأ واكتب وصفه.':'اختر نوع الملاحظة واكتبها وأرفق صورة توضّحها.',3000);return}
   if(!navigator.onLine){toast('لا يوجد اتصال بالإنترنت الآن. أرسلها حين يعود الاتصال.',3500);return}
   const to=pageRep?FB.page:FB.notes;if(!to){toast('الإرسال غير مفعّل بعد.',2500);return}
   // hidden fields: subject, where, and the version and device
   F.querySelectorAll('input.auto').forEach(x=>x.remove());
   const add=(k,v)=>{const i=document.createElement('input');i.type='hidden';i.className='auto';i.name=k;i.value=v;F.append(i)};
-  add('_subject',(pageRep?'تنبيه على خطأ: ':'ملاحظة: ')+$('#fbType').value+(pageRep?' — '+partName(FBK.n)+' ص '+FBK.p:''));
+  add('_subject',(faw?'فائدة للنشر':pageRep?'تنبيه على خطأ: '+$('#fbType').value:'ملاحظة: '+$('#fbType').value)+(at?' — '+partName(at.n)+' ص '+at.p:''));
   add('_captcha','false');add('_template','table');
-  if(pageRep){add('الموضع',partName(FBK.n)+' · ص '+FBK.p+' · '+location.origin+location.pathname+'#v'+FBK.n+'p'+FBK.p);if(FBK.sel)add('النص المحدد',FBK.sel.slice(0,1500))}
+  if(at){add('الموضع',partName(at.n)+' · ص '+at.p+' · '+location.origin+location.pathname+'#v'+at.n+'p'+at.p);if(at.sel)add('النص المحدد',at.sel.slice(0,1500))}
   add('الإصدار',APP_VER);add('الجهاز',navigator.userAgent+' · '+screen.width+'×'+screen.height);
   if(img.files&&img.files[0]){const f=await shrink(img.files[0]);if(f!==img.files[0]){const dt=new DataTransfer();dt.items.add(f);img.files=dt.files}}
   F.action='https://formsubmit.co/'+to;
@@ -1670,9 +1701,9 @@ $('#fbForm').addEventListener('submit',async e=>{
   const done=new Promise(r=>{const fr=$('#fbFrame');const t=setTimeout(()=>r(false),45000);fr.onload=()=>{clearTimeout(t);r(true)}});
   F.submit();
   const sent=await done;btn.disabled=false;btn.textContent='إرسال';
-  if(sent){F.reset();closeFb();toast('وصلت ملاحظتك، جزاك الله خيراً.',3000)}else toast('تعذّر الإرسال الآن، حاول مرة أخرى.',3000);
+  if(sent){F.reset();closeFb();toast(faw?'وصلت فائدتك، جزاك الله خيراً. تُنشر بعد مراجعتها.':'وصلت ملاحظتك، جزاك الله خيراً.',3500)}else toast('تعذّر الإرسال الآن، حاول مرة أخرى.',3000);
 });
-fbInit();
+fbInit();renderFawaid();
 
 /* ---------- quick menu: every part of the home page one tap away ---------- */
 function goSec(id){closeNav();const e=$('#'+id);if(e&&!e.hidden)e.scrollIntoView({behavior:'smooth',block:'start'})}
@@ -1692,6 +1723,7 @@ function openNav(){
   it('فهرس الآيات',()=>{closeNav();openIdx('a')});
   it('شجرة العلماء والخط الزمني',()=>{closeNav();$('#openTree').click()});
   grp('ما يخصك');
+  it('فوائد القرّاء',()=>goSec('fwSec'),!$('#fwSec').hidden);
   it('خطة الختم',()=>goSec('planSec'));
   it('المفضلة والتعليقات',()=>goSec('favSec'),!$('#favSec').hidden);
   it('تظليلاتي',()=>goSec('hlSec'),!$('#hlSec').hidden);
