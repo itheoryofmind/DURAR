@@ -201,6 +201,9 @@ footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:cen
 .tpage.imgmode .istage{max-width:none}
 .iload{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#6c5a45;font-size:14px}
 .istage canvas.night{filter:invert(1) hue-rotate(180deg) brightness(.92)}
+.pgblk.notext .pghd{margin:10px 0 6px}
+.pghd .ntx{color:var(--muted);font-weight:500;font-size:12.5px}
+.cmpx{position:sticky;top:8px;z-index:5;display:block;margin:8px auto 0;border:1px solid var(--line);background:var(--raised);color:var(--ink);border-radius:16px;padding:5px 14px;font:inherit;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .tbody p.nonote{text-indent:0;font-family:var(--ui);font-size:13px;color:var(--muted);text-align:center;margin:0}
 .partend{text-align:center;padding:30px 0 10px;display:flex;flex-direction:column;gap:10px;align-items:center;font-family:var(--display);font-size:20px}
 .thead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;font-size:13px;color:var(--muted)}
@@ -253,7 +256,7 @@ body.immersive .rtop{display:none}
 textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-radius:10px;background:var(--raised);padding:10px;font-family:var(--text);font-size:16px}
 
 .overlay{position:fixed;inset:0;z-index:75;background:var(--ground);overflow:auto;padding:calc(10px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
-.overlay .head{display:flex;align-items:center;gap:8px;margin-bottom:10px;max-width:820px;margin-inline:auto}
+.overlay .head{display:flex;align-items:center;gap:8px;margin-bottom:10px;max-width:820px;margin-inline:auto;position:sticky;z-index:6;top:calc(-10px - env(safe-area-inset-top));margin-top:calc(-10px - env(safe-area-inset-top));padding:calc(10px + env(safe-area-inset-top)) 0 8px;background:var(--ground);box-shadow:0 0 0 100vw var(--ground);clip-path:inset(0 -100vw -1px -100vw)}
 .overlay .searchbox{box-shadow:none;flex:1}
 .overlay .body{max-width:820px;margin:0 auto}
 .toc{display:flex;flex-direction:column}
@@ -349,7 +352,14 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .titem::before{content:"";position:absolute;inset-inline-start:-22px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--brass)}
 .titem span:last-child{font-family:var(--ui);font-size:13px;color:var(--muted);flex:none}
 .sch{position:fixed;inset-inline:0;bottom:0;z-index:78;background:var(--raised);border-top:2px solid var(--brass);border-radius:18px 18px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(0,0,0,.25);max-height:62vh;overflow:auto;max-width:820px;margin:0 auto}
-.sch h3{font-family:var(--display);font-size:22px;margin:0 0 4px}
+.fld{display:block;margin:0 0 12px}
+.fld>span{display:block;font-size:14px;font-weight:600;margin-bottom:5px}
+.fld select,.fld textarea,.fld input[type=text]{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
+.fld input[type=file]{font:inherit;font-size:14px;max-width:100%}
+.fld.bad select,.fld.bad textarea,.fld.bad input{border-color:var(--clay)}
+.fbref{font-size:13.5px;color:var(--muted);background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:0 0 12px;line-height:1.7}
+.schhd{position:sticky;top:-14px;z-index:2;display:flex;align-items:center;gap:8px;background:var(--raised);margin:-14px -16px 0;padding:10px 16px 4px}
+.sch h3{font-family:var(--display);font-size:22px;margin:0;flex:1}
 .sch .yrs{font-size:14px;color:var(--muted);margin:0 0 8px}
 .sch .yrs button{border:0;background:none;color:var(--brass);padding:0;font:inherit;text-decoration:underline}
 .sch h4{font-family:var(--display);font-size:17px;margin:10px 0 4px;color:var(--brass)}
@@ -461,6 +471,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="links" id="aboutLinks"></div>
     </section>
 
+    <section class="about" id="fbSec" hidden>
+      <h2>ملاحظاتك</h2>
+      <p class="note">رأيت خطأً أو عندك اقتراح يحسّن الموقع؟ أرسله، ومعه صورة توضّحه.</p>
+      <div class="links"><button class="btn btn-primary" id="fbOpen" type="button">أرسل ملاحظة</button></div>
+    </section>
+
     <section class="about">
       <h2>بياناتك</h2>
       <p class="note">المفضلة والتعليقات وخطة الختم وموضع القراءة محفوظة في جهازك فقط. احفظ نسخة منها في ملف قبل تغيير الجوال أو حذف التطبيق، ثم استرجعها.</p>
@@ -494,7 +510,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   </div>
   <div class="panes" id="panes">
     <div id="tview" hidden><div class="tpage" id="tpage"></div></div>
-    <div id="view" class="beige"><div class="stage" id="stage"><canvas id="cv"></canvas><div class="hot" id="hot"></div></div><div class="loader" id="loader" hidden>جاري التحميل…</div></div>
+    <div id="view" class="beige"><button class="cmpx" id="cmpX" type="button" hidden>إغلاق المقارنة ✕</button><div class="stage" id="stage"><canvas id="cv"></canvas><div class="hot" id="hot"></div></div><div class="loader" id="loader" hidden>جاري التحميل…</div></div>
   </div>
   <div class="selbar" id="selBar" hidden>
     <button class="hc c-f" data-c="f" type="button">فائدة</button><button class="hc c-d" data-c="d" type="button">دليل</button><button class="hc c-r" data-c="r" type="button">للمراجعة</button>
@@ -530,6 +546,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="notebar"><button type="button" class="btn btn-primary" id="noteSave">حفظ والرجوع للصفحة</button></div>
   <div class="menu">
     <button type="button" id="mFihris"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>فهرس هذا الجزء (اضغط على الموضوع للانتقال)</button>
+    <button type="button" id="mReport" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>تنبيه على خطأ في هذه الصفحة</button>
     <button type="button" id="mToc"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h6v14H4zM14 5h6v14h-6z"/></svg>أبواب الكتاب</button>
     <button type="button" id="mIdx"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5zM9 8h6M9 12h6M9 16h3"/></svg>فهارس المسائل والعلماء والآيات</button>
     <button type="button" id="mCopy"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>نسخ نص الصفحة مع الاستشهاد</button>
@@ -577,6 +594,24 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   </div>
 </div>
 
+<!-- Feedback / error report -->
+<div class="sheet-back" id="fbBack" hidden></div>
+<div class="sheet" id="fb" hidden role="dialog" aria-label="إرسال ملاحظة">
+  <div class="sheethead"><div class="grip"></div><button class="icon" id="fbClose" type="button" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <h4 id="fbTitle">أرسل ملاحظة</h4>
+  <p class="fbref" id="fbRef" hidden></p>
+  <form id="fbForm" method="POST" enctype="multipart/form-data" target="fbFrame" novalidate>
+    <label class="fld"><span>نوع الملاحظة</span><select id="fbType" name="النوع"></select></label>
+    <label class="fld"><span>الملاحظة</span><textarea id="fbMsg" name="الملاحظة" rows="4" placeholder="اكتب ما لاحظته بإيجاز"></textarea></label>
+    <label class="fld"><span>صورة توضّح الملاحظة <small id="fbImgReq"></small></span><input type="file" id="fbImg" name="attachment" accept="image/*"></label>
+    <label class="fld"><span>للتواصل معك <small>(اختياري)</small></span><input type="text" id="fbWho" name="المرسل" placeholder="الاسم أو البريد أو الجوال" autocomplete="off"></label>
+    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+    <p class="note">يُرفق معها تلقائياً: رقم إصدار الموقع ونوع الجهاز، لتسهيل المتابعة.</p>
+    <button type="submit" class="btn btn-primary" id="fbSend">إرسال</button>
+  </form>
+  <iframe name="fbFrame" id="fbFrame" title="إرسال" hidden></iframe>
+</div>
+
 <!-- Reading mode chooser -->
 <div class="sheet-back" id="chooseBack" hidden></div>
 <div class="sheet" id="choose" hidden role="dialog" aria-label="طريقة القراءة">
@@ -599,7 +634,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-0741';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0749';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -800,7 +835,8 @@ async function renderHome(){
   }
   if(!hasCaches){$('#saveAll').hidden=true}
 }
-$('#continue').onclick=()=>{const lr=LS.get('lastRead',null);lr&&lr.n?openPart(lr.n,lr.p):openPart(1,1)};
+function resume(lr){RESTORE=lr;openPart(lr.n,lr.p)}
+$('#continue').onclick=()=>{const lr=LS.get('lastRead',null);lr&&lr.n?resume(lr):openPart(1,1)};
 
 /* page of the day: chosen by the date among pages with checked text */
 async function daily(){
@@ -992,10 +1028,13 @@ function pageBlock(T,n,p){
   hd.append(el('span','pgline'),ib);b.append(hd);
   const st=el('div','istage');st.hidden=true;b.append(st);
   const body=el('div','tbody');b.append(body);
-  if(x){x.u=(T.u&&T.u[p])||null;x.m=mid||null;pageItemsDom(x,body);applyHls(body,n,p);ib.onclick=()=>{st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
+  if(x){x.u=(T.u&&T.u[p])||null;x.m=mid||null;pageItemsDom(x,body);applyHls(body,n,p);ib.onclick=()=>{if(wide()){openCompare(p);return}st.hidden=!st.hidden;ib.textContent=st.hidden?'قارن بالصورة':'إخفاء الصورة';if(!st.hidden){inlineImage(st,n,p);st.scrollIntoView({block:'nearest',behavior:'smooth'})}}}
   else{
-    ib.hidden=true;st.hidden=false;st.dataset.auto='1';IO.observe(st);
-    if(isIdx)body.append(el('p','nonote','الفهرس المطبوع: اضغط على الموضوع لتنتقل إلى صفحته.'));
+    // a page with no digital text (title pages, pictures, the printed index): one quiet line, its image on request
+    b.classList.add('notext');ib.textContent='اعرض الصورة';
+    hd.insertBefore(el('span','ntx',isIdx?'من الفهرس المطبوع':(p<=4?'من صفحات العنوان':'صفحة بلا نص')),hd.querySelector('.pgline'));
+    ib.onclick=()=>{if(wide()){openCompare(p);return}
+      st.hidden=!st.hidden;ib.textContent=st.hidden?'اعرض الصورة':'إخفاء الصورة';if(!st.hidden)inlineImage(st,n,p)};
   }
   return b;
 }
@@ -1065,11 +1104,25 @@ async function renderText(){
     box.innerHTML='';TX.n=n;TX.T=T;TX.mode=VIEW;box.classList.toggle('imgmode',VIEW==='img');TX.from=Math.max(1,p-1);TX.to=TX.from-1;
     appendPages(Math.min(VOLS[n].p,p+3));
   }
+  // short pages (title pages, pages without text) must not leave the screen empty
+  {const tv=$('#tview');let k=0;while(tv.scrollHeight<tv.clientHeight+1800&&TX.to<VOLS[n].p&&k++<20)appendPages(Math.min(VOLS[n].p,TX.to+3))}
   scrollToPage(cur.p);
+  if(RESTORE&&RESTORE.n===n&&RESTORE.p===cur.p&&RESTORE.f){const b=$('#tpage').querySelector('.pgblk[data-p="'+cur.p+'"]');if(b){TX.lock=true;$('#tview').scrollTop=b.offsetTop+RESTORE.f*b.offsetHeight;setTimeout(()=>{TX.lock=false},250)}}
+  RESTORE=null;
   if(VIEW==='txt'&&!LS.get('txtTip',0)&&n){LS.set('txtTip',1);toast('النص من المكتبة الشاملة ومطابَق لحدود كل صفحة؛ والمعتمد عند النقل صورة الصفحة: زر «قارن بالصورة»',6000)}
 }
+// the exact reading place: the page at the top of the screen and how far into it (restored on return)
+function savePlace(){
+  const tv=$('#tview');if(tv.hidden||TX.n<1||TX.n!==cur.n||$('#reader').hidden)return;
+  let blk=null;for(const b of $('#tpage').children){if(!b.dataset.p)continue;if(!blk||b.offsetTop<=tv.scrollTop+2)blk=b;else break}
+  if(!blk)return;const f=Math.max(0,Math.min(0.999,(tv.scrollTop-blk.offsetTop)/Math.max(1,blk.offsetHeight)));
+  LS.set('lastRead',{n:TX.n,p:+blk.dataset.p,f:+f.toFixed(3)});
+}
+let RESTORE=null;
+document.addEventListener('visibilitychange',()=>{if(document.hidden)savePlace()});window.addEventListener('pagehide',savePlace);
 function onTScroll(){
   const tv=$('#tview');if(tv.hidden||TX.n<0||TX.n!==cur.n)return;
+  clearTimeout(TX.sv);TX.sv=setTimeout(savePlace,350);
   if(tv.scrollTop+tv.clientHeight>tv.scrollHeight-1800&&TX.to<VOLS[TX.n].p)appendPages(Math.min(VOLS[TX.n].p,TX.to+3));
   if(TX.lock)return;
   if(tv.scrollTop<900&&TX.from>1)prependPages(Math.max(1,TX.from-2));
@@ -1083,7 +1136,7 @@ function releaseFar(){
     if(!b.dataset.p||Math.abs(+b.dataset.p-cur.p)<=4)continue;
     const st=b.querySelector('.istage'),c=st&&st.querySelector('canvas');if(!c)continue;
     c.width=0;c.height=0;st.innerHTML='';st.dataset.done='';
-    if(st.dataset.auto)IO.observe(st);else{st.hidden=true;const ib=b.querySelector('.pgimg');if(ib)ib.textContent='قارن بالصورة'}
+    if(st.dataset.auto)IO.observe(st);else{st.hidden=true;const ib=b.querySelector('.pgimg');if(ib)ib.textContent=b.classList.contains('notext')?'اعرض الصورة':'قارن بالصورة'}
   }
 }
 document.getElementById('tview').addEventListener('scroll',()=>{if(TX.raf)return;TX.raf=requestAnimationFrame(()=>{TX.raf=0;onTScroll()})},{passive:true});
@@ -1116,13 +1169,23 @@ function setFS(v,say){FS=Math.max(15,Math.min(34,v));LS.set('fs',FS);document.do
   $('#fsVal').textContent='الحجم الحالي: '+ar(FS);if(say)toast('حجم الخط: '+ar(FS),1200)}
 setFS(FS);
 $('#fo').onclick=()=>setFS(FS-2,1);$('#fi').onclick=()=>setFS(FS+2,1);$('#f1').onclick=()=>setFS(20,1);
+let CMP=false;   // wide screens: the page image beside the text, only when the reader asks to compare
 function layout(){
-  const split=wide()&&VIEW==='txt';
+  if(!wide())CMP=false;
+  const split=wide()&&VIEW==='txt'&&CMP;
+  $('#cmpX').hidden=!split;
   $('#panes').classList.toggle('split',split);
   $('#tview').hidden=false;
   $('#view').hidden=!split;
   document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===VIEW));
 }
+async function openCompare(p){
+  CMP=true;layout();
+  if(!pdf||pdf._n!==cur.n)await loadPdf(cur.n,openSeq);
+  if(pdf)paintMain(p);
+}
+$('#cmpX').onclick=()=>{CMP=false;layout()};
+window.addEventListener('resize',()=>{if(!$('#reader').hidden)layout()});
 async function setView(v){VIEW=v;LS.set('view2',v);layout();TX.n=-1;renderText();if(!$('#view').hidden){if(!pdf||pdf._n!==cur.n)await loadPdf(cur.n,openSeq);if(pdf)paintMain(cur.p)}}
 document.querySelectorAll('.modes button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
 function setLoading(on){loading=on;$('#cv').classList.toggle('loading',on)}
@@ -1147,7 +1210,7 @@ function loadPdf(n){
 }
 async function openPart(n,p,hl,noPush,view){
   if(!LS.get('chosen',0)&&!view){return chooseMode(()=>openPart(n,p,hl,noPush,VIEW))}
-  const seq=++openSeq;HL=hl||[];
+  const seq=++openSeq;HL=hl||[];CMP=false;
   if(view){VIEW=view;LS.set('view2',view)}
   $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
   $('#tocOverlay').hidden=true;
@@ -1159,7 +1222,7 @@ async function openPart(n,p,hl,noPush,view){
   await go(p||1);
 }
 function setPage(p){
-  planProgress(cur.n,p);cur.p=p;LS.set('last'+cur.n,p);if(cur.n)LS.set('lastRead',{n:cur.n,p});
+  planProgress(cur.n,p);cur.p=p;LS.set('last'+cur.n,p);if(cur.n){const lr=LS.get('lastRead',null);if(!lr||lr.n!==cur.n||lr.p!==p)LS.set('lastRead',{n:cur.n,p,f:0})}
   history.replaceState(history.state,'','#v'+cur.n+'p'+p);
   $('#pg').value=p;updFav();
 }
@@ -1230,7 +1293,7 @@ async function buildHot(H,n,p,still){
 }
 function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16)openPart(cur.n+1,1,null,true);else toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
 function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
-function closeReader(){$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
+function closeReader(){clearTimeout(TX.sv);savePlace();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=$('#qHome').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m)openPart(+m[1],+m[2],null,true);else if(!$('#reader').hidden)closeReader()});
 $('#qNext').onclick=next;$('#qPrev').onclick=prev;
@@ -1271,7 +1334,7 @@ function closeSheet(){
 $('#qMore').onclick=openSheet;$('#sheetBack').onclick=closeSheet;$('#sheetClose').onclick=closeSheet;
 $('#noteSave').onclick=()=>{$('#note').blur();const had=$('#note').value.trim();closeSheet();if(had)toast('حُفظ تعليقك على هذه الصفحة')};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
-$('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VIEW==='txt'&&!wide())await setView('img');go(VOLS[cur.n].f)};
+$('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VIEW==='txt')await setView('img');go(VOLS[cur.n].f)};
 $('#mToc').onclick=()=>{closeSheet();renderToc(cur.n);$('#tocOverlay').hidden=false};
 $('#mIdx').onclick=()=>{closeSheet();openIdx()};
 function citation(p){return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
@@ -1343,12 +1406,14 @@ function renderPlan(){
   B.append(el('p','count','قرأت '+ar(done)+' صفحة من '+ar(TOTAL)+(done>=TOTAL?' · ختمت الكتاب، تقبّل الله منك':done>=z?' · أنهيت ورد اليوم':behind>0?' · متأخر '+ar(behind)+' صفحة عن الأيام السابقة':'')));
   const row=el('div','row');
   if(done<TOTAL){const go1=el('button','btn btn-primary',done+1>a?'تابع ورد اليوم':'اقرأ ورد اليوم');go1.type='button';
-  go1.onclick=()=>{const t=fromG(Math.min(TOTAL,done+1));openPart(t.n,t.p)};row.append(go1)}
+  go1.onclick=()=>{const t=fromG(Math.min(TOTAL,done+1)),lr=LS.get('lastRead',null);
+    // where the reader stopped, if that is within the plan's next pages; otherwise the first unread page
+    if(lr&&lr.n&&gidx(lr.n,lr.p)>=done&&gidx(lr.n,lr.p)<=done+3)resume(lr);else openPart(t.n,t.p)};row.append(go1)}
   B.append(row);
 }
 $('#planEdit').onclick=()=>{if(confirm('إلغاء الخطة الحالية واختيار مدة جديدة؟')){LS.set('plan',null);renderPlan()}};
 // a page counts as read when reached in order within the plan
-function planProgress(n,p){const P=LS.get('plan',null);if(!P||!n)return;const g=gidx(n,p);if(g===(P.done||0)+1||(g>(P.done||0)&&g<=(P.done||0)+3)){P.done=g;LS.set('plan',P)}}
+function planProgress(n,p){const P=LS.get('plan',null);if(!P||!n)return;const g=gidx(n,p)-1;if(g>(P.done||0)&&g<=(P.done||0)+15){P.done=g;LS.set('plan',P)}}
 
 /* ---------- notes export ---------- */
 async function exportNotes(){
@@ -1493,6 +1558,62 @@ $('#quoteBtn').onclick=async()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.append(a);a.click();a.remove();
 };
 
+
+/* ---------- feedback and error reports: sent by e-mail (FormSubmit), with a picture ---------- */
+// the addresses are set once the site's own e-mail exists; until then the forms stay hidden
+const FB={page:'',notes:''};
+const FBON=()=>!!(FB.page&&FB.notes)||LS.get('fbtest',0);
+function fbInit(){$('#fbSec').hidden=!FBON();$('#mReport').hidden=!FBON()}
+let FBK=null;
+function openFb(kind){
+  FBK=kind;const pageRep=kind==='page';
+  $('#fbTitle').textContent=pageRep?'تنبيه على خطأ في هذه الصفحة':'أرسل ملاحظة';
+  const T=$('#fbType');T.innerHTML='';
+  const opts=pageRep?['النص يخالف صورة الصفحة','خطأ في آية','حدود الصفحة (بدايتها أو نهايتها)','أخرى']:['تجربة المستخدم','تقنية','شرعية'];
+  T.append(new Option('اختر…',''));opts.forEach(o=>T.append(new Option(o,o)));
+  $('#fbImgReq').textContent=pageRep?'(اختيارية)':'(مطلوبة)';
+  const R=$('#fbRef');R.hidden=!pageRep;
+  if(pageRep){const sel=(document.getSelection()||'').toString().trim();
+    R.textContent=partName(cur.n)+' · ص '+ar(cur.p)+(sel?' · النص المحدد: «'+sel.slice(0,200)+'»':'');FBK={kind,n:cur.n,p:cur.p,sel}}
+  document.querySelectorAll('#fbForm .fld').forEach(f=>f.classList.remove('bad'));
+  $('#fbBack').hidden=false;$('#fb').hidden=false;
+}
+function closeFb(){$('#fbBack').hidden=true;$('#fb').hidden=true}
+$('#fbOpen').onclick=()=>openFb('notes');
+$('#mReport').onclick=()=>{closeSheet();openFb('page')};
+$('#fbClose').onclick=closeFb;$('#fbBack').onclick=closeFb;
+// a phone photo is made smaller before sending (the e-mail service limits the size)
+async function shrink(file){
+  try{if(!file||file.size<900000||!window.DataTransfer)return file;
+    const img=await createImageBitmap(file);const k=Math.min(1,1600/Math.max(img.width,img.height));
+    const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.85));return b?new File([b],'صورة.jpg',{type:'image/jpeg'}):file}catch(e){return file}
+}
+$('#fbForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const pageRep=FBK&&FBK.kind==='page',F=$('#fbForm'),img=$('#fbImg');let ok=true;
+  const need=[[$('#fbType'),v=>!!v],[$('#fbMsg'),v=>v.trim().length>=3]];
+  if(!pageRep)need.push([img,()=>img.files&&img.files.length>0]);
+  for(const [x,t] of need){const bad=!t(x.value);x.closest('.fld').classList.toggle('bad',bad);if(bad)ok=false}
+  if(!ok){toast(pageRep?'اختر نوع الخطأ واكتب وصفه.':'اختر نوع الملاحظة واكتبها وأرفق صورة توضّحها.',3000);return}
+  if(!navigator.onLine){toast('لا يوجد اتصال بالإنترنت الآن. أرسلها حين يعود الاتصال.',3500);return}
+  const to=pageRep?FB.page:FB.notes;if(!to){toast('الإرسال غير مفعّل بعد.',2500);return}
+  // hidden fields: subject, where, and the version and device
+  F.querySelectorAll('input.auto').forEach(x=>x.remove());
+  const add=(k,v)=>{const i=document.createElement('input');i.type='hidden';i.className='auto';i.name=k;i.value=v;F.append(i)};
+  add('_subject',(pageRep?'تنبيه على خطأ: ':'ملاحظة: ')+$('#fbType').value+(pageRep?' — '+partName(FBK.n)+' ص '+FBK.p:''));
+  add('_captcha','false');add('_template','table');
+  if(pageRep){add('الموضع',partName(FBK.n)+' · ص '+FBK.p+' · '+location.origin+location.pathname+'#v'+FBK.n+'p'+FBK.p);if(FBK.sel)add('النص المحدد',FBK.sel.slice(0,1500))}
+  add('الإصدار',APP_VER);add('الجهاز',navigator.userAgent+' · '+screen.width+'×'+screen.height);
+  if(img.files&&img.files[0]){const f=await shrink(img.files[0]);if(f!==img.files[0]){const dt=new DataTransfer();dt.items.add(f);img.files=dt.files}}
+  F.action='https://formsubmit.co/'+to;
+  const btn=$('#fbSend');btn.disabled=true;btn.textContent='جاري الإرسال…';
+  const done=new Promise(r=>{const fr=$('#fbFrame');const t=setTimeout(()=>r(false),45000);fr.onload=()=>{clearTimeout(t);r(true)}});
+  F.submit();
+  const sent=await done;btn.disabled=false;btn.textContent='إرسال';
+  if(sent){F.reset();closeFb();toast('وصلت ملاحظتك، جزاك الله خيراً.',3000)}else toast('تعذّر الإرسال الآن، حاول مرة أخرى.',3000);
+});
+fbInit();
 /* ---------- about the book: from the book itself ---------- */
 async function renderAbout(){
   const L=$('#aboutLinks');L.innerHTML='';
@@ -1579,8 +1700,8 @@ function focusTree(id){
 function showScholar(id){
   const D=TR.D,n=TR.byId[id];TR.sel=id;focusTree(id);
   const P=$('#sch');P.innerHTML='';P.hidden=false;
-  const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.style.float='left';x.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{P.hidden=true;TR.sel=null;focusTree(null)};
-  P.append(x,el('h3',null,n.name));
+  const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{P.hidden=true;TR.sel=null;focusTree(null)};
+  const hd=el('div','schhd');hd.append(el('h3',null,n.name),x);P.append(hd);   // the close button stays in view however long the entry is
   const yrs=el('p','yrs');const go=(p)=>()=>{$('#treeOverlay').hidden=true;openPart(16,p,null,false,'txt')};
   if(n.b){yrs.append('وُلد سنة '+ar(n.b[0])+'هـ (');const b=el('button',null,pg(n.b[1],n.b[2]));b.onclick=go(n.b[1]);yrs.append(b,')')}
   if(n.b&&n.d)yrs.append(' · ');
