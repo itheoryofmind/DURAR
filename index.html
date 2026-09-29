@@ -720,7 +720,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='9';
-const APP_VER='2026-09-29-1453';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1500';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -863,17 +863,23 @@ function renderHits(R,res,filterN){
 let lastRes=null;
 function progressBar(R){const w=el('div','sprog');const t=el('p','note','جاري البحث…');const b=el('div','bar');const i=el('i');b.append(i);w.append(t,b);R.before(w);return {t,i,done(){w.remove()}}}
 function parseRef(q){
-  let t=' '+q.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[()«»"]/g,' ').replace(/\s+/g,' ')+' ';
+  // iPhone keyboards may add direction marks, Persian digits or a different slash; the numbers may also come page-first (150/8)
+  let t=' '+q.replace(/[\u200e\u200f\u061c\u202a-\u202e\u2066-\u2069]/g,'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+    .replace(/[∕⁄÷؍]/g,'/').replace(/[()«»"]/g,' ').replace(/\s+/g,' ')+' ';
   for(let i=16;i>=1;i--)t=t.replace(new RegExp('(الجزء|جزء|ج)\\s*'+ORD[i]+'(?=\\s)','g'),'ج '+i);
-  let m=t.match(/(?:الجزء|جزء|جـ|ج)\s*\.?\s*(\d{1,2})\D{0,14}?(?:الصفحة|صفحة|ص)\s*\.?\s*(\d{1,4})/)||t.match(/^\D{0,24}?\s(\d{1,2})\s*[\/\\]\s*(\d{1,4})\s*\D{0,3}$/);
-  if(!m)return null;const n=+m[1],p=+m[2];
+  let m=t.match(/(?:الجزء|جزء|جـ|ج)\s*\.?\s*(\d{1,2})\D{0,14}?(?:الصفحة|صفحة|ص)\s*\.?\s*(\d{1,4})/)||t.match(/^\D{0,24}?\s(\d{1,4})\s*[\/\\]\s*(\d{1,4})\s*\D{0,3}$/);
+  if(!m)return null;let n=+m[1],p=+m[2];
+  if(m[0].includes('/')&&n>16&&p>=1&&p<=16){[n,p]=[p,n]}      // «150/8»: only a page can exceed 16, so the order is unambiguous
   return n>=1&&n<=16&&p>=1&&p<=VOLS[n].p?{n,p}:null;
 }
 function openRef(r){toast('الانتقال إلى '+partName(r.n)+' · ص '+ar(r.p),1800);openPart(r.n,r.p)}
 async function homeSearch(v){
   {const r=parseRef(v);if(r){openRef(r);return}}
   const sec=$('#resSec'),R=$('#res');sec.hidden=false;$('#filterRow').hidden=true;
-  R.innerHTML='';const pr=progressBar(R);sec.scrollIntoView({behavior:'smooth',block:'start'});
+  R.innerHTML='';
+  // looks like part/page but is not a real page: say so instead of searching the text for digits
+  if(/^\s*[\d٠-٩۰-۹]+\s*[\/∕⁄÷؍\\]\s*[\d٠-٩۰-۹]+\s*$/.test(v.replace(/[\u200e\u200f\u061c\u202a-\u202e\u2066-\u2069]/g,''))){R.append(el('p','note','لا توجد صفحة بهذا الرقم. اكتب رقم الجزء (من ١ إلى ١٦) ثم الصفحة، مثل ٨/١٥٠.'));return}
+  const pr=progressBar(R);sec.scrollIntoView({behavior:'smooth',block:'start'});
   // results appear part by part while the rest of the book is still loading
   const res=await runSearch(v,0,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=((n-1)/16*100)+'%'},$('#exact').checked,r=>{if(r.out.length)renderHits(R,r,0)});
   pr.done();
