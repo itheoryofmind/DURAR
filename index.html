@@ -322,6 +322,11 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .hc.c-f,.hlt.c-f,.bar.c-f{background:rgba(232,188,86,.55)}
 .hc.c-d,.hlt.c-d,.bar.c-d{background:rgba(124,176,112,.48)}
 .hc.c-r,.hlt.c-r,.bar.c-r{background:rgba(222,128,116,.45)}
+.hc.hlink{background:transparent;color:var(--brass);border:1px solid var(--brass)}
+.hlt.c-l{background:rgba(201,163,90,.38);box-shadow:0 0 0 2px rgba(201,163,90,.25)}
+.selbar{overflow-x:auto;scrollbar-width:none}
+.selbar::-webkit-scrollbar{display:none}
+.selbar .hc,.selbar .quotebtn{padding:8px 11px;flex:none}
 .hc.hrep{background:transparent;color:var(--clay);border:1px solid var(--clay)}
 .hc.hdel{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .hc.on{outline:2px solid var(--ink);outline-offset:1px}
@@ -554,9 +559,10 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <div id="view" class="beige"><button class="cmpx" id="cmpX" type="button" hidden>إغلاق المقارنة ✕</button><div class="stage" id="stage"><canvas id="cv"></canvas><div class="hot" id="hot"></div></div><div class="loader" id="loader" hidden>جاري التحميل…</div></div>
   </div>
   <div class="selbar" id="selBar" hidden>
-    <button class="hc c-f" data-c="f" type="button">فائدة</button><button class="hc c-d" data-c="d" type="button">دليل</button><button class="hc c-r" data-c="r" type="button">للمراجعة</button>
+    <button class="hc c-f" data-c="f" type="button">فائدة</button><button class="hc c-d" data-c="d" type="button">دليل</button><button class="hc c-r" data-c="r" type="button">مراجعة</button>
     <button class="hc hdel" id="hlDel" type="button" hidden>إزالة</button>
     <button class="quotebtn" id="quoteBtn" type="button">اقتباس</button>
+    <button class="hc hlink" id="selLink" type="button">رابط</button>
     <button class="hc hrep" id="selRep" type="button">تنبيه</button>
   </div>
   <nav class="qbar" aria-label="أدوات القراءة">
@@ -685,7 +691,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-1030';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1035';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1357,7 +1363,7 @@ function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16)ope
 function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1)openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}else go(cur.p-1)}
 function closeReader(){clearTimeout(TX.sv);savePlace();clearBack();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
-window.addEventListener('popstate',()=>{const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m)openPart(+m[1],+m[2],null,true);else if(!$('#reader').hidden)closeReader()});
+window.addEventListener('popstate',()=>{if(!openHash(location.hash,false)&&!$('#reader').hidden)closeReader()});
 $('#mNext').onclick=()=>{closeSheet();next()};$('#mPrev').onclick=()=>{closeSheet();prev()};
 $('#qToc').onclick=()=>{renderToc(cur.n||1);$('#tocOverlay').hidden=false};
 $('#qNote').onclick=()=>{openSheet(true);setTimeout(()=>$('#note').focus(),60)};
@@ -1529,7 +1535,7 @@ function unwrapHl(id){
 }
 function hideSelBar(){HLEDIT=null;$('#selBar').hidden=true}
 function showSelBar(edit){
-  const b=$('#selBar');b.hidden=false;$('#hlDel').hidden=!edit;$('#quoteBtn').hidden=!!edit;$('#selRep').hidden=!!edit||!FBON();
+  const b=$('#selBar');b.hidden=false;$('#hlDel').hidden=!edit;$('#quoteBtn').hidden=!!edit;$('#selRep').hidden=!!edit||!FBON();$('#selLink').hidden=!!edit;
   b.querySelectorAll('.hc[data-c]').forEach(x=>x.classList.toggle('on',!!edit&&HLEDIT&&HLEDIT.c===x.dataset.c));
 }
 function addHl(c){
@@ -1561,6 +1567,34 @@ function editHl(id,c){
 }
 $('#selBar').querySelectorAll('.hc[data-c]').forEach(b=>b.onclick=()=>{if(HLEDIT)editHl(HLEDIT.i,b.dataset.c);else addHl(b.dataset.c)});
 $('#selRep').onclick=()=>{openFb('page');hideSelBar()};
+/* ---------- a link to a passage: opens its page with the words marked ---------- */
+$('#selLink').onclick=async()=>{
+  const S=document.getSelection();if(!S||S.isCollapsed)return;
+  const nd=S.anchorNode,e=nd&&(nd.nodeType===1?nd:nd.parentElement),blk=e&&e.closest('.pgblk');const pp=blk?+blk.dataset.p:cur.p;
+  let t=S.toString().split(/\n/).map(x=>x.trim()).filter(Boolean)[0]||'';
+  if(t.length>90){t=t.slice(0,90);t=t.slice(0,t.lastIndexOf(' ')>40?t.lastIndexOf(' '):90)}
+  const url=location.origin+location.pathname+'#v'+cur.n+'p'+pp+'~'+encodeURIComponent(t);hideSelBar();S.removeAllRanges();
+  try{if(navigator.share){await navigator.share({title:'الدرر السنية في الأجوبة النجدية',text:'«'+t+'…» — '+citation(pp),url});return}}catch(err){if(err.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(url);toast('نُسخ رابط الفقرة')}catch(err){prompt('انسخ الرابط:',url)}
+};
+let PASSAGE=null;   // words to mark once their page is on screen
+async function markPassage(){
+  const q=PASSAGE;if(!q)return;
+  for(let i=0;i<40;i++){
+    const b=document.querySelector('#tpage .pgblk[data-p="'+q.p+'"] .tbody');
+    if(b&&TX.n===q.n){PASSAGE=null;const S=bodyText(b).s;let t=q.t,j=S.indexOf(t);
+      if(j<0){t=t.slice(0,Math.min(40,t.length));j=S.indexOf(t)}
+      if(j<0){toast('فُتحت الصفحة، ولم يُعثر على الفقرة بلفظها.',3000);return}
+      wrapRange(b,j,j+t.length,{i:'lnk',c:'l'});const sp=b.querySelector('.hlt[data-id="lnk"]');
+      if(sp){TX.lock=true;sp.scrollIntoView({block:'center'});setTimeout(()=>{TX.lock=false},300)}return}
+    await new Promise(r=>setTimeout(r,150))}
+}
+function openHash(h,push){
+  const m=h.match(/^#v(\d+)p(\d+)(?:~(.*))?$/);if(!m||+m[1]>16)return false;
+  const n=+m[1],p=+m[2];let t='';try{t=m[3]?decodeURIComponent(m[3]):''}catch(e){}
+  PASSAGE=t?{n,p,t}:null;
+  openPart(n,p,null,!push,t?'txt':undefined).then(markPassage);return true;
+}
 $('#hlDel').onclick=()=>{if(HLEDIT)editHl(HLEDIT.i,null)};
 $('#tview').addEventListener('click',e=>{
   const sp=e.target.closest('.hlt');const s=document.getSelection();
@@ -1873,7 +1907,7 @@ setTimeout(checkUpdate,1500);
 /* start */
 if(hasCaches){volCache().then(c=>c.delete(new Request('./_vol/8.pdf'))).catch(()=>{});caches.delete('durar-text-v1').catch(()=>{})}
 renderHome();daily();renderPlan();renderAbout();
-(function(){const m=location.hash.match(/^#v(\d+)p(\d+)$/);if(m&&+m[1]<=16){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openPart(+m[1],+m[2],null,true)}})();
+(function(){const h=location.hash,m=h.match(/^#v(\d+)p(\d+)/);if(m&&+m[1]<=16){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openHash(h,false)}})();
 </script>
 </body>
 </html>
