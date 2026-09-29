@@ -2,8 +2,8 @@
 
 موقع قراءة الكتاب وتحميله كاملاً.
 
-- الموقع: https://itheoryofmind.github.io/DURAR/
-- تحميل الكتاب كاملاً: https://itheoryofmind.github.io/DURAR/download/
+- الموقع: https://dorarnajdiah.com/
+- تحميل الكتاب كاملاً: https://dorarnajdiah.com/download/
 
 ## محتويات المستودع
 
