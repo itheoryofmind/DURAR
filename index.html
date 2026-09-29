@@ -354,6 +354,17 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .titem::before{content:"";position:absolute;inset-inline-start:-22px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--brass)}
 .titem span:last-child{font-family:var(--ui);font-size:13px;color:var(--muted);flex:none}
 .sch{position:fixed;inset-inline:0;bottom:0;z-index:78;background:var(--raised);border-top:2px solid var(--brass);border-radius:18px 18px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(0,0,0,.25);max-height:62vh;overflow:auto;max-width:820px;margin:0 auto}
+.navbtn{position:fixed;top:calc(10px + env(safe-area-inset-top));inset-inline-start:12px;z-index:60;width:42px;height:42px;border-radius:50%;border:1px solid rgba(231,194,122,.45);background:rgba(43,27,14,.72);color:#f3e3c3;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.navbtn[hidden]{display:none}
+.drawer-back{position:fixed;inset:0;z-index:80;background:rgba(20,12,6,.45)}
+.drawer{position:fixed;top:0;bottom:0;inset-inline-start:0;z-index:81;width:min(300px,84vw);background:var(--surface);box-shadow:0 0 30px rgba(0,0,0,.3);overflow:auto;padding:calc(12px + env(safe-area-inset-top)) 0 calc(20px + env(safe-area-inset-bottom));animation:dIn .22s ease}
+@keyframes dIn{from{transform:translateX(100%)}to{transform:none}}
+.dhead{display:flex;align-items:center;justify-content:space-between;padding:4px 14px 10px 8px;border-bottom:1px solid var(--line)}
+.dhead b{font-family:var(--display);font-size:20px;color:var(--brass)}
+.dlist{padding:6px 0}
+.dlist .dgrp{font-size:12px;font-weight:600;color:var(--muted);padding:12px 18px 4px}
+.dlist button{display:block;width:100%;text-align:start;border:0;background:none;color:var(--ink);font:inherit;font-size:16px;padding:10px 18px;cursor:pointer}
+.dlist button:active{background:var(--raised)}
 .fld{display:block;margin:0 0 12px}
 .fld>span{display:block;font-size:14px;font-weight:600;margin-bottom:5px}
 .fld select,.fld textarea,.fld input[type=text]{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
@@ -425,7 +436,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       </div>
     </section>
 
-    <section>
+    <section id="shelfSec">
       <div class="section-head"><h2>خزانة الأجزاء</h2><span class="count">١٦ جزءاً · ٨٠٧٨ صفحة</span></div>
       <div class="shelf-wrap"><div class="shelf" id="shelf" role="list"></div></div>
       <p class="hint">اضغط على الجزء لعرض أبوابه. الخط الذهبي على الكعب يبيّن موضع وقوفك، والنقطة الخضراء تعني أنه محفوظ للقراءة بدون إنترنت.</p>
@@ -459,14 +470,14 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <button class="btn btn-quiet" id="exportHl" type="button" style="margin-top:6px">تصدير تعليقاتي وتظليلاتي في ملف</button>
     </section>
 
-    <section>
+    <section id="dlSec">
       <div class="actions">
         <a class="action" href="download/"><b>تحميل الكتاب كاملاً</b><span>ملف PDF واحد</span></a>
         <button class="action" id="saveAll" type="button"><b>احفظه للقراءة بدون إنترنت</b><span id="saveAllInfo">الصور والنص · نحو ٣٨٠ ميجا · يفضّل على Wi‑Fi</span></button>
       </div>
     </section>
 
-    <section class="about">
+    <section class="about" id="aboutSec">
       <h2>عن الكتاب</h2>
       <p class="aboutq" id="aboutQ"></p>
       <p class="count" id="aboutSrc"></p>
@@ -479,13 +490,13 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="links"><button class="btn btn-primary" id="fbOpen" type="button">أرسل ملاحظة</button></div>
     </section>
 
-    <section class="about">
+    <section class="about" id="dataSec">
       <h2>بياناتك</h2>
       <p class="note">المفضلة والتعليقات وخطة الختم وموضع القراءة محفوظة في جهازك فقط. احفظ نسخة منها في ملف قبل تغيير الجوال أو حذف التطبيق، ثم استرجعها.</p>
       <div class="links"><button class="btn btn-quiet" id="bkSave" type="button">حفظ نسخة من بياناتي</button><button class="btn btn-quiet" id="bkLoad" type="button">استرجاع من ملف</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
     </section>
 
-    <section class="about">
+    <section class="about" id="methodSec">
       <h2>منهج هذه النسخة</h2>
       <div class="stats" id="stats"></div>
       <div class="trust">
@@ -596,6 +607,14 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   </div>
 </div>
 
+<!-- Quick menu of the home page -->
+<button class="navbtn" id="navBtn" type="button" aria-label="القائمة"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div class="drawer-back" id="navBack" hidden></div>
+<nav class="drawer" id="nav" hidden aria-label="أقسام الموقع">
+  <div class="dhead"><b>الدرر السنية</b><button class="icon" id="navClose" type="button" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlist" id="navList"></div>
+</nav>
+
 <!-- Feedback / error report -->
 <div class="sheet-back" id="fbBack" hidden></div>
 <div class="sheet" id="fb" hidden role="dialog" aria-label="إرسال ملاحظة">
@@ -636,7 +655,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-0849';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0853';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1616,6 +1635,39 @@ $('#fbForm').addEventListener('submit',async e=>{
   if(sent){F.reset();closeFb();toast('وصلت ملاحظتك، جزاك الله خيراً.',3000)}else toast('تعذّر الإرسال الآن، حاول مرة أخرى.',3000);
 });
 fbInit();
+
+/* ---------- quick menu: every part of the home page one tap away ---------- */
+function goSec(id){closeNav();const e=$('#'+id);if(e&&!e.hidden)e.scrollIntoView({behavior:'smooth',block:'start'})}
+function closeNav(){$('#nav').hidden=true;$('#navBack').hidden=true}
+function openNav(){
+  const L=$('#navList');L.innerHTML='';
+  const grp=t=>L.append(el('div','dgrp',t));
+  const it=(t,f,show=true)=>{if(!show)return;const b=el('button',null,t);b.type='button';b.onclick=f;L.append(b)};
+  grp('القراءة');
+  it($('#contT').textContent,()=>{closeNav();$('#continue').click()});
+  it('ابحث في الكتاب',()=>{closeNav();window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>$('#q').focus(),350)});
+  it('أبواب الكتاب',()=>{closeNav();$('#openToc').click()});
+  it('خزانة الأجزاء',()=>goSec('shelfSec'));
+  grp('الفهارس');
+  it('فهرس المسائل',()=>{closeNav();openIdx('q')});
+  it('فهرس العلماء',()=>{closeNav();openIdx('s')});
+  it('فهرس الآيات',()=>{closeNav();openIdx('a')});
+  it('شجرة العلماء والخط الزمني',()=>{closeNav();$('#openTree').click()});
+  grp('ما يخصك');
+  it('خطة الختم',()=>goSec('planSec'));
+  it('المفضلة والتعليقات',()=>goSec('favSec'),!$('#favSec').hidden);
+  it('تظليلاتي',()=>goSec('hlSec'),!$('#hlSec').hidden);
+  it('بياناتك (نسخة احتياطية)',()=>goSec('dataSec'));
+  grp('الكتاب');
+  it('التحميل والحفظ بدون إنترنت',()=>goSec('dlSec'));
+  it('عن الكتاب',()=>goSec('aboutSec'));
+  it('منهج هذه النسخة',()=>goSec('methodSec'));
+  it('أرسل ملاحظة',()=>{closeNav();openFb('notes')},FBON());
+  $('#navBack').hidden=false;$('#nav').hidden=false;
+}
+$('#navBtn').onclick=openNav;$('#navClose').onclick=closeNav;$('#navBack').onclick=closeNav;
+// the button belongs to the home page only
+new MutationObserver(()=>{$('#navBtn').hidden=$('#home').hidden}).observe($('#home'),{attributes:true,attributeFilter:['hidden']});
 /* ---------- about the book: from the book itself ---------- */
 async function renderAbout(){
   const L=$('#aboutLinks');L.innerHTML='';
