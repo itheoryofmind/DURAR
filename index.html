@@ -704,7 +704,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <!-- Topics overlay -->
 <div class="overlay" id="topicOverlay" hidden role="dialog" aria-label="تصفح بالموضوع">
   <div class="head"><h2 style="flex:1">تصفّح بالموضوع</h2><button class="icon" id="topicClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
-  <div class="body"><p class="note">كتب الدرر السنية مصنّفة، اضغط على أي كتاب لتنتقل إلى أوله.</p><div id="topicList"></div></div>
+  <div class="body"><div id="topicList"></div></div>
 </div>
 
 <!-- TOC overlay -->
@@ -717,7 +717,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='9';
-const APP_VER='2026-09-29-1130';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1146';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -888,7 +888,8 @@ async function homeSearch(v){
 $('#sform').addEventListener('submit',e=>{e.preventDefault();$('#q').blur();homeSearch($('#q').value)});
 $('#fpart').onchange=e=>lastRes&&renderHits($('#res'),lastRes,+e.target.value);
 $('#clearRes').onclick=()=>{$('#resSec').hidden=true;$('#q').value=''};
-['التوحيد','الولاء والبراء','نواقض الإسلام','الشفاعة','البدعة','زيارة القبور'].forEach(w=>{const c=el('button','chip',w);c.type='button';c.onclick=()=>{$('#q').value=w;homeSearch(w)};$('#chips').append(c)});
+const QUICK=['التوحيد','الولاء والبراء','نواقض الإسلام','الشفاعة','البدعة','زيارة القبور'];   // quick searches (also listed in «تصفّح بالموضوع»)
+QUICK.forEach(w=>{const c=el('button','chip',w);c.type='button';c.onclick=()=>{$('#q').value=w;homeSearch(w)};$('#chips').append(c)});
 
 /* ---------- home ---------- */
 const favs=()=>LS.get('favs',[]);
@@ -1765,7 +1766,14 @@ const TOPICS=[
 ];
 function openTopics(){
   const L=$('#topicList');
-  if(!L.children.length)TOPICS.forEach(([g,items])=>{const d=el('div','tgrp');d.append(el('h3',null,g));const c=el('div','chips');
+  if(!L.children.length){
+    // the quick searches of the home page: a search of the whole text, not a place in the book
+    const d=el('div','tgrp');d.append(el('h3',null,'مسائل يكثر البحث عنها'),el('p','note','بحث في نص الكتاب كله، تظهر فيه كل مواضع ورودها.'));const c=el('div','chips');
+    QUICK.forEach(w=>{const b=el('button','chip',w);b.type='button';b.onclick=()=>{$('#topicOverlay').hidden=true;$('#q').value=w;homeSearch(w)};c.append(b)});
+    d.append(c);L.append(d);
+    L.append(el('p','note','كتب الدرر السنية مصنّفة، اضغط على أي كتاب لتنتقل إلى أوله.'));
+  }
+  if(L.children.length<3)TOPICS.forEach(([g,items])=>{const d=el('div','tgrp');d.append(el('h3',null,g));const c=el('div','chips');
     items.forEach(([t,n,p])=>{const b=el('button','chip',t);b.type='button';b.title=partName(n)+' · ص '+ar(p);
       b.onclick=()=>{const ov=$('#topicOverlay'),y=ov.scrollTop;ov.hidden=true;openPart(n,p).then(()=>setBack('رجوع إلى الموضوعات',()=>{ov.hidden=false;ov.scrollTop=y}))};c.append(b)});
     d.append(c);L.append(d)});
