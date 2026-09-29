@@ -597,7 +597,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='7';
-const APP_VER='2026-09-29-0504';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0549';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -926,6 +926,8 @@ function richInline(s,hl,inQ,rep){
   let k=-1,skip=false,sup=null;
   // footnote numbers of the digital edition after a hadith or a verse (its takhrij notes, not carried here): small and muted
   s=s.replace(/(["}]|"،)\s?(\d{1,2})(?=[\s.،؛:؟,]|$)/g,'$1\u0001$2\u0002');
+  // in some parts the digital edition lost the ligature ﷺ after the Prophet's name and left a lone "(": shown as in print
+  s=s.replace(/(رسول الله|النبي|نبيه|نبينا|نبيك|نبيهم)\s?\((?=[^()]*(?:\(|$))/g,'$1 ﷺ ');
   // the digital edition's straight quotation marks, shown as the print has them: « »  (only when they pair up)
   {const q=s.split('"');if(q.length>1&&q.length%2===1)s=q.map((x,i)=>i%2?'«'+x.trim()+'»':x).join('')}
   for(const ch of s){
