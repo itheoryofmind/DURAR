@@ -636,7 +636,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-0837';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-0849';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1563,7 +1563,7 @@ $('#quoteBtn').onclick=async()=>{
 
 /* ---------- feedback and error reports: sent by e-mail (FormSubmit), with a picture ---------- */
 // the addresses are set once the site's own e-mail exists; until then the forms stay hidden
-const FB={page:'',notes:''};
+const FB={page:'report@dorarnajdiah.com',notes:'feedback@dorarnajdiah.com'};
 const FBON=()=>!!(FB.page&&FB.notes)||LS.get('fbtest',0);
 function fbInit(){$('#fbSec').hidden=!FBON();$('#mReport').hidden=!FBON()}
 let FBK=null;
