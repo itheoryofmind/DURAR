@@ -156,6 +156,7 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
 .stats span{font-size:12.5px;color:var(--muted)}
 @media (max-width:440px){.stats{grid-template-columns:repeat(2,1fr)}}
 footer{padding:20px 16px calc(28px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:var(--muted)}
+footer .waqflink{all:unset;cursor:pointer;color:var(--brass);text-decoration:underline;text-underline-offset:3px}
 footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size:12.5px;line-height:1.9;opacity:.85}
 .rh{font-size:.82em;opacity:.8;white-space:nowrap}
 
@@ -520,7 +521,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <p>تصحيح: الصفحات ٤١–١٢٠ من الجزء الثامن كانت مقلوبة الترتيب في المسح الأصلي، وهي هنا وفي ملف التحميل بترتيب الطبعة. وصف الأجزاء منقول من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦).</p>
     </section>
   </main>
-  <footer><p class="rule">❖</p><p>الدرر السنية في الأجوبة النجدية</p><p class="waqf">هذا الموقع وقفٌ لله تعالى، عنّي وعن والديّ، وعن جامع الكتاب ومؤلفي رسائله، وعن كل من خدمه أو أسهم في نشره أو قرأه وانتفع به، وعمّن له حقٌّ علينا، وعن المسلمين والمسلمات الأحياء منهم والأموات.</p></footer>
+  <footer><p class="rule">❖</p><p>الدرر السنية في الأجوبة النجدية</p><p class="waqf">جهدٌ فردي غير ربحي لخدمة الكتاب، وليس تابعاً لأي جهة رسمية. ومن كان له حقٌّ في هذا العمل أو ملاحظةٌ عليه، فنرحب بتواصله عبر <button type="button" class="waqflink" id="waqfFb">«أرسل ملاحظة»</button>.</p></footer>
 </div>
 
 <!-- ============ READER ============ -->
@@ -666,7 +667,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='8';
-const APP_VER='2026-09-29-1001';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-29-1007';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1618,6 +1619,7 @@ function openFb(kind){
 }
 function closeFb(){$('#fbBack').hidden=true;$('#fb').hidden=true}
 $('#fbOpen').onclick=()=>openFb('notes');
+$('#waqfFb').onclick=()=>openFb('notes');
 $('#fbClose').onclick=closeFb;$('#fbBack').onclick=closeFb;
 // a phone photo is made smaller before sending (the e-mail service limits the size)
 async function shrink(file){
