@@ -228,7 +228,7 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .tbody p.vnote{text-indent:0;font-family:var(--ui);font-size:12px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:.4em}
 .tbody p.bsm{text-indent:0;text-align:center;font-family:var(--display);color:var(--brass);font-size:1.15em}
 .tbody h3{font-family:var(--display);font-size:1.25em;text-align:center;margin:.4em 0 .6em;color:var(--brass)}
-@font-face{font-family:"UthmanicHafs";src:url(lib/hafs.18.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"UthmanicHafs";src:url(lib/kfgqpc_hafs_v30.ttf) format("truetype");font-display:swap}
 .q{color:var(--verse);font-family:var(--display);font-size:1.08em}
 .qu{font-family:"UthmanicHafs","Amiri",serif;font-size:1.1em;line-height:2.3}
 .q.qa{cursor:pointer;-webkit-tap-highlight-color:rgba(183,137,60,.18)}
@@ -704,7 +704,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <h3 class="ayaplace" id="ayaPlace"></h3>
   <div class="ayatext" id="ayaText"></div>
   <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نسخ الآية</button></div>
-  <p class="ayasrc">نص الآية من مصحف المدينة النبوية، برواية حفص، كما نشره مجمع الملك فهد لطباعة المصحف الشريف.</p>
+  <p class="ayasrc">نص الآية وخطّها من مجمع الملك فهد لطباعة المصحف الشريف (مصحف المدينة النبوية، رواية حفص، الإصدار ٣٠)، كما نشره المجمع دون أي تعديل.</p>
 </div>
 <div class="sheet-back" id="chooseBack" hidden></div>
 <div class="sheet" id="choose" hidden role="dialog" aria-label="طريقة القراءة">
@@ -1488,7 +1488,7 @@ async function openAya(s,a,b){
   $('#ayaPlace').textContent='سورة '+name+' · '+(b>a?'الآيات '+ar(a)+'–'+ar(b):'الآية '+ar(a));
   const T=$('#ayaText');T.innerHTML='';const parts=[];
   for(let i=a;i<=b;i++){const t=Q.a[s-1][i-1];if(t==null)break;parts.push(t);T.append(el('span',null,t+' '))}
-  $('#ayaCopy').onclick=()=>{const txt='﴿'+parts.map(t=>t.replace(/\s*[٠-٩]+$/,'')).join(' ')+'﴾ ['+'سورة '+name+': '+(b>a?ar(a)+'–'+ar(b):ar(a))+']';
+  $('#ayaCopy').onclick=()=>{const txt='﴿'+parts.map(t=>t.replace(/\s*\u06dd?[٠-٩]+$/,'')).join(' ')+'﴾ ['+'سورة '+name+': '+(b>a?ar(a)+'–'+ar(b):ar(a))+']';
     (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('نُسخت الآية',1600)).catch(()=>toast('تعذّر النسخ',1600))};
   $('#ayaBack').hidden=false;$('#aya').hidden=false;$('#aya').scrollTop=0;
 }
@@ -1782,6 +1782,8 @@ $('#fwSend').onclick=()=>openFb('fawaid');
 $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
+ {d:'2026-09-30',items:[
+  'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نسخها.']},
  {d:'2026-09-29',items:[
   'حواشي المطبوع: تحت الصفحة التي فيها حاشية زرّ «حاشية المطبوع» يعرضها كما طُبعت.',
   'رابط الفقرة: حدّد نصاً واضغط «رابط»، فمن يفتحه يرى الفقرة نفسها مظلّلة.',
