@@ -734,8 +734,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='12';
-const APP_VER='2026-09-30-0742';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='13';
+const APP_VER='2026-09-30-0759';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1088,7 +1088,9 @@ function richInline(s,hl,inQ,rep){
   // { } Quran (ornate brackets on screen, original characters when copied); [ ] wording of the digital edition (muted)
   // inQ: the text starts inside a verse that opened earlier (on the previous page or paragraph)
   const f=document.createDocumentFragment();let buf='',node=f,qspan=null,ed=null,edParent=null;
-  if(inQ){qspan=el('span','q');f.append(qspan);node=qspan}
+  if(inQ){qspan=el('span','q');f.append(qspan);node=qspan;
+    // the rest of a verse begun on the previous page: linked with it when the whole quotation was matched
+    const r=rep&&rep[-1];if(r&&r[3]){qspan.classList.add('qa');qspan.dataset.s=r[3];qspan.dataset.a=r[4];qspan.dataset.b=r[5]}}
   const flush=()=>{if(buf){appendHL(node,buf,hl);buf=''}};
   let k=-1,skip=false,sup=null,fix=null;
   // footnote numbers of the digital edition after a hadith or a verse (its takhrij notes, not carried here): small and muted
