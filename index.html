@@ -705,7 +705,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="sheethead"><div class="grip"></div><button class="icon" id="ayaClose" type="button" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <h3 class="ayaplace" id="ayaPlace"></h3>
   <div class="ayatext" id="ayaText"></div>
-  <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نقل الآية</button><button class="btn" id="ayaImg" type="button">حفظ صورة</button></div>
+  <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نسخ الآية</button><button class="btn" id="ayaImg" type="button">حفظ صورة</button></div>
   <p class="ayasrc">نص الآية وخطّها من مجمع الملك فهد لطباعة المصحف الشريف (مصحف المدينة النبوية، رواية حفص، الإصدار ٣٠)، كما نشره المجمع دون أي تعديل.</p>
 </div>
 <div class="sheet-back" id="chooseBack" hidden></div>
@@ -735,7 +735,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='11';
-const APP_VER='2026-09-30-0731';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-30-0734';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1494,7 +1494,7 @@ async function openAya(s,a,b){
   const T=$('#ayaText');T.innerHTML='';const parts=[];
   for(let i=a;i<=b;i++){const t=Q.a[s-1][i-1];if(t==null)break;parts.push(t);T.append(el('span',null,t+' '))}
   $('#ayaCopy').onclick=()=>{const txt='﴿'+parts.map(t=>t.replace(/\s*\u06dd?[٠-٩]+$/,'')).join(' ')+'﴾ ['+'سورة '+name+': '+(b>a?ar(a)+'–'+ar(b):ar(a))+']';
-    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('نُقلت الآية، ألصقها حيث تريد',1800)).catch(()=>toast('تعذّر النسخ',1600))};
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('نُسخت الآية، ألصقها حيث تريد',1800)).catch(()=>toast('تعذّر النسخ',1600))};
   $('#ayaImg').onclick=()=>ayaImage(parts,'سورة '+name+' · '+(b>a?'الآيات '+ar(a)+'–'+ar(b):'الآية '+ar(a)));
   $('#ayaBack').hidden=false;$('#aya').hidden=false;$('#aya').scrollTop=0;
 }
@@ -1816,7 +1816,7 @@ $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
  {d:'2026-09-30',items:[
-  'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نقلها أو حفظها صورة.']},
+  'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نسخها أو حفظها صورة.']},
  {d:'2026-09-29',items:[
   'حواشي المطبوع: تحت الصفحة التي فيها حاشية زرّ «حاشية المطبوع» يعرضها كما طُبعت.',
   'رابط الفقرة: حدّد نصاً واضغط «رابط»، فمن يفتحه يرى الفقرة نفسها مظلّلة.',
