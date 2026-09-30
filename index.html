@@ -236,6 +236,7 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .ayaplace{font-family:var(--display);font-size:20px;margin:4px 0 10px;text-align:center;color:var(--brass)}
 .ayatext{font-family:"UthmanicHafs","Amiri",serif;font-size:calc(var(--tsize) * 1.25);line-height:2.4;text-align:center;color:var(--verse);padding:4px 2px 8px}
 .ayabtns{display:flex;justify-content:center;gap:8px;margin:6px 0 4px}
+#ayaImg{border:1px solid var(--brass);color:var(--brass)}
 .ayasrc{font-size:12.5px;color:var(--muted);text-align:center;margin:10px 0 0;line-height:1.8}
 .qb{font-size:0}
 .gap{all:unset;display:inline-block;cursor:pointer;margin-inline:3px;color:var(--clay);font-family:var(--ui);font-size:.64em;line-height:1;vertical-align:middle;border:1px dashed var(--clay);border-radius:8px;padding:1px 5px;opacity:.9}
@@ -704,7 +705,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="sheethead"><div class="grip"></div><button class="icon" id="ayaClose" type="button" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <h3 class="ayaplace" id="ayaPlace"></h3>
   <div class="ayatext" id="ayaText"></div>
-  <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نسخ الآية</button></div>
+  <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نقل الآية</button><button class="btn" id="ayaImg" type="button">حفظ صورة</button></div>
   <p class="ayasrc">نص الآية وخطّها من مجمع الملك فهد لطباعة المصحف الشريف (مصحف المدينة النبوية، رواية حفص، الإصدار ٣٠)، كما نشره المجمع دون أي تعديل.</p>
 </div>
 <div class="sheet-back" id="chooseBack" hidden></div>
@@ -733,8 +734,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='10';
-const APP_VER='2026-09-30-0728';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='11';
+const APP_VER='2026-09-30-0731';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1493,7 +1494,8 @@ async function openAya(s,a,b){
   const T=$('#ayaText');T.innerHTML='';const parts=[];
   for(let i=a;i<=b;i++){const t=Q.a[s-1][i-1];if(t==null)break;parts.push(t);T.append(el('span',null,t+' '))}
   $('#ayaCopy').onclick=()=>{const txt='﴿'+parts.map(t=>t.replace(/\s*\u06dd?[٠-٩]+$/,'')).join(' ')+'﴾ ['+'سورة '+name+': '+(b>a?ar(a)+'–'+ar(b):ar(a))+']';
-    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('نُسخت الآية',1600)).catch(()=>toast('تعذّر النسخ',1600))};
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('نُقلت الآية، ألصقها حيث تريد',1800)).catch(()=>toast('تعذّر النسخ',1600))};
+  $('#ayaImg').onclick=()=>ayaImage(parts,'سورة '+name+' · '+(b>a?'الآيات '+ar(a)+'–'+ar(b):'الآية '+ar(a)));
   $('#ayaBack').hidden=false;$('#aya').hidden=false;$('#aya').scrollTop=0;
 }
 /* a verse reference that names another place than the one the quoted words are in (checked on the whole Qur'an and against the printed page) */
@@ -1501,6 +1503,27 @@ async function refFixNote(r){
   let Q=null;try{Q=await quran()}catch(e){}
   const place=(s,a,b)=>(Q?'سورة '+Q.n[s-1]:'')+'، '+(b>a?'الآيات '+ar(a)+'–'+ar(b):'الآية '+ar(a));
   toast('الآية منقولة صحيحة، والخطأ في رقم المرجع المكتوب بعدها فقط'+(r[9]?' (وهو كذلك في المطبوع)':'، وهو من النسخة الرقمية، والمطبوع على الصواب')+'. موضع الآية في المصحف: '+place(r[3],r[4],r[5])+'.',8000);
+}
+/* the verse as a picture (to keep or send): drawn with the Complex's own font, nothing else on it but its place */
+async function ayaImage(parts,label){
+  const W=1080,P=90,fs=58,lh=Math.round(fs*2.05),F=fs+'px UthmanicHafs';
+  try{await document.fonts.load(F,parts.join(' '));await document.fonts.load('600 40px '+getComputedStyle(document.body).getPropertyValue('--display'))}catch(e){}
+  const c=document.createElement('canvas'),x=c.getContext('2d');x.font=F;x.direction='rtl';
+  const words=parts.join(' ').split(/\s+/).filter(Boolean),lines=[];let cur='';
+  for(const w of words){const t=cur?cur+' '+w:w;if(x.measureText(t).width>W-2*P&&cur){lines.push(cur);cur=w}else cur=t}
+  if(cur)lines.push(cur);
+  const H=P*2+lines.length*lh+110;c.width=W;c.height=H;
+  const css=getComputedStyle(document.body),v=k=>css.getPropertyValue(k).trim();
+  x.fillStyle='#fbf6ea';x.fillRect(0,0,W,H);
+  x.strokeStyle='#b7893c';x.lineWidth=3;x.strokeRect(24,24,W-48,H-48);x.lineWidth=1;x.strokeRect(34,34,W-68,H-68);
+  x.fillStyle='#4a2f17';x.font=F;x.direction='rtl';x.textAlign='center';x.textBaseline='middle';
+  lines.forEach((l,i)=>x.fillText(l,W/2,P+lh*(i+.5)));
+  x.font='600 38px '+(v('--display')||'serif');x.fillStyle='#8a6428';x.fillText(label,W/2,P+lines.length*lh+50);
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));if(!blob){toast('تعذّر إنشاء الصورة',1800);return}
+  const file=new File([blob],'aya.png',{type:'image/png'});
+  // iPhone and Android: the share sheet offers «حفظ الصورة»; elsewhere the picture is downloaded
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='aya.png';document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
 }
 function closeAya(){$('#ayaBack').hidden=true;$('#aya').hidden=true}
 $('#ayaClose').onclick=closeAya;$('#ayaBack').onclick=closeAya;
@@ -1793,7 +1816,7 @@ $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
  {d:'2026-09-30',items:[
-  'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نسخها.']},
+  'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نقلها أو حفظها صورة.']},
  {d:'2026-09-29',items:[
   'حواشي المطبوع: تحت الصفحة التي فيها حاشية زرّ «حاشية المطبوع» يعرضها كما طُبعت.',
   'رابط الفقرة: حدّد نصاً واضغط «رابط»، فمن يفتحه يرى الفقرة نفسها مظلّلة.',
