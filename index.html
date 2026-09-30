@@ -231,6 +231,7 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 @font-face{font-family:"UthmanicHafs";src:url(lib/kfgqpc_hafs_v30.ttf) format("truetype");font-display:swap}
 .q{color:var(--verse);font-family:var(--display);font-size:1.08em}
 .qu{font-family:"UthmanicHafs","Amiri",serif;font-size:1.1em;line-height:2.3}
+.reffix{font:12px var(--ui);color:var(--brass);border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:0 7px;margin-inline:4px;vertical-align:middle;line-height:1.7}
 .q.qa{cursor:pointer;-webkit-tap-highlight-color:rgba(183,137,60,.18)}
 .ayaplace{font-family:var(--display);font-size:20px;margin:4px 0 10px;text-align:center;color:var(--brass)}
 .ayatext{font-family:"UthmanicHafs","Amiri",serif;font-size:calc(var(--tsize) * 1.25);line-height:2.4;text-align:center;color:var(--verse);padding:4px 2px 8px}
@@ -733,7 +734,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='10';
-const APP_VER='2026-09-30-0712';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-09-30-0728';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1088,7 +1089,7 @@ function richInline(s,hl,inQ,rep){
   const f=document.createDocumentFragment();let buf='',node=f,qspan=null,ed=null,edParent=null;
   if(inQ){qspan=el('span','q');f.append(qspan);node=qspan}
   const flush=()=>{if(buf){appendHL(node,buf,hl);buf=''}};
-  let k=-1,skip=false,sup=null;
+  let k=-1,skip=false,sup=null,fix=null;
   // footnote numbers of the digital edition after a hadith or a verse (its takhrij notes, not carried here): small and muted
   s=s.replace(/(["}]|"،)\s?(\d{1,2})(?=[\s.،؛:؟,]|$)/g,'$1\u0001$2\u0002');
   // in some parts the digital edition lost the ligature ﷺ after the Prophet's name and left a lone "(": shown as in print
@@ -1104,12 +1105,15 @@ function richInline(s,hl,inQ,rep){
       // the verse in the Uthmani script of the King Fahd Complex, when the quotation matches it word for word
       if(rep&&rep[k]!=null){const r=rep[k];qspan.append(el('span','qu',r[2]));skip=true;
         // the reference was checked word for word against the verse: a tap shows it in full with its place
-        if(r[3]){qspan.classList.add('qa');qspan.dataset.s=r[3];qspan.dataset.a=r[4];qspan.dataset.b=r[5]}}
+        if(r[3]){qspan.classList.add('qa');qspan.dataset.s=r[3];qspan.dataset.a=r[4];qspan.dataset.b=r[5]}
+        if(r[6]!=null)fix=r}
       continue}
     if(ch==='}'&&qspan&&!ed){if(skip)buf='';else flush();skip=false;const b=el('span','qb','}');b.dataset.c='﴾';qspan.append(b);node=f;qspan=null;continue}
     if(skip)continue;
     if(ch==='['&&!ed){flush();ed=el('span','ed');ed.title='بصيغة النسخة الرقمية، وقد لا يكون في المطبوع بلفظه';edParent=node;node.append(ed);node=ed;buf='[';continue}
-    if(ch===']'&&ed){buf+=']';flush();node=edParent;ed=null;continue}
+    if(ch===']'&&ed){buf+=']';flush();node=edParent;ed=null;
+      if(fix){const r=fix,b=el('button','reffix','تصويب المرجع');b.type='button';b.onclick=e=>{e.stopPropagation();refFixNote(r)};node.append(b);fix=null}
+      continue}
     buf+=ch;
   }
   flush();f.inQ=!!qspan;return f;
@@ -1491,6 +1495,12 @@ async function openAya(s,a,b){
   $('#ayaCopy').onclick=()=>{const txt='﴿'+parts.map(t=>t.replace(/\s*\u06dd?[٠-٩]+$/,'')).join(' ')+'﴾ ['+'سورة '+name+': '+(b>a?ar(a)+'–'+ar(b):ar(a))+']';
     (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('نُسخت الآية',1600)).catch(()=>toast('تعذّر النسخ',1600))};
   $('#ayaBack').hidden=false;$('#aya').hidden=false;$('#aya').scrollTop=0;
+}
+/* a verse reference that names another place than the one the quoted words are in (checked on the whole Qur'an and against the printed page) */
+async function refFixNote(r){
+  let Q=null;try{Q=await quran()}catch(e){}
+  const place=(s,a,b)=>(Q?'سورة '+Q.n[s-1]:'')+'، '+(b>a?'الآيات '+ar(a)+'–'+ar(b):'الآية '+ar(a));
+  toast('الآية منقولة صحيحة، والخطأ في رقم المرجع المكتوب بعدها فقط'+(r[9]?' (وهو كذلك في المطبوع)':'، وهو من النسخة الرقمية، والمطبوع على الصواب')+'. موضع الآية في المصحف: '+place(r[3],r[4],r[5])+'.',8000);
 }
 function closeAya(){$('#ayaBack').hidden=true;$('#aya').hidden=true}
 $('#ayaClose').onclick=closeAya;$('#ayaBack').onclick=closeAya;
