@@ -721,7 +721,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="ayatext" id="ayaText"></div>
   <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نسخ الآية</button><button class="btn" id="ayaCopyT" type="button" hidden>نسخ الآية مع التفسير</button><button class="btn" id="ayaCopyO" type="button" hidden>نسخ التفسير</button><button class="btn" id="ayaImg" type="button">حفظ صورة</button></div>
   <section class="tafsir" id="tafSec" hidden><h4 id="tafHead">تفسير السعدي</h4><p class="tafnote" id="tafNote" hidden></p><div class="taftext" id="tafText"></div><button class="btn" id="tafMore" type="button" hidden>أكمل التفسير</button>
-    <p class="ayasrc" id="tafSrc"></p></section>
+    <p class="ayasrc" id="tafPg" hidden></p><p class="ayasrc" id="tafSrc"></p></section>
   <p class="ayasrc">نص الآية وخطّها من مجمع الملك فهد لطباعة المصحف الشريف (مصحف المدينة النبوية، رواية حفص، الإصدار ٣٠)، كما نشره المجمع دون أي تعديل.</p>
 </div>
 <div class="sheet-back" id="chooseBack" hidden></div>
@@ -750,8 +750,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='15';
-const APP_VER='2026-10-02-0534';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='16';
+const APP_VER='2026-10-02-0543';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1531,7 +1531,7 @@ async function openAya(s,a,b){
 let tafTok=0;
 function showTafsir(s,a,b,name,parts){
   const tok=++tafTok,X=$('#tafText'),note=$('#tafNote'),more=$('#tafMore');
-  $('#ayaCopyT').hidden=true;$('#ayaCopyO').hidden=true;more.hidden=true;X.innerHTML='';X.classList.remove('clip');$('#tafSrc').textContent='';
+  $('#ayaCopyT').hidden=true;$('#ayaCopyO').hidden=true;more.hidden=true;$('#tafPg').hidden=true;X.innerHTML='';X.classList.remove('clip');$('#tafSrc').textContent='';
   $('#tafHead').textContent='تفسير السعدي';note.hidden=false;note.textContent='جارٍ تحميل التفسير…';$('#tafSec').hidden=false;
   saadi().then(S=>{
     if(tok!==tafTok)return;
@@ -1542,13 +1542,17 @@ function showTafsir(s,a,b,name,parts){
     $('#tafHead').textContent='تفسير السعدي'+(g2>g1?' للآيات '+ar(g1)+'–'+ar(g2):' للآية '+ar(g1));
     txt.split('\n').forEach(par=>{const P=el('p');par.split(/(\{[^{}]*\})/).forEach(seg=>{if(/^\{/.test(seg))P.append(el('span','tq','﴿'+seg.slice(1,-1).trim()+'﴾'));else if(seg)P.append(document.createTextNode(seg))});X.append(P)});
     $('#tafSrc').textContent=S.src||'';
+    // where the passage is in the printed Risala edition (its own page numbers), for anyone who wants to check it in the book
+    const p1=gs[0][3],p2=Math.max(...gs.map(g=>g[4]||0));
+    if(p1){const T=$('#tafPg');T.textContent='موضعه في طبعة الرسالة: '+(p2>p1?'ص '+ar(p1)+'–'+ar(p2):'ص '+ar(p1))+'. للمقابلة ارجع إلى المطبوع؛ صور صفحاته لا تُعرض هنا حفظاً لحقوق الناشر.';T.hidden=false}
     requestAnimationFrame(()=>{if(tok===tafTok&&X.scrollHeight>420){X.classList.add('clip');more.hidden=false;more.onclick=()=>{X.classList.remove('clip');more.hidden=true}}});
     const ref='سورة '+name+': '+(b>a?ar(a)+'–'+ar(b):ar(a)),vtxt='﴿'+parts.map(t=>t.replace(/\s*\u06dd?[٠-٩]+$/,'')).join(' ')+'﴾ ['+ref+']';
+    const pref=p1?'\n[تيسير الكريم الرحمن، طبعة الرسالة، '+(p2>p1?'ص '+ar(p1)+'–'+ar(p2):'ص '+ar(p1))+']':'';
     const plain=txt.replace(/\{\s*([^{}]*?)\s*\}/g,'﴿$1﴾'),head='تفسير السعدي'+(g2>g1?' (الآيات '+ar(g1)+'–'+ar(g2)+')':'')+':\n';
     const copy=(t,msg)=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(msg,1800)).catch(()=>toast('تعذّر النسخ',1600));
     $('#ayaCopyT').hidden=false;$('#ayaCopyO').hidden=false;
-    $('#ayaCopyT').onclick=()=>copy(vtxt+'\n\n'+head+plain,'نُسخت الآية مع تفسيرها');
-    $('#ayaCopyO').onclick=()=>copy(head+plain,'نُسخ التفسير');
+    $('#ayaCopyT').onclick=()=>copy(vtxt+'\n\n'+head+plain+pref,'نُسخت الآية مع تفسيرها');
+    $('#ayaCopyO').onclick=()=>copy(head+plain+pref,'نُسخ التفسير');
   }).catch(()=>{if(tok===tafTok)note.textContent='تعذّر تحميل التفسير الآن. تأكد من الاتصال ثم افتح الآية مرة ثانية.'});
 }
 /* a verse reference that names another place than the one the quoted words are in (checked on the whole Qur'an and against the printed page) */
