@@ -419,6 +419,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .treecard svg{color:var(--gold);flex:none}
 .treecard b{display:block;font-family:var(--display);font-size:21px}
 .treecard small{font-size:13px;opacity:.8}
+.booklinks{display:flex;justify-content:flex-end;margin-top:6px}
 .tree{position:relative;padding:6px 0 20px}
 .tree svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .tree svg.links path{fill:none;stroke:var(--brass);stroke-width:1.2;opacity:.35}
@@ -554,6 +555,12 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="shelf-wrap"><div class="shelf" id="shelf" role="list"></div></div>
       <p class="hint">اضغط على الجزء لعرض أبوابه. الخط الذهبي على الكعب يبيّن موضع وقوفك، والنقطة الخضراء تعني أنه محفوظ للقراءة بدون إنترنت.</p>
       <p class="hint">وفي القراءة بالنص: الآية التي بعدها علامة «تفسير» اضغط عليها لتظهر كاملة مع تفسير السعدي.</p>
+    </section>
+
+    <section id="booksSec">
+      <div class="section-head"><h2>كتب أخرى</h2></div>
+      <button class="treecard" id="siraOpen" type="button"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M24 12c-5-4-12-5-18-4v28c6-1 13 0 18 4 5-4 12-5 18-4V8c-6-1-13 0-18 4Z"/><path d="M24 12v28"/></svg><span><b>مختصر سيرة الرسول ﷺ</b><small>للإمام محمد بن عبدالوهاب · طبعة جامعة الإمام · <span id="siraPos">ابدأ القراءة</span></small></span></button>
+      <div class="booklinks"><button class="btn btn-quiet" id="siraToc" type="button">أبواب الكتاب وفهرسه</button></div>
     </section>
 
     <section id="planSec">
@@ -798,8 +805,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='19';
-const APP_VER='2026-10-02-1035';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='20';
+const APP_VER='2026-10-02-1458';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -819,14 +826,18 @@ const VOLS=[
  {n:13,p:469,f:457,d:'تفسير واستنباط لسور وآيات من القرآن الكريم'},
  {n:14,p:583,f:565,d:'كتاب النصائح'},
  {n:15,p:508,f:493,d:'القسم الأول من كتاب البيان الواضح وأنبل النصائح'},
- {n:16,p:512,f:497,d:'القسم الأخير من كتاب البيان الواضح وأنبل النصائح، وتراجم أصحاب الرسائل والأجوبة'}
+ {n:16,p:512,f:497,d:'القسم الأخير من كتاب البيان الواضح وأنبل النصائح، وتراجم أصحاب الرسائل والأجوبة'},
+ {n:17,p:345,f:330,d:'مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب'}   // كتب أخرى: not a part of the Durar
 ];
+const NV=16,isB=n=>n>NV;   // the Durar has 16 parts; numbers above are other books read in the same reader
+const BOOK=n=>isB(n)?'مختصر سيرة الرسول ﷺ':'الدرر السنية في الأجوبة النجدية';
+const LRK=n=>isB(n)?'lastRead'+n:'lastRead';   // each other book keeps its own reading place
 // short spine labels, taken from the descriptions above
 const SPINE=['','العقائد','التوحيد','الأسماء والصفات','العبادات ١','العبادات ٢','البيع','الوقف','الجهاد ١','الجهاد ٢ · المرتد','حكم المرتد','مختصرات الردود ١','مختصرات الردود ٢','التفسير','النصائح','البيان الواضح ١','البيان الواضح ٢'];
 const LEATHER=[['#5a3520','#3b2213'],['#4d2b1a','#2f190d'],['#633a1f','#40240f'],['#3f3320','#282013'],['#5c2e22','#3a1b12']];
 const $=s=>document.querySelector(s);
 const AR='٠١٢٣٤٥٦٧٨٩';const ar=x=>String(x).replace(/\d/g,d=>AR[d]);
-const partName=n=>n?'الجزء '+ORD[n]:'صفحة العنوان';
+const partName=n=>isB(n)?'مختصر السيرة':n?'الجزء '+ORD[n]:'صفحة العنوان';
 const short=n=>n?'ج'+ar(n):'العنوان';
 const norm=s=>s.normalize('NFKC').replace(/[ً-ْٰـ]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>AR.indexOf(d));
 const nl=s=>s.replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
@@ -908,7 +919,7 @@ function snip(raw,k,len){
 async function runSearch(rawq,only,onStatus,exact,onPart){
   const q=norm(rawq.trim()).replace(/\s+/g,' ');if(q.length<2)return null;
   const W=exact?[q]:q.split(' ').filter(w=>w.length>1);
-  const out=[];const vols=only?[only]:VOLS.slice(1).map(v=>v.n);
+  const out=[];const vols=only?[only]:VOLS.slice(1,NV+1).map(v=>v.n);
   for(const n of vols){
     if(onStatus)onStatus(n);
     let P;try{P=await searchPart(n)}catch(e){return {error:true,out}}
@@ -997,6 +1008,7 @@ async function renderHome(){
   const lr=LS.get('lastRead',null);
   if(lr&&lr.n){$('#contT').textContent='تابع القراءة';$('#contS').textContent=partName(lr.n)+' · ص '+ar(lr.p)}
   else{$('#contT').textContent='ابدأ القراءة';$('#contS').textContent='من أول الجزء الأول'}
+  {const l=LS.get(LRK(17),null);$('#siraPos').textContent=l&&l.n?'تابع من ص '+ar(l.p):'ابدأ القراءة'}
   const F=favs(),N=notes();const keys=[];F.forEach(x=>keys.push(x.n+':'+x.p));Object.keys(N).forEach(k=>{if(N[k]&&!keys.includes(k))keys.push(k)});
   $('#favSec').hidden=!keys.length;$('#favCount').textContent=keys.length?ar(keys.length)+' صفحة':'';
   const FV=$('#favs');FV.innerHTML='';
@@ -1011,7 +1023,7 @@ async function renderHome(){
   });
   const S=$('#shelf');
   if(!S.children.length){
-    VOLS.slice(1).forEach(v=>{
+    VOLS.slice(1,NV+1).forEach(v=>{
       const b=el('button','spine');b.type='button';b.setAttribute('role','listitem');b.id='sp'+v.n;
       const L=LEATHER[v.n%LEATHER.length];b.style.setProperty('--c1',L[0]);b.style.setProperty('--c2',L[1]);
       const h=Math.round(160+v.p/619*90);b.style.setProperty('--h',h+'px');b.dataset.h=h;
@@ -1020,7 +1032,7 @@ async function renderHome(){
       b.onclick=()=>{renderToc(v.n);$('#tocOverlay').hidden=false};S.append(b);
     });
   }
-  for(const v of VOLS.slice(1)){
+  for(const v of VOLS.slice(1,NV+1)){
     const b=$('#sp'+v.n),last=LS.get('last'+v.n,0);
     b.querySelector('.prog').style.height=last>1?Math.max(4,(last/v.p)*(b.dataset.h-10))+'px':'0';
     const saved=await isSaved(v.n);let d=b.querySelector('.dot');
@@ -1030,6 +1042,8 @@ async function renderHome(){
 }
 function resume(lr){RESTORE=lr;READING=true;openPart(lr.n,lr.p)}
 $('#continue').onclick=()=>{const lr=LS.get('lastRead',null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(1,1)}};
+$('#siraOpen').onclick=()=>{const lr=LS.get(LRK(17),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(17,3)}};
+$('#siraToc').onclick=()=>{renderToc(17);$('#tocOverlay').hidden=false};
 
 /* page of the day: chosen by the date among pages with checked text */
 async function daily(){
@@ -1126,11 +1140,12 @@ function chooseMode(then){
 /* ---------- TOC ---------- */
 async function renderToc(focus){
   const box=$('#toc');box.innerHTML='';let H=[];try{H=await heads()}catch(e){}
-  for(const v of VOLS.slice(1)){
-    const h=el('h5',null,partName(v.n));h.id='toc'+v.n;box.append(h);
+  for(const v of (isB(focus)?[VOLS[focus]]:VOLS.slice(1,NV+1))){
+    const h=el('h5',null,isB(v.n)?BOOK(v.n):partName(v.n));h.id='toc'+v.n;box.append(h);
     box.append(el('p','note',v.d));
     const add=(t,p)=>{const b=el('button');b.type='button';b.append(el('span',null,t),el('span',null,'ص '+ar(p)));b.onclick=()=>{const ov=$('#tocOverlay'),y=ov.scrollTop;ov.hidden=true;openPart(v.n,p).then(()=>setBack('رجوع إلى الأبواب',()=>{ov.hidden=false;ov.scrollTop=y}))};box.append(b)};
-    add('أول الجزء',1);add('الفهرس المطبوع (اضغط فيه على الموضوع)',v.f);
+    if(isB(v.n)){box.append(el('p','note','تصحيح ومقابلة: الشيخ عبدالرحمن بن ناصر البراك، والشيخ عبدالعزيز بن عبدالله الراجحي، والشيخ محمد العلي البراك. طبعة جامعة الإمام محمد بن سعود الإسلامية (مؤلفات الشيخ، القسم الثالث).'));add('مقدمة الطبعة',3);add('أول الكتاب',7);add('فهرس الموضوعات المطبوع',v.f);add('جدول التصويبات المطبوع',339)}
+    else{add('أول الجزء',1);add('الفهرس المطبوع (اضغط فيه على الموضوع)',v.f)}
     H.filter(x=>x[0]===v.n).forEach(x=>add(x[2],x[1]));
   }
   if(focus)setTimeout(()=>{const t=$('#toc'+focus);t&&t.scrollIntoView({block:'start'})},30);
@@ -1344,7 +1359,7 @@ function savePlace(){
   const tv=$('#tview');if(tv.hidden||TX.n<1||TX.n!==cur.n||$('#reader').hidden)return;
   let blk=null;for(const b of $('#tpage').children){if(!b.dataset.p)continue;if(!blk||b.offsetTop<=tv.scrollTop+2)blk=b;else break}
   if(!blk||!isReading(TX.n,+blk.dataset.p))return;const f=Math.max(0,Math.min(0.999,(tv.scrollTop-blk.offsetTop)/Math.max(1,blk.offsetHeight)));
-  LS.set('lastRead',{n:TX.n,p:+blk.dataset.p,f:+f.toFixed(3)});
+  LS.set(LRK(TX.n),{n:TX.n,p:+blk.dataset.p,f:+f.toFixed(3)});
 }
 let RESTORE=null;
 document.addEventListener('visibilitychange',()=>{if(document.hidden)savePlace()});window.addEventListener('pagehide',savePlace);
@@ -1456,7 +1471,7 @@ async function openPart(n,p,hl,noPush,view){
   await go(p||1);
 }
 function setPage(p){
-  const rd=cur.n&&isReading(cur.n,p);if(rd)planProgress(cur.n,p);cur.p=p;if(rd){LS.set('last'+cur.n,p);const lr=LS.get('lastRead',null);if(!lr||lr.n!==cur.n||lr.p!==p)LS.set('lastRead',{n:cur.n,p,f:0})}
+  const rd=cur.n&&isReading(cur.n,p);if(rd)planProgress(cur.n,p);cur.p=p;if(rd){LS.set('last'+cur.n,p);const lr=LS.get(LRK(cur.n),null);if(!lr||lr.n!==cur.n||lr.p!==p)LS.set(LRK(cur.n),{n:cur.n,p,f:0})}
   history.replaceState(history.state,'','#v'+cur.n+'p'+p);
   $('#pg').value=p;updFav();
 }
@@ -1526,7 +1541,7 @@ async function buildHot(H,n,p,still){
   if(!LS.get('hotTip',0)){LS.set('hotTip',1);toast('اضغط على أي موضوع في الفهرس لتنتقل إلى صفحته',3500)}
 }
 function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16){READING=!EXC;openPart(cur.n+1,1,null,true)}else if(cur.n>=16)toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
-function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1){READING=!EXC;openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}}else go(cur.p-1)}
+function prev(){if(loading)return;HL=[];if(cur.p<=1){if(cur.n>1&&!isB(cur.n)){READING=!EXC;openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}}else go(cur.p-1)}
 function closeReader(){clearTimeout(TX.sv);savePlace();clearBack();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{if(!openHash(location.hash,false)&&!$('#reader').hidden)closeReader()});
@@ -1645,7 +1660,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 $('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VIEW==='txt')await setView('img');go(VOLS[cur.n].f)};
 
 $('#mIdx').onclick=()=>{closeSheet();openIdx()};
-function citation(p){return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
+function citation(p){if(isB(cur.n))return '(مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب، مؤلفات الشيخ، القسم الثالث، ط. جامعة الإمام محمد بن سعود الإسلامية، ص '+ar(p||cur.p)+')';return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
 const pageUrl=()=>location.origin+location.pathname+'#v'+cur.n+'p'+cur.p;
 async function copyText(t,okMsg){try{await navigator.clipboard.writeText(t);toast(okMsg)}catch(e){prompt('انسخ النص:',t)}}
 $('#mCite').onclick=()=>{closeSheet();copyText(citation(),'نُسخ الاستشهاد: '+partName(cur.n)+'، ص '+ar(cur.p))};
@@ -1653,7 +1668,7 @@ $('#mCopy').onclick=async()=>{closeSheet();
   try{const T=await textOf(cur.n);const t=pagePlain(T,cur.p);if(!t||cur.p>=VOLS[cur.n].f){toast('لا يوجد نص لهذه الصفحة، فاعتمد الصورة.',3500);return}
     copyText(t+'\n\n'+citation()+((T.p[cur.p][0]&2)?' [حدود الصفحة تقريبية؛ تُراجع صورتها]':''),'نُسخ نص الصفحة مع الاستشهاد')}catch(e){toast('تعذّر تحميل النص')}};
 $('#mLink').onclick=async()=>{closeSheet();const u=pageUrl(),t=citation();
-  if(navigator.share){try{await navigator.share({title:'الدرر السنية',text:t,url:u});return}catch(e){if(e.name==='AbortError')return}}
+  if(navigator.share){try{await navigator.share({title:isB(cur.n)?'مختصر السيرة':'الدرر السنية',text:t,url:u});return}catch(e){if(e.name==='AbortError')return}}
   copyText(t+'\n'+u,'نُسخ رابط الصفحة')};
 $('#mImg').onclick=async()=>{closeSheet();
   try{
@@ -1663,9 +1678,9 @@ $('#mImg').onclick=async()=>{closeSheet();
     await pg.render({canvasContext:x,viewport:v}).promise;
     if(PAPER==='beige'){x.globalCompositeOperation='multiply';x.fillStyle='#f2e6c6';x.fillRect(0,0,c.width,v.height);x.globalCompositeOperation='source-over'}
     x.fillStyle='#3b2616';x.fillRect(0,v.height,c.width,band);x.fillStyle='#f6ecd8';x.font='36px Amiri, serif';x.textAlign='center';x.direction='rtl';
-    x.fillText('الدرر السنية في الأجوبة النجدية — '+partName(cur.n)+'، ص '+ar(cur.p),c.width/2,v.height+58);
+    x.fillText((isB(cur.n)?BOOK(cur.n):BOOK(cur.n)+' — '+partName(cur.n))+'، ص '+ar(cur.p),c.width/2,v.height+58);
     const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.9));
-    const file=new File([blob],'الدرر السنية - '+short(cur.n)+' ص'+cur.p+'.jpg',{type:'image/jpeg'});
+    const file=new File([blob],(isB(cur.n)?'مختصر السيرة':'الدرر السنية - '+short(cur.n))+' ص'+cur.p+'.jpg',{type:'image/jpeg'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:citation()});return}
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.append(a);a.click();a.remove();
   }catch(e){if(e.name!=='AbortError')toast('تعذّرت مشاركة الصورة')}};
@@ -1682,7 +1697,7 @@ $('#sform2').addEventListener('submit',async e=>{
   e.preventDefault();$('#q2').blur();
   {const r=parseRef($('#q2').value);if(r){closeSearch();openRef(r);return}}
   const R=$('#res2');R.innerHTML='';R.append(el('p','note','جاري البحث…'));
-  const only=$('#onlyPart').checked&&cur.n?cur.n:0;
+  const only=isB(cur.n)||($('#onlyPart').checked&&cur.n)?cur.n:0;
   R.innerHTML='';const pr=progressBar(R);
   const res=await runSearch($('#q2').value,only,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=((n-1)/16*100)+'%'},$('#exact2').checked,r=>{if(r.out.length)renderHits(R,r,0)});
   pr.done();
@@ -1723,7 +1738,7 @@ function renderPlan(){
 }
 $('#planEdit').onclick=()=>{if(confirm('إلغاء الخطة الحالية واختيار مدة جديدة؟')){LS.set('plan',null);renderPlan()}};
 // a page counts as read when reached in order within the plan
-function planProgress(n,p){const P=LS.get('plan',null);if(!P||!n)return;const g=gidx(n,p)-1;if(g>(P.done||0)&&g<=(P.done||0)+15){P.done=g;LS.set('plan',P)}}
+function planProgress(n,p){const P=LS.get('plan',null);if(!P||!n||isB(n))return;const g=gidx(n,p)-1;if(g>(P.done||0)&&g<=(P.done||0)+15){P.done=g;LS.set('plan',P)}}
 
 /* ---------- notes export ---------- */
 async function exportNotes(){
@@ -1809,7 +1824,7 @@ $('#selLink').onclick=async()=>{
   let t=S.toString().split(/\n/).map(x=>x.trim()).filter(Boolean)[0]||'';
   if(t.length>90){t=t.slice(0,90);t=t.slice(0,t.lastIndexOf(' ')>40?t.lastIndexOf(' '):90)}
   const url=location.origin+location.pathname+'#v'+cur.n+'p'+pp+'~'+encodeURIComponent(t);hideSelBar();S.removeAllRanges();
-  try{if(navigator.share){await navigator.share({title:'الدرر السنية في الأجوبة النجدية',text:'«'+t+'…» — '+citation(pp),url});return}}catch(err){if(err.name==='AbortError')return}
+  try{if(navigator.share){await navigator.share({title:BOOK(cur.n),text:'«'+t+'…» — '+citation(pp),url});return}}catch(err){if(err.name==='AbortError')return}
   try{await navigator.clipboard.writeText(url);toast('نُسخ رابط الفقرة')}catch(err){prompt('انسخ الرابط:',url)}
 };
 let PASSAGE=null;   // words to mark once their page is on screen
@@ -1825,7 +1840,7 @@ async function markPassage(){
     await new Promise(r=>setTimeout(r,150))}
 }
 function openHash(h,push){
-  const m=h.match(/^#v(\d+)p(\d+)(?:~(.*))?$/);if(!m||+m[1]>16)return false;
+  const m=h.match(/^#v(\d+)p(\d+)(?:~(.*))?$/);if(!m||!VOLS[+m[1]])return false;
   const n=+m[1],p=+m[2];let t='';try{t=m[3]?decodeURIComponent(m[3]):''}catch(e){}
   PASSAGE=t?{n,p,t}:null;
   openPart(n,p,null,!push,t?'txt':undefined).then(markPassage);return true;
@@ -1931,7 +1946,7 @@ $('#quoteBtn').onclick=async()=>{
   const s=document.getSelection();let t=s.toString().replace(/\s+/g,' ').trim();if(!t)return;
   if(t.length>700)t=t.slice(0,700).replace(/\s\S*$/,'')+' …';
   const node=s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement,blk=node&&node.closest('.pgblk');const pp=blk?+blk.dataset.p:cur.p;
-  await drawCard(cardRuns(t),'الدرر السنية في الأجوبة النجدية — '+partName(cur.n)+'، ص '+ar(pp),location.host,'اقتباس من الدرر السنية.png',citation(pp));
+  await drawCard(cardRuns(t),(isB(cur.n)?BOOK(cur.n):BOOK(cur.n)+' — '+partName(cur.n))+'، ص '+ar(pp),location.host,'اقتباس من '+(isB(cur.n)?'مختصر السيرة':'الدرر السنية')+'.png',citation(pp));
 };
 
 
@@ -1953,6 +1968,9 @@ $('#fwSend').onclick=()=>openFb('fawaid');
 $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
+ {d:'2026-10-02T15:30',items:[
+  'كتاب جديد: «مختصر سيرة الرسول ﷺ» للإمام محمد بن عبدالوهاب، طبعة جامعة الإمام. تجده في الصفحة الرئيسة تحت «كتب أخرى»، وفي القائمة الجانبية (☰).',
+  'يُقرأ كما تُقرأ الدرر: نصاً على حدود صفحات المطبوع أو صوراً، مع البحث فيه، والآيات بخط المصحف وتفسير السعدي، وحواشي المطبوع. والنص قوبل بصور المطبوع، والمعتمد عند النقل صورة الصفحة.']},
  {d:'2026-10-02T12:00',items:[
   'المظهر: اختر بين التلقائي (يتبع إعداد الجوال) والليلي والأبيض، من القائمة الجانبية (☰) أو من «المزيد» أثناء القراءة.',
   'صورة الاقتباس وصورة الآية بتصميم جديد: الآيات بخط المصحف ولونها الذهبي، ومعها اسم الكتاب والجزء والصفحة.',
@@ -2083,6 +2101,8 @@ function openNav(){
   it('أبواب الكتاب',()=>{closeNav();$('#openToc').click()});
   it('تصفّح بالموضوع',()=>{closeNav();openTopics()});
   it('خزانة الأجزاء',()=>goSec('shelfSec'));
+  grp('كتب أخرى');
+  it('مختصر سيرة الرسول ﷺ',()=>{closeNav();$('#siraOpen').click()});
   grp('الفهارس');
   it('فهرس المسائل',()=>{closeNav();openIdx('q')});
   it('فهرس العلماء',()=>{closeNav();openIdx('s')});
@@ -2112,7 +2132,7 @@ async function renderAbout(){
 }
 
 /* ---------- backup of the reader's own data ---------- */
-const BK_KEYS=k=>/^(favs|notes|hls|plan|lastRead|last\d+|mode|fs|view2|chosen)$/.test(k);
+const BK_KEYS=k=>/^(favs|notes|hls|plan|lastRead\d*|last\d+|mode|fs|view2|chosen)$/.test(k);
 $('#bkSave').onclick=async()=>{
   const d={app:'durar',saved:new Date().toISOString(),data:{}};
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(BK_KEYS(k))d.data[k]=localStorage.getItem(k)}}catch(e){}
@@ -2239,7 +2259,7 @@ setTimeout(checkUpdate,1500);
 /* start */
 if(hasCaches){volCache().then(c=>c.delete(new Request('./_vol/8.pdf'))).catch(()=>{});caches.delete('durar-text-v1').catch(()=>{})}
 renderHome();daily();renderPlan();renderAbout();
-(function(){const h=location.hash,m=h.match(/^#v(\d+)p(\d+)/);if(m&&+m[1]<=16){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openHash(h,false)}})();
+(function(){const h=location.hash,m=h.match(/^#v(\d+)p(\d+)/);if(m&&VOLS[+m[1]]){history.replaceState(null,'',location.pathname);history.pushState({r:1},'','#v'+m[1]+'p'+m[2]);openHash(h,false)}})();
 </script>
 </body>
 </html>
