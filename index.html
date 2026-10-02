@@ -261,6 +261,11 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .empty svg{color:var(--brass)}
 .split #view{border-inline-start:1px solid var(--line)}
 body.immersive .rtop{display:none}
+/* reading without the bars: one tap on the page hides the top bar and slides the tool bar away; another tap brings them back */
+.qbar{transition:transform .25s ease,opacity .25s ease}
+body.immersive .qbar{transform:translate(-50%,160%);opacity:0;pointer-events:none}
+body.immersive .panes{padding-top:env(safe-area-inset-top)}
+body.immersive .selbar{bottom:calc(20px + env(safe-area-inset-bottom))}
 
 .qbar{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:2px;background:rgba(59,38,22,.94);color:#f6ecd8;padding:5px;border-radius:28px;box-shadow:0 4px 16px rgba(0,0,0,.25);backdrop-filter:blur(6px);z-index:45}
 .qbar .icon{color:inherit;width:54px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:18px}
@@ -746,7 +751,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='15';
-const APP_VER='2026-10-02-0529';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-02-0534';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1384,6 +1389,7 @@ async function openPart(n,p,hl,noPush,view){
   const seq=++openSeq;HL=hl||[];CMP=false;clearBack();
   if(view){VIEW=view;LS.set('view2',view)}
   $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
+  if(!LS.get('immHint')){LS.set('immHint','1');setTimeout(()=>{if(!$('#reader').hidden)toast('المس الصفحة لإخفاء الشريطين، والمسها مرة أخرى لإظهارهما',3500)},1800)}
   $('#tocOverlay').hidden=true;
   $('#rTitle').textContent=partName(n);$('#tot').textContent='/ '+ar(VOLS[n].p);
   if(!noPush)history.pushState({r:1},'','#v'+n+'p'+(p||1));
@@ -1486,11 +1492,19 @@ function swipe(box){
     if(dt>800)return;
     const zoomed=box.scrollWidth>box.clientWidth+4;
     if(!zoomed&&Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.6){const sel=document.getSelection();if(sel&&!sel.isCollapsed)return;dx<0?next():prev();return}
-    if(box.id==='view'&&dt<300&&Math.abs(dx)<10&&Math.abs(dy)<10&&!(e.target.closest&&e.target.closest('.hot button')))document.body.classList.toggle('immersive');
+    if(box.id==='view'&&dt<300&&Math.abs(dx)<10&&Math.abs(dy)<10&&!(e.target.closest&&e.target.closest('.hot button')))toggleImmersive();
   },{passive:true});
 }
 swipe($('#view'));swipe($('#tview'));
-$('#view').addEventListener('click',e=>{if(!('ontouchstart' in window)&&!e.target.closest('.hot button'))document.body.classList.toggle('immersive')});
+$('#view').addEventListener('click',e=>{if(!('ontouchstart' in window)&&!e.target.closest('.hot button'))toggleImmersive()});
+/* the page keeps its place on the screen when the top bar goes or comes back */
+function setImmersive(on){
+  const b=document.body;if(b.classList.contains('immersive')===on)return;
+  const P=$('#panes'),t0=P.getBoundingClientRect().top;b.classList.toggle('immersive',on);
+  const d=P.getBoundingClientRect().top-t0;if(d)[$('#tview'),$('#view')].forEach(x=>{if(!x.hidden)x.scrollTop+=d});
+}
+function toggleImmersive(){setImmersive(!document.body.classList.contains('immersive'))}
+let selAt=0;document.addEventListener('selectionchange',()=>{const s=document.getSelection();if(s&&!s.isCollapsed)selAt=Date.now()});
 document.addEventListener('keydown',e=>{if($('#reader').hidden||/INPUT|TEXTAREA/.test(e.target.tagName))return;if(e.key==='ArrowLeft')next();if(e.key==='ArrowRight')prev()});
 
 /* favorites */
@@ -1772,7 +1786,10 @@ $('#tview').addEventListener('click',e=>{
   const sp=e.target.closest('.hlt');const s=document.getSelection();
   const qa=e.target.closest('.qa');if(qa&&!sp&&(!s||s.isCollapsed)){openAya(+qa.dataset.s,+qa.dataset.a,+qa.dataset.b);return}
   if(sp&&(!s||s.isCollapsed)){const id=sp.dataset.id,c=(sp.className.match(/c-(\w)/)||[])[1];HLEDIT={i:id,c};showSelBar(true);return}
-  if(HLEDIT)hideSelBar();
+  if(HLEDIT){hideSelBar();return}
+  // a plain tap on the page (not on a verse, a mark, a button or a link, and not the tap that ends a selection) shows or hides the bars
+  if((s&&!s.isCollapsed)||Date.now()-selAt<700||e.target.closest('a,button,input,textarea,.gap,.fn,.qb,[role=button]'))return;
+  toggleImmersive();
 });
 $('#tview').addEventListener('scroll',()=>{if(HLEDIT)hideSelBar()},{passive:true});
 function renderHls(){
@@ -1855,6 +1872,7 @@ $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
  {d:'2026-10-02',items:[
+  'القراءة بالصفحة كاملة: المس الصفحة مرة فيختفي الشريط العلوي والسفلي، والمسها مرة أخرى فيعودان.',
   'تفسير السعدي: إذا ضغطت على آية مستشهد بها في الكتاب ظهر تحتها تفسيرها من «تيسير الكريم الرحمن» للسعدي، مقابَلاً على طبعة مؤسسة الرسالة، ويمكنك نسخ الآية مع تفسير السعدي أو بدونه، أو نسخ التفسير وحده.']},
  {d:'2026-09-30',items:[
   'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نسخها أو حفظها صورة.']},
