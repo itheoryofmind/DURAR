@@ -126,6 +126,35 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(36px,10vw,60px);li
 .bkpage .actions{margin-top:14px}.bkpage h4{margin:22px 0 8px;font-family:var(--display);font-size:20px}
 .bktoc button{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:start;padding:11px 4px;border:0;border-bottom:1px solid var(--line);background:none;color:inherit;font-size:16px}
 .bktoc button span:last-child{color:var(--muted);white-space:nowrap;font-size:14px}
+.sxtabs button{font-size:14px;padding:9px 4px}
+.sxbtns{display:grid;gap:10px;margin-top:14px}.sxbtns .treecard{margin-top:0}
+.sxnote{font-size:13px;color:var(--muted);line-height:1.8;margin:4px 0 10px}
+.eras{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.eras::-webkit-scrollbar{display:none}
+.eras button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;color:var(--ink)}
+.sxsw{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin:0 2px 10px}
+.tera{font-family:var(--display);font-size:24px;color:var(--brass);margin:22px 0 10px;scroll-margin-top:70px}
+.tyear{position:relative;font-size:13px;font-weight:700;color:var(--brass);margin:12px 0 8px;padding:2px 0}
+.tyear::before{content:"";position:absolute;inset-inline-start:-22px;top:6px;width:10px;height:10px;border-radius:2px;background:var(--brass);transform:rotate(45deg)}
+.tev{position:relative;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.tev::before{content:"";position:absolute;inset-inline-start:-23px;top:14px;width:12px;height:12px;border-radius:50%;background:var(--brass);box-shadow:0 0 0 3px var(--ground)}
+.tev.mn{padding:7px 12px;background:none}.tev.mn::before{width:8px;height:8px;inset-inline-start:-21px;top:13px;background:var(--brass-soft)}
+.tev b{display:block;font-family:var(--display);font-size:18px;line-height:1.5}.tev.mn b{font-size:16px;font-family:var(--ui);font-weight:600}
+.tev .tw{display:inline-block;font-size:12px;color:var(--brass);border:1px solid var(--brass-soft);border-radius:999px;padding:1px 8px;margin:4px 0 2px}
+.tev .tq{font-family:var(--text);font-size:16px;line-height:1.95;margin:6px 0 4px;color:var(--ink)}
+.tev .tf{margin:4px 0;padding:0;list-style:none;font-size:14px}.tev .tf li{margin:2px 0}.tev .tf span{color:var(--muted)}
+.tev .tp{display:flex;justify-content:flex-end}.tev .tp button{border:0;background:none;color:var(--brass);font-weight:600;padding:4px 0}
+.tmore{display:block;width:100%;text-align:start;border:1px dashed var(--line);background:none;border-radius:10px;padding:7px 12px;margin:0 0 8px;color:var(--muted);font-size:14px}
+.nchain{display:flex;flex-direction:column;align-items:center;gap:0;margin:8px 0 14px}
+.nchain .tnode{min-width:140px;max-width:none}.nchain i{display:block;width:2px;height:14px;background:var(--brass-soft)}
+.fbr{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:10px;margin-bottom:10px}
+.fbr>.tnode{max-width:none;width:100%;text-align:start;display:block}
+.fkids{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding-inline-start:12px;border-inline-start:2px solid var(--brass-soft)}
+.fkids .tnode{font-size:14px}
+.tnode{cursor:pointer}.tnode .tg{display:block;font-family:var(--ui);font-size:11px;color:var(--brass)}
+.sxd{border-inline-start:3px solid var(--brass);padding:6px 10px;margin:6px 0 8px;font-family:var(--text);font-size:15px;line-height:1.9;background:var(--raised);border-radius:0 8px 8px 0}
+.sxd button{border:0;background:none;color:var(--brass);font-weight:600;padding:2px 0;font-family:var(--ui);font-size:14px}
+.cgrp{font-family:var(--display);font-size:20px;color:var(--brass);margin:16px 0 8px}
+
 
 .searchbar{margin-top:-26px;position:relative;z-index:2}
 .searchbox{display:flex;align-items:center;gap:8px;background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:6px 6px 6px 8px;box-shadow:var(--shadow)}
@@ -804,10 +833,19 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <div class="actions"><button class="action main" id="bkGo" type="button"><b id="bkGoT">ابدأ القراءة</b><span id="bkGoS">من مقدمة الطبعة</span></button></div>
     <form class="searchbox" id="bkForm" role="search" style="margin-top:14px"><input id="bkQ" type="search" placeholder="ابحث في مختصر السيرة…" aria-label="البحث في مختصر السيرة" enterkeyhint="search" autocomplete="off"><button class="btn btn-primary" type="submit">بحث</button></form>
     <div class="results" id="bkRes"></div>
+    <div class="sxbtns"><button class="treecard" type="button" data-sx="tl"><svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M24 4v40"/><circle cx="24" cy="12" r="4"/><circle cx="24" cy="26" r="4"/><circle cx="24" cy="38" r="3"/><path d="M28 12h12M8 26h12M28 38h10"/></svg><span><b>الخط الزمني</b><small>أحداث السيرة وما بعدها كما في الكتاب</small></span></button>
+    <button class="treecard" type="button" data-sx="nasab"><svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="24" cy="8" r="4"/><circle cx="12" cy="24" r="4"/><circle cx="36" cy="24" r="4"/><circle cx="6" cy="40" r="4"/><circle cx="18" cy="40" r="4"/><circle cx="36" cy="40" r="4"/><path d="M24 12v4M12 20v-4h24v4M12 28v4M6 36v-4h12v4M36 28v8"/></svg><span><b>الشجرة</b><small>النسب الشريف، وآل عبد المطلب، والخلفاء</small></span></button></div>
     <h4>أبواب الكتاب</h4>
     <div class="bktoc" id="bkToc"></div>
     <h4>عن هذه النسخة</h4>
     <p class="note">النص من نشرة وزارة الشؤون الإسلامية (المكتبة الشاملة)، وهو نص هذه الطبعة نفسها، رُبط بصفحات المطبوع صفحةً صفحة، وقوبل بصورها، وطُبّق عليه جدول التصويبات المطبوع في آخر الكتاب. والآيات بنص مجمع الملك فهد وخطه، وحواشي المطبوع تُعرض صورةً كما طُبعت. والعناوين الباهتة من النسخة الرقمية وليست في المطبوع. والمعتمد عند النقل صورة الصفحة: زر «قارن بالصورة».</p>
+  </div>
+</div>
+<div class="overlay" id="sxOverlay" hidden role="dialog" aria-label="الخط الزمني والشجرة">
+  <div class="head"><h2 style="flex:1" id="sxTitle">مختصر السيرة</h2><button class="icon" id="sxClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="body">
+    <div class="tabs sxtabs" role="tablist" style="grid-template-columns:repeat(4,1fr)"><button type="button" data-v="tl" role="tab">الخط الزمني</button><button type="button" data-v="nasab" role="tab">النسب</button><button type="button" data-v="fam" role="tab">آل عبد المطلب</button><button type="button" data-v="cal" role="tab">الخلفاء</button></div>
+    <div id="sxView"></div>
   </div>
 </div>
 <div class="overlay" id="tocOverlay" hidden role="dialog" aria-label="أبواب الكتاب">
@@ -818,8 +856,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='22';
-const APP_VER='2026-10-02-1634';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='23';
+const APP_VER='2026-10-02-1651';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1064,6 +1102,67 @@ async function openBook(){
     add('مقدمة الطبعة',3);add('مقدمة الشيخ',7);H.filter(x=>x[0]===17).forEach(x=>add(x[2],x[1]));add('فهرس الموضوعات المطبوع',VOLS[17].f);add('جدول التصويبات المطبوع',339)}
   ov.hidden=false;
 }
+
+/* ---------- مختصر السيرة: timeline and trees, built only from the book (every item carries its page and the book's words) ---------- */
+const sirax=()=>getJSON('data/sira_x.json');
+let SXV='tl',SXALL=false;
+function sxGo(p){const ov=$('#sxOverlay'),y=ov.scrollTop;openPart(17,p).then(()=>setBack('رجوع',()=>{ov.hidden=false;ov.scrollTop=y}))}
+function sxSrc(o,wrap){const d=el('div','sxd');d.append('«'+o.q+'» ');const b=el('button',null,'ص '+ar(o.p)+' ←');b.type='button';b.onclick=()=>sxGo(o.p);d.append(b);wrap.append(d);return d}
+async function openSX(v){
+  $('#sxOverlay').hidden=false;if(v)SXV=v;
+  [...document.querySelectorAll('#sxOverlay .tabs button')].forEach(b=>b.setAttribute('aria-selected',b.dataset.v===SXV));
+  const V=$('#sxView');V.innerHTML='';V.append(el('p','note','جاري التحميل…'));
+  let D;try{D=await sirax()}catch(e){V.innerHTML='';V.append(el('p','note','تعذّر التحميل. تأكد من الاتصال بالإنترنت.'));return}
+  V.innerHTML='';({tl:sxTimeline,nasab:sxNasab,fam:sxFam,cal:sxCal})[SXV](V,D);
+}
+function sxTimeline(V,D){
+  V.append(el('p','sxnote','كل حدث هنا مأخوذ من الكتاب بترتيبه، ومعه نص الكتاب ورقم صفحته. والتاريخ يُكتب بلفظ الكتاب إذا ذكره، ولم يُضف شيء من خارجه. وفواصل السنين هي عناوين الكتاب نفسه.'));
+  const E=el('div','eras');D.tl.eras.forEach((n,i)=>{const b=el('button',null,n);b.type='button';b.onclick=()=>{const t=$('#era'+i);t&&t.scrollIntoView({behavior:'smooth',block:'start'})};E.append(b)});V.append(E);
+  const sw=el('label','sxsw');const cb=document.createElement('input');cb.type='checkbox';cb.checked=SXALL;cb.onchange=()=>{SXALL=cb.checked;openSX()};sw.append(cb,'اعرض كل الأحداث مفتوحة (لا الكبرى وحدها)');V.append(sw);
+  const L=el('div','tline');V.append(L);
+  let era=-1,pend=[];
+  const card=(x)=>{const c=el('div','tev'+(x.l?'':' mn'));c.append(el('b',null,x.t));if(x.w)c.append(el('span','tw',x.w));
+    const body=()=>{c.append(el('p','tq','«'+x.q+'»'));if(x.f&&x.f.length){const u=el('ul','tf');x.f.forEach(([k,v])=>{const li=el('li');li.append(el('span',null,k+': '),v);u.append(li)});c.append(u)}
+      const pb=el('div','tp'),b=el('button',null,'اقرأه في الكتاب · ص '+ar(x.p)+' ←');b.type='button';b.onclick=e=>{e.stopPropagation();sxGo(x.p)};pb.append(b);c.append(pb)};
+    if(x.l||SXALL)body();else{c.onclick=()=>{if(!c.dataset.o){c.dataset.o=1;body()}}}
+    return c};
+  const flush=()=>{if(!pend.length)return;if(SXALL){pend.forEach(x=>L.append(x.m?yr(x):card(x)))}else{const items=pend;const n=items.filter(x=>!x.m).length;
+    const b=el('button','tmore','وبينها '+ar(n)+' '+(n>2&&n<11?'أحداث':'حدثاً')+' ▾');b.type='button';b.onclick=()=>{const f=document.createDocumentFragment();items.forEach(x=>f.append(x.m?yr(x):card(x)));b.replaceWith(f)};
+    if(n)L.append(b);else items.forEach(x=>L.append(yr(x)))}pend=[]};
+  const yr=x=>el('div','tyear','السنة '+ar(x.y)+' من الهجرة');
+  for(const x of D.tl.it){
+    if(x.e!==era){flush();era=x.e;const h=el('div','tera',D.tl.eras[era]);h.id='era'+era;L.append(h)}
+    if(x.m){if(SXALL)L.append(yr(x));else{flush();L.append(yr(x))}continue}
+    if(x.l||SXALL){flush();L.append(card(x))}else pend.push(x);
+  }
+  flush();
+}
+function sxNasab(V,D){
+  V.append(el('p','sxnote','النسب الشريف كما ساقه الكتاب في ص ٥١. اضغط على أي اسم لترى نص الكتاب.'));
+  const C=el('div','nchain');D.nasab.chain.forEach((n,i)=>{if(i)C.append(el('i'));const b=el('button','tnode'+(i?'':' root'));b.type='button';b.append(n);if(!i)b.append(el('small',null,'ﷺ'));
+    b.onclick=()=>{const nx=b.nextSibling;if(nx&&nx.classList&&nx.classList.contains('sxd')){nx.remove();return}b.after(sxSrc(D.nasab.src,el('div')))};C.append(b)});
+  V.append(C);D.nasab.notes.forEach(o=>sxSrc(o,V));
+}
+function sxNode(n,wrap){const b=el('button','tnode'+(n.t==='root'?' root':''));b.type='button';b.append(n.n);if(n.t&&n.t!=='root')b.append(el('span','tg',n.t));
+  b.onclick=()=>{const nx=b.nextSibling;if(nx&&nx.classList&&nx.classList.contains('sxd')){nx.remove();return}b.after(sxSrc(n.s,el('div')))};wrap.append(b);return b}
+function sxFam(V,D){
+  V.append(el('p','sxnote','آل عبد المطلب كما ذكرهم الكتاب في ص ٥٦–٥٧ وما حولها، ولا يذكر الكتاب كل أولاده بأسمائهم. اضغط على أي اسم لترى نص الكتاب وصفحته.'));
+  D.famnote.forEach(o=>sxSrc(o,V));
+  const r=el('div','nchain');sxNode(D.fam,r);V.append(r);
+  D.fam.k.forEach(c=>{const br=el('div','fbr');sxNode(c,br);if(c.k.length){const k=el('div','fkids');c.k.forEach(g=>sxNode(g,k));br.append(k)}V.append(br)});
+}
+function sxCal(V,D){
+  V.append(el('p','sxnote','الخلفاء بترتيب الكتاب، ومع كل واحد كيف تولى ومدته بلفظ الكتاب إن ذكرها. اضغط للنص والصفحة.'));
+  const G={r:'الخلفاء الراشدون ومن بعدهم',u:'بنو أمية',z:'',a:'بنو العباس'};let last=null;const L=el('div','tline');V.append(L);
+  D.cal.forEach(c=>{const g=c.g==='z'?'u':c.g;if(g!==last){last=g;L.append(el('div','tera',G[g]))}
+    const k=el('div','tev');k.append(el('b',null,c.n));if(c.dur)k.append(el('span','tw',c.dur.q.replace(/^و?(كانت|بقي|فبقي)\s*/,'').slice(0,60)));
+    k.onclick=()=>{if(k.dataset.o)return;k.dataset.o=1;sxSrc(c.how,k);if(c.dur)sxSrc(c.dur,k)};L.append(k)});
+  D.calnote.forEach(o=>sxSrc(o,V));
+}
+$('#sxClose').onclick=()=>{$('#sxOverlay').hidden=true};
+document.querySelectorAll('#sxOverlay .tabs button').forEach(b=>b.onclick=()=>{$('#sxOverlay').scrollTop=0;openSX(b.dataset.v)});
+document.querySelectorAll('#bookPage [data-sx]').forEach(b=>b.onclick=()=>openSX(b.dataset.sx==='tl'?'tl':'nasab'));
+
 $('#siraStrip').onclick=openBook;$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
 $('#bkGo').onclick=()=>{const lr=LS.get(LRK(17),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(17,3)}};
 $('#bkForm').addEventListener('submit',async e=>{e.preventDefault();$('#bkQ').blur();const R=$('#bkRes');R.innerHTML='';
@@ -1489,7 +1588,7 @@ async function openPart(n,p,hl,noPush,view){
   if(view){VIEW=view;LS.set('view2',view)}
   $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
   if(!LS.get('immHint')){LS.set('immHint','1');setTimeout(()=>{if(!$('#reader').hidden)toast('المس الصفحة لإخفاء الشريطين، والمسها مرة أخرى لإظهارهما',3500)},1800)}
-  $('#tocOverlay').hidden=true;$('#bookPage').hidden=true;
+  $('#tocOverlay').hidden=true;$('#bookPage').hidden=true;$('#sxOverlay').hidden=true;
   $('#rTitle').textContent=partName(n);$('#tot').textContent='/ '+ar(VOLS[n].p);
   if(!noPush)history.pushState({r:1},'','#v'+n+'p'+(p||1));
   cur.n=n;layout();
@@ -1995,6 +2094,9 @@ $('#fwSend').onclick=()=>openFb('fawaid');
 $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
+ {d:'2026-10-02T17:30',items:[
+  'مختصر السيرة: خط زمني لأحداث السيرة وما بعدها إلى الدولة العباسية، مأخوذ من الكتاب وحده بترتيبه، ومع كل حدث نص الكتاب ورقم صفحته، والتاريخ بلفظ الكتاب.',
+  'وشجرة: النسب الشريف، وآل عبد المطلب كما ذكرهم الكتاب، والخلفاء بمدة كل واحد بلفظ الكتاب. تجدها في صفحة الكتاب وفي القائمة الجانبية (☰).']},
  {d:'2026-10-02T15:30',items:[
   'كتاب جديد: «مختصر سيرة الرسول ﷺ» للإمام محمد بن عبدالوهاب، طبعة جامعة الإمام. تجده في أعلى الصفحة الرئيسة («ومن كتب الموقع») وفي القائمة الجانبية (☰)، وله صفحته الخاصة: متابعة القراءة والبحث فيه وأبوابه.',
   'يُقرأ كما تُقرأ الدرر: نصاً على حدود صفحات المطبوع أو صوراً، مع البحث فيه، والآيات بخط المصحف وتفسير السعدي، وحواشي المطبوع. والنص قوبل بصور المطبوع، والمعتمد عند النقل صورة الصفحة.']},
@@ -2130,6 +2232,8 @@ function openNav(){
   it('خزانة الأجزاء',()=>goSec('shelfSec'));
   grp('كتب أخرى');
   it('مختصر سيرة الرسول ﷺ',()=>{closeNav();openBook()});
+  it('الخط الزمني للسيرة',()=>{closeNav();openSX('tl')});
+  it('شجرة النسب وآل عبد المطلب والخلفاء',()=>{closeNav();openSX('nasab')});
   grp('الفهارس');
   it('فهرس المسائل',()=>{closeNav();openIdx('q')});
   it('فهرس العلماء',()=>{closeNav();openIdx('s')});
