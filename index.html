@@ -799,7 +799,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='19';
-const APP_VER='2026-10-02-1031';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-02-1035';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1905,7 +1905,7 @@ async function drawCard(runs,foot1,foot2,fname,shareText){
     if(L.length&&lw+add>inner&&!o.np){lines.push({L,lw});L=[];lw=0}
     lw+=(L.length?gap:0)+o.wd;L.push(o)}
   if(L.length)lines.push({L,lw});
-  const top=200,bottom=230,body=lines.length*lh,H=Math.max(1080,top+body+bottom);c.width=W;c.height=H;x.direction='rtl';   // resizing the canvas resets its state
+  const top=140,bottom=230,body=lines.length*lh,H=Math.max(1080,top+body+bottom);c.width=W;c.height=H;x.direction='rtl';   // resizing the canvas resets its state
   // ground: warm radial light, faint eight-point lattice, double gold frame with corner ornaments
   const g=x.createRadialGradient(W/2,H*.28,60,W/2,H*.4,Math.max(W,H)*.8);g.addColorStop(0,CARD.bg0);g.addColorStop(.6,'#3b2616');g.addColorStop(1,CARD.bg1);
   x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -1913,8 +1913,6 @@ async function drawCard(runs,foot1,foot2,fname,shareText){
   x.save();x.globalAlpha=.07;for(let yy=40;yy<H;yy+=96)for(let xx=((yy/96)%2?88:40);xx<W;xx+=96)star(xx,yy,15,1.5,CARD.gold);x.restore();
   x.strokeStyle=CARD.gold;x.lineWidth=2.5;x.strokeRect(M-26,M-26,W-2*M+52,H-2*M+52);x.lineWidth=1;x.globalAlpha=.7;x.strokeRect(M-12,M-12,W-2*M+24,H-2*M+24);x.globalAlpha=1;
   for(const [cx,cy] of [[M-26,M-26],[W-M+26,M-26],[M-26,H-M+26],[W-M+26,H-M+26]]){x.fillStyle=CARD.bg1;x.beginPath();x.arc(cx,cy,15,0,7);x.fill();star(cx,cy,9,1.6,CARD.gold);x.beginPath();x.arc(cx,cy,2.5,0,7);x.fillStyle=CARD.gold;x.fill()}
-  // head ornament
-  star(W/2,M+62,22,2.2,CARD.gold);x.beginPath();x.arc(W/2,M+62,4,0,7);x.fillStyle=CARD.gold;x.fill();
   // text, vertically centred in the space between the ornament and the footer
   const free=H-top-bottom,y0=top+(free-body)/2;x.textBaseline='middle';x.textAlign='right';
   lines.forEach((ln,i)=>{let cx=W/2+ln.lw/2;const cy=y0+lh*(i+.5);
