@@ -236,7 +236,16 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .ayaplace{font-family:var(--display);font-size:20px;margin:4px 0 10px;text-align:center;color:var(--brass)}
 .ayatext{font-family:"UthmanicHafs","Amiri",serif;font-size:calc(var(--tsize) * 1.25);line-height:2.4;text-align:center;color:var(--verse);padding:4px 2px 8px}
 .ayabtns{display:flex;justify-content:center;gap:8px;margin:6px 0 4px}
-#ayaImg{border:1px solid var(--brass);color:var(--brass)}
+#ayaImg,#ayaCopyT,#ayaCopyO{border:1px solid var(--brass);color:var(--brass)}
+.ayabtns{flex-wrap:wrap}
+.tafsir{border-top:1px solid var(--line);margin-top:12px;padding-top:8px}
+.tafsir h4{font-family:var(--display);font-size:18px;margin:4px 0 6px;color:var(--brass);text-align:center}
+.taftext{font-family:var(--text);font-size:calc(var(--tsize) * .92);line-height:2;text-align:justify}
+.taftext p{margin:0 0 .5em}
+.taftext.clip{max-height:14em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.taftext .tq{color:var(--verse)}
+.tafnote{font-size:14px;color:var(--muted);text-align:center;margin:6px 0}
+#tafMore{display:block;margin:4px auto 0}
 .ayasrc{font-size:12.5px;color:var(--muted);text-align:center;margin:10px 0 0;line-height:1.8}
 .qb{font-size:0}
 .gap{all:unset;display:inline-block;cursor:pointer;margin-inline:3px;color:var(--clay);font-family:var(--ui);font-size:.64em;line-height:1;vertical-align:middle;border:1px dashed var(--clay);border-radius:8px;padding:1px 5px;opacity:.9}
@@ -705,7 +714,9 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
   <div class="sheethead"><div class="grip"></div><button class="icon" id="ayaClose" type="button" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <h3 class="ayaplace" id="ayaPlace"></h3>
   <div class="ayatext" id="ayaText"></div>
-  <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نسخ الآية</button><button class="btn" id="ayaImg" type="button">حفظ صورة</button></div>
+  <div class="ayabtns"><button class="btn btn-primary" id="ayaCopy" type="button">نسخ الآية</button><button class="btn" id="ayaCopyT" type="button" hidden>نسخ الآية مع التفسير</button><button class="btn" id="ayaCopyO" type="button" hidden>نسخ التفسير</button><button class="btn" id="ayaImg" type="button">حفظ صورة</button></div>
+  <section class="tafsir" id="tafSec" hidden><h4 id="tafHead">تفسير السعدي</h4><p class="tafnote" id="tafNote" hidden></p><div class="taftext" id="tafText"></div><button class="btn" id="tafMore" type="button" hidden>أكمل التفسير</button>
+    <p class="ayasrc" id="tafSrc"></p></section>
   <p class="ayasrc">نص الآية وخطّها من مجمع الملك فهد لطباعة المصحف الشريف (مصحف المدينة النبوية، رواية حفص، الإصدار ٣٠)، كما نشره المجمع دون أي تعديل.</p>
 </div>
 <div class="sheet-back" id="chooseBack" hidden></div>
@@ -734,8 +745,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='14';
-const APP_VER='2026-09-30-1453';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='15';
+const APP_VER='2026-10-02-0529';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -788,7 +799,7 @@ async function saveVol(n,onp){
   const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
   for(;;){const {done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(onp&&total)onp(got/total)}
   await (await volCache()).put(volKey(n),new Response(new Blob(parts,{type:'application/pdf'})));
-  if(n){await textOf(n).catch(()=>{});await quran().catch(()=>{})}   // the verses cited in the part open offline too
+  if(n){await textOf(n).catch(()=>{});await quran().catch(()=>{});await saadi().catch(()=>{})}   // the verses cited in the part, and their tafsir, open offline too
 }
 async function removeVol(n){if(hasCaches)await (await volCache()).delete(volKey(n))}
 
@@ -807,6 +818,7 @@ const fihris=()=>getJSON('data/fihris.json');
 const heads=()=>getJSON('data/heads.json');
 const meta=()=>getJSON('data/meta.json');
 const quran=()=>getJSON('data/quran.json');   // the Qur'an text of the King Fahd Complex (Hafs), used to show a cited verse in full
+const saadi=()=>getJSON('data/saadi.json');   // تفسير السعدي (طبعة الرسالة), grouped as in the print: s[sura-1] = [[first aya, last aya, text], …]
 
 function pageItems(T,p){const x=T.p[p];return x?x.slice(1):null}
 function pagePlain(T,p){const it=pageItems(T,p);if(!it)return null;return it.map(x=>typeof x==='string'?x:(x.h||x.e)).join('\n')}
@@ -1499,6 +1511,31 @@ async function openAya(s,a,b){
     (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('نُسخت الآية، ألصقها حيث تريد',1800)).catch(()=>toast('تعذّر النسخ',1600))};
   $('#ayaImg').onclick=()=>ayaImage(parts,'سورة '+name+' · '+(b>a?'الآيات '+ar(a)+'–'+ar(b):'الآية '+ar(a)));
   $('#ayaBack').hidden=false;$('#aya').hidden=false;$('#aya').scrollTop=0;
+  showTafsir(s,a,b,name,parts);
+}
+/* تفسير السعدي under the verse, with copy options; the text was checked word for word against the printed Risala edition */
+let tafTok=0;
+function showTafsir(s,a,b,name,parts){
+  const tok=++tafTok,X=$('#tafText'),note=$('#tafNote'),more=$('#tafMore');
+  $('#ayaCopyT').hidden=true;$('#ayaCopyO').hidden=true;more.hidden=true;X.innerHTML='';X.classList.remove('clip');$('#tafSrc').textContent='';
+  $('#tafHead').textContent='تفسير السعدي';note.hidden=false;note.textContent='جارٍ تحميل التفسير…';$('#tafSec').hidden=false;
+  saadi().then(S=>{
+    if(tok!==tafTok)return;
+    const gs=(S.s[s-1]||[]).filter(g=>g[1]>=a&&g[0]<=b);
+    if(!gs.length){note.textContent='لم يرد لهذه الآية تفسير مستقل في الطبعة المعتمدة.';$('#tafSrc').textContent=S.src||'';return}
+    note.hidden=true;
+    const g1=gs[0][0],g2=gs[gs.length-1][1],txt=gs.map(g=>g[2]).join('\n');
+    $('#tafHead').textContent='تفسير السعدي'+(g2>g1?' للآيات '+ar(g1)+'–'+ar(g2):' للآية '+ar(g1));
+    txt.split('\n').forEach(par=>{const P=el('p');par.split(/(\{[^{}]*\})/).forEach(seg=>{if(/^\{/.test(seg))P.append(el('span','tq','﴿'+seg.slice(1,-1).trim()+'﴾'));else if(seg)P.append(document.createTextNode(seg))});X.append(P)});
+    $('#tafSrc').textContent=S.src||'';
+    requestAnimationFrame(()=>{if(tok===tafTok&&X.scrollHeight>420){X.classList.add('clip');more.hidden=false;more.onclick=()=>{X.classList.remove('clip');more.hidden=true}}});
+    const ref='سورة '+name+': '+(b>a?ar(a)+'–'+ar(b):ar(a)),vtxt='﴿'+parts.map(t=>t.replace(/\s*\u06dd?[٠-٩]+$/,'')).join(' ')+'﴾ ['+ref+']';
+    const plain=txt.replace(/\{\s*([^{}]*?)\s*\}/g,'﴿$1﴾'),head='تفسير السعدي'+(g2>g1?' (الآيات '+ar(g1)+'–'+ar(g2)+')':'')+':\n';
+    const copy=(t,msg)=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(msg,1800)).catch(()=>toast('تعذّر النسخ',1600));
+    $('#ayaCopyT').hidden=false;$('#ayaCopyO').hidden=false;
+    $('#ayaCopyT').onclick=()=>copy(vtxt+'\n\n'+head+plain,'نُسخت الآية مع تفسيرها');
+    $('#ayaCopyO').onclick=()=>copy(head+plain,'نُسخ التفسير');
+  }).catch(()=>{if(tok===tafTok)note.textContent='تعذّر تحميل التفسير الآن. تأكد من الاتصال ثم افتح الآية مرة ثانية.'});
 }
 /* a verse reference that names another place than the one the quoted words are in (checked on the whole Qur'an and against the printed page) */
 async function refFixNote(r){
@@ -1817,6 +1854,8 @@ $('#fwSend').onclick=()=>openFb('fawaid');
 $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
+ {d:'2026-10-02',items:[
+  'تفسير السعدي: إذا ضغطت على آية مستشهد بها في الكتاب ظهر تحتها تفسيرها من «تيسير الكريم الرحمن» للسعدي، مقابَلاً على طبعة مؤسسة الرسالة، ويمكنك نسخ الآية مع تفسير السعدي أو بدونه، أو نسخ التفسير وحده.']},
  {d:'2026-09-30',items:[
   'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نسخها أو حفظها صورة.']},
  {d:'2026-09-29',items:[
