@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#3b2616">
-<script>try{var t=JSON.parse(localStorage.getItem("theme")||"null");if(t&&t!=="auto")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var t=JSON.parse(localStorage.getItem("theme")||"null");if(t&&t!=="auto"&&t!=="brown")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <meta name="description" content="الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن قاسم: الكتاب كاملاً في ستة عشر جزءاً، نصاً وصوراً للطبعة، مع البحث في النص وفهارس المسائل والعلماء والآيات، ويُقرأ بدون إنترنت.">
 <link rel="manifest" href="manifest.json">
 <link rel="canonical" href="https://dorarnajdiah.com/">
@@ -81,10 +81,13 @@ html:root[data-theme=night] .masthead{background:#000}
   --mark:#f6e3a1; color-scheme:light;
 }
 :root[data-theme=white] .masthead{background:radial-gradient(120% 90% at 50% 0%,#5a3a22 0%,#3b2616 55%,#2a1a0e 100%)}
-.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.themes button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 4px;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:4px}
-.themes button i{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:block}
-.themes button[aria-pressed=true]{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass)}
+/* appearance: one compact row of small swatches */
+.themes{display:flex;gap:4px;background:var(--ground);border:1px solid var(--line);border-radius:999px;padding:3px}
+.themes button{flex:1;border:0;background:none;border-radius:999px;padding:5px 2px;font-size:12.5px;line-height:1.2;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--muted);white-space:nowrap}
+.themes button i{width:12px;height:12px;border-radius:50%;border:1px solid var(--line);display:block;flex:none}
+.themes button[aria-pressed=true]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--brass)}
+.dtheme{margin:10px 16px 4px;padding-bottom:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.dtheme>span{font-size:13px;color:var(--muted)}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{background:var(--ground);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.7;-webkit-tap-highlight-color:transparent}
@@ -605,10 +608,6 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="links"><button class="btn btn-primary" id="fbOpen" type="button">أرسل ملاحظة</button></div>
     </section>
 
-    <section class="about" id="themeSec">
-      <h2>المظهر</h2>
-      <div class="themes" role="group" aria-label="المظهر"></div>
-    </section>
     <section class="about" id="dataSec">
       <h2>بياناتك</h2>
       <p class="note">المفضلة والتعليقات وخطة الختم وموضع القراءة محفوظة في جهازك فقط. احفظ نسخة منها في ملف قبل تغيير الجوال أو حذف التطبيق، ثم استرجعها.</p>
@@ -738,6 +737,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <div class="drawer-back" id="navBack" hidden></div>
 <nav class="drawer" id="nav" hidden aria-label="أقسام الموقع">
   <div class="dhead"><b>الدرر السنية</b><button class="icon" id="navClose" type="button" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dtheme"><span>المظهر</span><div class="themes" role="group" aria-label="المظهر"></div></div>
   <div class="dlist" id="navList"></div>
 </nav>
 
@@ -797,7 +797,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='18';
-const APP_VER='2026-10-02-1003';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-02-1014';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -830,14 +830,14 @@ const norm=s=>s.normalize('NFKC').replace(/[ً-ْٰـ]/g,'').replace(/[إأآٱ]
 const nl=s=>s.replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 /* appearance: automatic (the device's light/dark setting), brown (the dark brown), night (near black), white */
-const THEMES=[['auto','تلقائي','linear-gradient(90deg,#f1e7d2 50%,#201911 50%)'],['brown','بني','#201911'],['night','ليلي','#000'],['white','أبيض','#fff']];
+const THEMES=[['auto','تلقائي','linear-gradient(90deg,#f1e7d2 50%,#201911 50%)'],['night','ليلي','#000'],['white','أبيض','#fff']];
 function applyTheme(t){
   const r=document.documentElement;if(t&&t!=='auto')r.setAttribute('data-theme',t);else r.removeAttribute('data-theme');
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='night'?'#000000':'#3b2616';
   document.querySelectorAll('.themes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===(t||'auto')));
 }
 document.querySelectorAll('.themes').forEach(box=>THEMES.forEach(([k,n,c])=>{const b=el('button');b.type='button';b.dataset.t=k;const i=document.createElement('i');i.style.background=c;b.append(i,document.createTextNode(n));b.onclick=()=>{LS.set('theme',k);applyTheme(k)};box.append(b)}));
-applyTheme(LS.get('theme','auto'));
+{let t=LS.get('theme','auto');if(t==='brown'){t='auto';LS.set('theme',t)}applyTheme(t)}
 function toast(msg,ms){const e=document.createElement('div');e.className='toast';e.setAttribute('role','status');e.textContent=msg;document.body.append(e);setTimeout(()=>{e.style.opacity='0';setTimeout(()=>e.remove(),300)},ms||2200)}
 function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
 
@@ -1936,7 +1936,7 @@ $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
  {d:'2026-10-02T12:00',items:[
-  'المظهر: اختر بين التلقائي والبني والليلي والأبيض، من قسم «المظهر» في الرئيسية أو من «المزيد» أثناء القراءة.',
+  'المظهر: اختر بين التلقائي (يتبع إعداد الجوال) والليلي والأبيض، من القائمة الجانبية (☰) أو من «المزيد» أثناء القراءة.',
   'الآيات التي يمكن فتحها صار تحتها خط منقّط خفيف، وأُكمل اسم السورة في مراجع آيات كانت ناقصة فصارت تفتح كغيرها.']},
  {d:'2026-10-02',items:[
   'القراءة بالصفحة كاملة: المس الصفحة مرة فيختفي الشريط العلوي والسفلي، والمسها مرة أخرى فيعودان.',
