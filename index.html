@@ -120,6 +120,12 @@ button{cursor:pointer}
 h1{font-family:var(--display);font-weight:700;font-size:clamp(36px,10vw,60px);line-height:1.2;margin:4px 0 0;text-wrap:balance;text-shadow:0 2px 0 rgba(0,0,0,.25)}
 .subtitle{font-family:var(--display);font-size:19px;line-height:1.6;margin:0;opacity:.92;text-wrap:balance;max-width:560px}
 .hijri{font-size:13px;opacity:.75;margin:6px 0 0}
+.otherbook{display:inline-flex;align-items:center;gap:6px;margin:14px auto 0;padding:7px 14px;border:1px solid rgba(231,194,122,.55);border-radius:999px;background:rgba(0,0,0,.18);color:inherit;font-size:14px}
+.otherbook span{opacity:.8}.otherbook b{color:#e7c27a;font-weight:700}.otherbook i{font-style:normal;color:#e7c27a}
+.bkhead{text-align:center;padding:6px 0 4px}.bkhead h3{font-family:var(--display);font-size:30px;margin:4px 0}.bkhead p{margin:4px 0;color:var(--muted);font-size:14px}
+.bkpage .actions{margin-top:14px}.bkpage h4{margin:22px 0 8px;font-family:var(--display);font-size:20px}
+.bktoc button{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:start;padding:11px 4px;border:0;border-bottom:1px solid var(--line);background:none;color:inherit;font-size:16px}
+.bktoc button span:last-child{color:var(--muted);white-space:nowrap;font-size:14px}
 
 .searchbar{margin-top:-26px;position:relative;z-index:2}
 .searchbox{display:flex;align-items:center;gap:8px;background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:6px 6px 6px 8px;box-shadow:var(--shadow)}
@@ -419,7 +425,6 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .treecard svg{color:var(--gold);flex:none}
 .treecard b{display:block;font-family:var(--display);font-size:21px}
 .treecard small{font-size:13px;opacity:.8}
-.booklinks{display:flex;justify-content:flex-end;margin-top:6px}
 .tree{position:relative;padding:6px 0 20px}
 .tree svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .tree svg.links path{fill:none;stroke:var(--brass);stroke-width:1.2;opacity:.35}
@@ -503,6 +508,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <h1>الدرر السنية<br>في الأجوبة النجدية</h1>
       <p class="subtitle">مجموعة رسائل ومسائل علماء نجد الأعلام، من عصر الإمام محمد بن عبدالوهاب إلى عصر الجامع <span class="rh">رحمهم الله</span></p>
       <p class="hijri" id="hijri"></p>
+      <button class="otherbook" id="siraStrip" type="button"><span>ومن كتب الموقع:</span> <b>مختصر سيرة الرسول ﷺ</b> <i aria-hidden="true">←</i></button>
     </div>
     <div class="najdi" aria-hidden="true"></div>
   </header>
@@ -557,15 +563,9 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <p class="hint">وفي القراءة بالنص: الآية التي بعدها علامة «تفسير» اضغط عليها لتظهر كاملة مع تفسير السعدي.</p>
     </section>
 
-    <section id="booksSec">
-      <div class="section-head"><h2>كتب أخرى</h2></div>
-      <button class="treecard" id="siraOpen" type="button"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M24 12c-5-4-12-5-18-4v28c6-1 13 0 18 4 5-4 12-5 18-4V8c-6-1-13 0-18 4Z"/><path d="M24 12v28"/></svg><span><b>مختصر سيرة الرسول ﷺ</b><small>للإمام محمد بن عبدالوهاب · طبعة جامعة الإمام · <span id="siraPos">ابدأ القراءة</span></small></span></button>
-      <div class="booklinks"><button class="btn btn-quiet" id="siraToc" type="button">أبواب الكتاب وفهرسه</button></div>
-    </section>
-
     <section id="planSec">
       <div class="card plan">
-        <div class="section-head" style="margin-bottom:6px"><h2>خطة الختم</h2><button class="btn btn-link" id="planEdit" type="button" hidden>تغيير</button></div>
+        <div class="section-head" style="margin-bottom:6px"><h2>خطة ختم الدرر السنية</h2><button class="btn btn-link" id="planEdit" type="button" hidden>تغيير</button></div>
         <div id="planBody"></div>
       </div>
     </section>
@@ -599,13 +599,13 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 
     <section id="dlSec">
       <div class="actions">
-        <a class="action" href="download/"><b>تحميل الكتاب كاملاً</b><span>ملف PDF واحد</span></a>
+        <a class="action" href="download/"><b>تحميل الدرر السنية كاملة</b><span>ملف PDF واحد</span></a>
         <button class="action" id="saveAll" type="button"><b>احفظه للقراءة بدون إنترنت</b><span id="saveAllInfo">الصور والنص · نحو ٣٨٠ ميجا · يفضّل على Wi‑Fi</span></button>
       </div>
     </section>
 
     <section class="about" id="aboutSec">
-      <h2>عن الكتاب</h2>
+      <h2>عن الدرر السنية</h2>
       <p class="aboutq" id="aboutQ"></p>
       <p class="count" id="aboutSrc"></p>
       <div class="links" id="aboutLinks"></div>
@@ -797,16 +797,29 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 </div>
 
 <!-- TOC overlay -->
+<div class="overlay bkpage" id="bookPage" hidden role="dialog" aria-label="مختصر سيرة الرسول">
+  <div class="head"><h2 style="flex:1">مختصر سيرة الرسول ﷺ</h2><button class="icon" id="bookClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="body">
+    <div class="bkhead"><p>تأليف الإمام الشيخ</p><h3>محمد بن عبدالوهاب</h3><p>رحمه الله (١١١٥–١٢٠٦هـ)</p><p>صحّحه وقابله على أصوله: المشايخ عبدالرحمن بن ناصر البراك، وعبدالعزيز بن عبدالله الراجحي، ومحمد العلي البراك</p><p>مؤلفات الشيخ، القسم الثالث · طبعة جامعة الإمام محمد بن سعود الإسلامية · ٣٤٥ صفحة</p></div>
+    <div class="actions"><button class="action main" id="bkGo" type="button"><b id="bkGoT">ابدأ القراءة</b><span id="bkGoS">من مقدمة الطبعة</span></button></div>
+    <form class="searchbox" id="bkForm" role="search" style="margin-top:14px"><input id="bkQ" type="search" placeholder="ابحث في مختصر السيرة…" aria-label="البحث في مختصر السيرة" enterkeyhint="search" autocomplete="off"><button class="btn btn-primary" type="submit">بحث</button></form>
+    <div class="results" id="bkRes"></div>
+    <h4>أبواب الكتاب</h4>
+    <div class="bktoc" id="bkToc"></div>
+    <h4>عن هذه النسخة</h4>
+    <p class="note">النص من نشرة وزارة الشؤون الإسلامية (المكتبة الشاملة)، وهو نص هذه الطبعة نفسها، رُبط بصفحات المطبوع صفحةً صفحة، وقوبل بصورها، وطُبّق عليه جدول التصويبات المطبوع في آخر الكتاب. والآيات بنص مجمع الملك فهد وخطه، وحواشي المطبوع تُعرض صورةً كما طُبعت. والعناوين الباهتة من النسخة الرقمية وليست في المطبوع. والمعتمد عند النقل صورة الصفحة: زر «قارن بالصورة».</p>
+  </div>
+</div>
 <div class="overlay" id="tocOverlay" hidden role="dialog" aria-label="أبواب الكتاب">
   <div class="head"><h2 style="flex:1">أبواب الكتاب</h2><button class="icon" id="tocClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
-  <div class="body"><p class="note">لكل جزء: موضوعه كما في بيان الأجزاء، وفهرسه المطبوع (اضغط فيه على أي موضوع)، ثم عناوين الكتب والأبواب كما في فهرسة المكتبة الشاملة، مع الصفحة التي يبدأ فيها نص كل عنوان.</p><div class="toc" id="toc"></div></div>
+  <div class="body"><p class="note" id="tocNote">لكل جزء: موضوعه كما في بيان الأجزاء، وفهرسه المطبوع (اضغط فيه على أي موضوع)، ثم عناوين الكتب والأبواب كما في فهرسة المكتبة الشاملة، مع الصفحة التي يبدأ فيها نص كل عنوان.</p><div class="toc" id="toc"></div></div>
 </div>
 
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
 const DV='21';
-const APP_VER='2026-10-02-1547';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-02-1551';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1008,7 +1021,6 @@ async function renderHome(){
   const lr=LS.get('lastRead',null);
   if(lr&&lr.n){$('#contT').textContent='تابع القراءة';$('#contS').textContent=partName(lr.n)+' · ص '+ar(lr.p)}
   else{$('#contT').textContent='ابدأ القراءة';$('#contS').textContent='من أول الجزء الأول'}
-  {const l=LS.get(LRK(17),null);$('#siraPos').textContent=l&&l.n?'تابع من ص '+ar(l.p):'ابدأ القراءة'}
   const F=favs(),N=notes();const keys=[];F.forEach(x=>keys.push(x.n+':'+x.p));Object.keys(N).forEach(k=>{if(N[k]&&!keys.includes(k))keys.push(k)});
   $('#favSec').hidden=!keys.length;$('#favCount').textContent=keys.length?ar(keys.length)+' صفحة':'';
   const FV=$('#favs');FV.innerHTML='';
@@ -1042,8 +1054,23 @@ async function renderHome(){
 }
 function resume(lr){RESTORE=lr;READING=true;openPart(lr.n,lr.p)}
 $('#continue').onclick=()=>{const lr=LS.get('lastRead',null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(1,1)}};
-$('#siraOpen').onclick=()=>{const lr=LS.get(LRK(17),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(17,3)}};
-$('#siraToc').onclick=()=>{renderToc(17);$('#tocOverlay').hidden=false};
+/* the other book's own page: reading place, search, contents, about this copy */
+async function openBook(){
+  const ov=$('#bookPage'),l=LS.get(LRK(17),null);
+  $('#bkGoT').textContent=l&&l.n?'تابع القراءة':'ابدأ القراءة';$('#bkGoS').textContent=l&&l.n?'ص '+ar(l.p):'من مقدمة الطبعة';
+  const T=$('#bkToc');
+  if(!T.children.length){let H=[];try{H=await heads()}catch(e){}
+    const add=(t,p)=>{const b=el('button');b.type='button';b.append(el('span',null,t),el('span',null,'ص '+ar(p)));b.onclick=()=>{const y=ov.scrollTop;openPart(17,p).then(()=>setBack('رجوع إلى صفحة الكتاب',()=>{ov.hidden=false;ov.scrollTop=y}))};T.append(b)};
+    add('مقدمة الطبعة',3);add('مقدمة الشيخ',7);H.filter(x=>x[0]===17).forEach(x=>add(x[2],x[1]));add('فهرس الموضوعات المطبوع',VOLS[17].f);add('جدول التصويبات المطبوع',339)}
+  ov.hidden=false;
+}
+$('#siraStrip').onclick=openBook;$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
+$('#bkGo').onclick=()=>{const lr=LS.get(LRK(17),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(17,3)}};
+$('#bkForm').addEventListener('submit',async e=>{e.preventDefault();$('#bkQ').blur();const R=$('#bkRes');R.innerHTML='';
+  const res=await runSearch($('#bkQ').value,17,null,false,null);
+  if(!res){R.append(el('p','note','اكتب كلمة من حرفين على الأقل.'));return}
+  if(res.error&&!res.out.length){R.append(el('p','note','تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت.'));return}
+  renderHits(R,res,0)});
 
 /* page of the day: chosen by the date among pages with checked text */
 async function daily(){
@@ -1139,7 +1166,7 @@ function chooseMode(then){
 
 /* ---------- TOC ---------- */
 async function renderToc(focus){
-  const box=$('#toc');box.innerHTML='';let H=[];try{H=await heads()}catch(e){}
+  const box=$('#toc');box.innerHTML='';$('#tocNote').hidden=isB(focus);let H=[];try{H=await heads()}catch(e){}
   for(const v of (isB(focus)?[VOLS[focus]]:VOLS.slice(1,NV+1))){
     const h=el('h5',null,isB(v.n)?BOOK(v.n):partName(v.n));h.id='toc'+v.n;box.append(h);
     box.append(el('p','note',v.d));
@@ -1462,7 +1489,7 @@ async function openPart(n,p,hl,noPush,view){
   if(view){VIEW=view;LS.set('view2',view)}
   $('#home').hidden=true;$('#reader').hidden=false;document.body.classList.remove('immersive');
   if(!LS.get('immHint')){LS.set('immHint','1');setTimeout(()=>{if(!$('#reader').hidden)toast('المس الصفحة لإخفاء الشريطين، والمسها مرة أخرى لإظهارهما',3500)},1800)}
-  $('#tocOverlay').hidden=true;
+  $('#tocOverlay').hidden=true;$('#bookPage').hidden=true;
   $('#rTitle').textContent=partName(n);$('#tot').textContent='/ '+ar(VOLS[n].p);
   if(!noPush)history.pushState({r:1},'','#v'+n+'p'+(p||1));
   cur.n=n;layout();
@@ -1969,7 +1996,7 @@ $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 /* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
  {d:'2026-10-02T15:30',items:[
-  'كتاب جديد: «مختصر سيرة الرسول ﷺ» للإمام محمد بن عبدالوهاب، طبعة جامعة الإمام. تجده في الصفحة الرئيسة تحت «كتب أخرى»، وفي القائمة الجانبية (☰).',
+  'كتاب جديد: «مختصر سيرة الرسول ﷺ» للإمام محمد بن عبدالوهاب، طبعة جامعة الإمام. تجده في أعلى الصفحة الرئيسة («ومن كتب الموقع») وفي القائمة الجانبية (☰)، وله صفحته الخاصة: متابعة القراءة والبحث فيه وأبوابه.',
   'يُقرأ كما تُقرأ الدرر: نصاً على حدود صفحات المطبوع أو صوراً، مع البحث فيه، والآيات بخط المصحف وتفسير السعدي، وحواشي المطبوع. والنص قوبل بصور المطبوع، والمعتمد عند النقل صورة الصفحة.']},
  {d:'2026-10-02T12:00',items:[
   'المظهر: اختر بين التلقائي (يتبع إعداد الجوال) والليلي والأبيض، من القائمة الجانبية (☰) أو من «المزيد» أثناء القراءة.',
@@ -2102,7 +2129,7 @@ function openNav(){
   it('تصفّح بالموضوع',()=>{closeNav();openTopics()});
   it('خزانة الأجزاء',()=>goSec('shelfSec'));
   grp('كتب أخرى');
-  it('مختصر سيرة الرسول ﷺ',()=>{closeNav();$('#siraOpen').click()});
+  it('مختصر سيرة الرسول ﷺ',()=>{closeNav();openBook()});
   grp('الفهارس');
   it('فهرس المسائل',()=>{closeNav();openIdx('q')});
   it('فهرس العلماء',()=>{closeNav();openIdx('s')});
@@ -2110,13 +2137,13 @@ function openNav(){
   it('شجرة العلماء والخط الزمني',()=>{closeNav();$('#openTree').click()});
   grp('ما يخصك');
   it('فوائد القرّاء',()=>goSec('fwSec'),!$('#fwSec').hidden);
-  it('خطة الختم',()=>goSec('planSec'));
+  it('خطة ختم الدرر السنية',()=>goSec('planSec'));
   it('المفضلة والتعليقات',()=>goSec('favSec'),!$('#favSec').hidden);
   it('تظليلاتي',()=>goSec('hlSec'),!$('#hlSec').hidden);
   it('بياناتك (نسخة احتياطية)',()=>goSec('dataSec'));
   grp('الكتاب');
   it('التحميل والحفظ بدون إنترنت',()=>goSec('dlSec'));
-  it('عن الكتاب',()=>goSec('aboutSec'));
+  it('عن الدرر السنية',()=>goSec('aboutSec'));
   it('منهج هذه النسخة',()=>goSec('methodSec'));
   it('أرسل ملاحظة',()=>{closeNav();openFb('notes')},FBON());
   $('#navBack').hidden=false;$('#nav').hidden=false;
