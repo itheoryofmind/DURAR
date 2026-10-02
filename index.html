@@ -272,8 +272,8 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .qu{font-family:"UthmanicHafs","Amiri",serif;font-size:1.1em;line-height:2.3}
 .reffix{font:12px var(--ui);color:var(--brass);border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:0 7px;margin-inline:4px;vertical-align:middle;line-height:1.7}
 .q.qa{cursor:pointer;-webkit-tap-highlight-color:rgba(183,137,60,.18)}
-/* a quiet, permanent cue that a verse opens: a faint dotted line under it */
-.q.qa .qu,.q.qa{text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,var(--verse) 32%,transparent);text-decoration-thickness:1px;text-underline-offset:.45em;text-decoration-skip-ink:auto}
+/* a clear but quiet cue that a verse opens: a small «تفسير» tag after it (tap the verse or the tag) */
+.q.qa::after{content:"تفسير";display:inline-block;font-family:var(--ui);font-size:11px;line-height:1;font-weight:600;color:var(--brass);border:1px solid var(--brass);border-radius:6px;padding:3px 5px 2px;margin-inline-start:4px;vertical-align:.35em;opacity:.8;width:max-content;word-spacing:0;letter-spacing:0;text-align:center;white-space:nowrap;text-indent:0}
 .ayaplace{font-family:var(--display);font-size:20px;margin:4px 0 10px;text-align:center;color:var(--brass)}
 .ayatext{font-family:"UthmanicHafs","Amiri",serif;font-size:calc(var(--tsize) * 1.25);line-height:2.4;text-align:center;color:var(--verse);padding:4px 2px 8px}
 .ayabtns{display:flex;justify-content:center;gap:8px;margin:6px 0 4px}
@@ -551,7 +551,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <div class="section-head"><h2>خزانة الأجزاء</h2><span class="count">١٦ جزءاً · ٨٠٧٨ صفحة</span></div>
       <div class="shelf-wrap"><div class="shelf" id="shelf" role="list"></div></div>
       <p class="hint">اضغط على الجزء لعرض أبوابه. الخط الذهبي على الكعب يبيّن موضع وقوفك، والنقطة الخضراء تعني أنه محفوظ للقراءة بدون إنترنت.</p>
-      <p class="hint">وفي القراءة بالنص: الآية التي تحتها خط منقّط اضغط عليها لتظهر كاملة مع تفسير السعدي.</p>
+      <p class="hint">وفي القراءة بالنص: الآية التي بعدها علامة «تفسير» اضغط عليها لتظهر كاملة مع تفسير السعدي.</p>
     </section>
 
     <section id="planSec">
@@ -796,8 +796,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='18';
-const APP_VER='2026-10-02-1014';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='19';
+const APP_VER='2026-10-02-1024';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1937,7 +1937,7 @@ $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
 const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
  {d:'2026-10-02T12:00',items:[
   'المظهر: اختر بين التلقائي (يتبع إعداد الجوال) والليلي والأبيض، من القائمة الجانبية (☰) أو من «المزيد» أثناء القراءة.',
-  'الآيات التي يمكن فتحها صار تحتها خط منقّط خفيف، وأُكمل اسم السورة في مراجع آيات كانت ناقصة فصارت تفتح كغيرها.']},
+  'الآيات التي يمكن فتحها صارت بعدها علامة صغيرة «تفسير»، وأُكمل اسم السورة في مراجع آيات كانت ناقصة فصارت تفتح كغيرها.']},
  {d:'2026-10-02',items:[
   'القراءة بالصفحة كاملة: المس الصفحة مرة فيختفي الشريط العلوي والسفلي، والمسها مرة أخرى فيعودان.',
   'تفسير السعدي: إذا ضغطت على آية مستشهد بها في الكتاب ظهر تحتها تفسيرها من «تيسير الكريم الرحمن» للسعدي، مقابَلاً على طبعة مؤسسة الرسالة، ويمكنك نسخ الآية مع تفسير السعدي أو بدونه، أو نسخ التفسير وحده.']},
