@@ -539,7 +539,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <h1>الدرر السنية<br>في الأجوبة النجدية</h1>
       <p class="subtitle">مجموعة رسائل ومسائل علماء نجد الأعلام، من عصر الإمام محمد بن عبدالوهاب إلى عصر الجامع <span class="rh">رحمهم الله</span></p>
       <p class="hijri" id="hijri"></p>
-      <div class="obooks"><span>ومن كتب الموقع:</span> <button class="otherbook" id="siraStrip" type="button"><b>مختصر سيرة الرسول ﷺ</b></button> <button class="otherbook" id="zadStrip" type="button"><b>زاد المعاد</b></button></div>
+      <div class="obooks"><span>ومن كتب الموقع:</span> <button class="otherbook" id="siraStrip" type="button"><b>مختصر سيرة الرسول ﷺ</b></button> <button class="otherbook" id="zadStrip" type="button"><b>زاد المعاد</b></button> <button class="otherbook" id="ihStrip" type="button"><b>سيرة ابن هشام</b></button></div>
     </div>
     <div class="najdi" aria-hidden="true"></div>
   </header>
@@ -843,17 +843,17 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <p class="note">النص من نشرة وزارة الشؤون الإسلامية (المكتبة الشاملة)، وهو نص هذه الطبعة نفسها، رُبط بصفحات المطبوع صفحةً صفحة، وقوبل بصورها، وطُبّق عليه جدول التصويبات المطبوع في آخر الكتاب. والآيات بنص مجمع الملك فهد وخطه، وحواشي المطبوع تُعرض صورةً كما طُبعت. والعناوين الباهتة من النسخة الرقمية وليست في المطبوع. والمعتمد عند النقل صورة الصفحة: زر «قارن بالصورة».</p>
   </div>
 </div>
-<div class="overlay bkpage" id="zadPage" hidden role="dialog" aria-label="زاد المعاد">
-  <div class="head"><h2 style="flex:1">زاد المعاد في هدي خير العباد</h2><button class="icon" id="zadClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+<div class="overlay bkpage" id="zadPage" hidden role="dialog" aria-label="كتاب">
+  <div class="head"><h2 style="flex:1" id="zTitle">زاد المعاد في هدي خير العباد</h2><button class="icon" id="zadClose" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div class="body">
-    <div class="bkhead"><p>تأليف الإمام</p><h3>ابن قيم الجوزية</h3><p>رحمه الله (٦٩١–٧٥١هـ)</p><p>تحقيق: شعيب الأرناؤوط وعبد القادر الأرناؤوط · مؤسسة الرسالة · خمسة أجزاء</p></div>
+    <div class="bkhead" id="zHead"></div>
     <div class="actions"><button class="action main" id="zGo" type="button"><b id="zGoT">ابدأ القراءة</b><span id="zGoS">من مقدمة المؤلف</span></button></div>
-    <form class="searchbox" id="zForm" role="search" style="margin-top:14px"><input id="zQ" type="search" placeholder="ابحث في زاد المعاد…" aria-label="البحث في زاد المعاد" enterkeyhint="search" autocomplete="off"><button class="btn btn-primary" type="submit">بحث</button></form>
+    <form class="searchbox" id="zForm" role="search" style="margin-top:14px"><input id="zQ" type="search" placeholder="ابحث في الكتاب…" aria-label="البحث في الكتاب" enterkeyhint="search" autocomplete="off"><button class="btn btn-primary" type="submit">بحث</button></form>
     <div class="results" id="zRes"></div>
     <h4>أبواب الكتاب</h4>
     <div class="bktoc" id="zToc"></div>
     <h4>عن هذه النسخة</h4>
-    <p class="note">النص نص ابن القيم وحده من المكتبة الشاملة، وهو نص طبعة مؤسسة الرسالة بتحقيق الأرناؤوطين، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. وقوبل بنسخة رقمية ثانية من الطبعة نفسها وبصور صفحاتها، وروجعت مواضع الخلاف على المطبوع. ولا تُعرض صور الصفحات ولا حواشي المحققَين حفظاً لحقوق الطبعة. والعناوين في الأبواب من فهرسة المكتبة الشاملة، وأكثرها بين معقوفين في المطبوع من وضع المحققين.</p>
+    <p class="note" id="zNote"></p>
   </div>
 </div>
 <div class="overlay" id="sxOverlay" hidden role="dialog" aria-label="الخط الزمني والشجرة">
@@ -871,8 +871,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='23';
-const APP_VER='2026-10-02-1651';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='24';
+const APP_VER='2026-10-02-2123';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -894,18 +894,30 @@ const VOLS=[
  {n:15,p:508,f:493,d:'القسم الأول من كتاب البيان الواضح وأنبل النصائح'},
  {n:16,p:512,f:497,d:'القسم الأخير من كتاب البيان الواضح وأنبل النصائح، وتراجم أصحاب الرسائل والأجوبة'},
  {n:17,p:345,f:330,d:'مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب'},   // كتب أخرى: not a part of the Durar
- {n:18,p:513,f:9999,d:'زاد المعاد، الجزء الأول',ni:1,s:35},{n:19,p:435,f:9999,d:'زاد المعاد، الجزء الثاني',ni:1,s:5},{n:20,p:609,f:9999,d:'زاد المعاد، الجزء الثالث',ni:1,s:5},{n:21,p:381,f:9999,d:'زاد المعاد، الجزء الرابع',ni:1,s:5},{n:22,p:740,f:9999,d:'زاد المعاد، الجزء الخامس',ni:1,s:5}   // ni: text only, the page images are not shown (rights of the edition)
+ {n:18,p:513,f:9999,d:'زاد المعاد، الجزء الأول',ni:1,s:35},{n:19,p:435,f:9999,d:'زاد المعاد، الجزء الثاني',ni:1,s:5},{n:20,p:609,f:9999,d:'زاد المعاد، الجزء الثالث',ni:1,s:5},{n:21,p:381,f:9999,d:'زاد المعاد، الجزء الرابع',ni:1,s:5},{n:22,p:740,f:9999,d:'زاد المعاد، الجزء الخامس',ni:1,s:5},
+ {n:23,p:716,f:9999,d:'السيرة النبوية لابن هشام، الجزء الأول',ni:1,s:1},{n:24,p:671,f:9999,d:'السيرة النبوية لابن هشام، الجزء الثاني',ni:1,s:3}   // ni: text only, the page images are not shown (rights of the edition)
 ];
 const NV=16,isB=n=>n>NV;   // the Durar has 16 parts; numbers above are other books read in the same reader
-const isZ=n=>n>=18&&n<=22,ZP=[18,19,20,21,22];
-const BOOK=n=>isZ(n)?'زاد المعاد في هدي خير العباد':isB(n)?'مختصر سيرة الرسول ﷺ':'الدرر السنية في الأجوبة النجدية';
-const LRK=n=>isZ(n)?'lastReadZ':isB(n)?'lastRead'+n:'lastRead';   // each other book keeps its own reading place
+// multi-volume text-only books read in the same reader
+const MB={
+ z:{ps:[18,19,20,21,22],t:'زاد المعاد في هدي خير العباد',sh:'زاد المعاد',lr:'lastReadZ',start:[18,35],startS:'من مقدمة المؤلف',
+    head:'<p>تأليف الإمام</p><h3>ابن قيم الجوزية</h3><p>رحمه الله (٦٩١–٧٥١هـ)</p><p>تحقيق: شعيب الأرناؤوط وعبد القادر الأرناؤوط · مؤسسة الرسالة · خمسة أجزاء</p>',
+    note:'النص نص ابن القيم وحده من المكتبة الشاملة، وهو نص طبعة مؤسسة الرسالة بتحقيق الأرناؤوطين، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. وقوبل بنسخة رقمية ثانية من الطبعة نفسها وبصور صفحاتها، وروجعت مواضع الخلاف على المطبوع. ولا تُعرض صور الصفحات ولا حواشي المحققَين حفظاً لحقوق الطبعة. والعناوين في الأبواب من فهرسة المكتبة الشاملة، وأكثرها بين معقوفين في المطبوع من وضع المحققين.',
+    cite:(j,p)=>'(زاد المعاد في هدي خير العباد، لابن القيم، تحقيق شعيب وعبد القادر الأرناؤوط، مؤسسة الرسالة، ج'+ar(j)+'، ص '+ar(p)+')'},
+ h:{ps:[23,24],t:'السيرة النبوية لابن هشام',sh:'سيرة ابن هشام',lr:'lastReadH',start:[23,1],startS:'من أول الكتاب',
+    head:'<p>تهذيب</p><h3>أبي محمد عبد الملك بن هشام</h3><p>(ت ٢١٣هـ) لسيرة ابن إسحاق</p><p>تحقيق: مصطفى السقا وإبراهيم الأبياري وعبد الحفيظ شلبي · مطبعة مصطفى البابي الحلبي ١٣٧٥هـ · جزءان</p>',
+    note:'النص من المكتبة الشاملة، وهو نص طبعة الحلبي بتحقيق السقا والأبياري وشلبي، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. وقوبل بنسختين رقميتين أخريين (إحداهما من طبعة محمد محيي الدين عبد الحميد)، وروجعت كل مواضع الخلاف على صور صفحات المطبوع وصُحّح النص على ما فيها، وروجعت عناوين الأبواب كلها على المطبوع كذلك. وحُذفت أرقام الآيات التي أضافتها النسخة الرقمية لأنها ليست في المطبوع. ولا تُعرض صور الصفحات ولا حواشي المحققين. والعناوين التي بين قوسين من وضع المحققين.',
+    cite:(j,p)=>'(السيرة النبوية لابن هشام، تحقيق السقا والأبياري وشلبي، مطبعة الحلبي ١٣٧٥هـ، ج'+ar(j)+'، ص '+ar(p)+')'}};
+const mbOf=n=>MB.z.ps.includes(n)?MB.z:MB.h.ps.includes(n)?MB.h:null;
+const isZ=n=>!!mbOf(n),ZP=MB.z.ps;
+const BOOK=n=>mbOf(n)?mbOf(n).t:isB(n)?'مختصر سيرة الرسول ﷺ':'الدرر السنية في الأجوبة النجدية';
+const LRK=n=>mbOf(n)?mbOf(n).lr:isB(n)?'lastRead'+n:'lastRead';   // each other book keeps its own reading place
 // short spine labels, taken from the descriptions above
 const SPINE=['','العقائد','التوحيد','الأسماء والصفات','العبادات ١','العبادات ٢','البيع','الوقف','الجهاد ١','الجهاد ٢ · المرتد','حكم المرتد','مختصرات الردود ١','مختصرات الردود ٢','التفسير','النصائح','البيان الواضح ١','البيان الواضح ٢'];
 const LEATHER=[['#5a3520','#3b2213'],['#4d2b1a','#2f190d'],['#633a1f','#40240f'],['#3f3320','#282013'],['#5c2e22','#3a1b12']];
 const $=s=>document.querySelector(s);
 const AR='٠١٢٣٤٥٦٧٨٩';const ar=x=>String(x).replace(/\d/g,d=>AR[d]);
-const partName=n=>isZ(n)?'زاد المعاد ج'+ar(n-17):isB(n)?'مختصر السيرة':n?'الجزء '+ORD[n]:'صفحة العنوان';
+const partName=n=>mbOf(n)?mbOf(n).sh+' ج'+ar(mbOf(n).ps.indexOf(n)+1):isB(n)?'مختصر السيرة':n?'الجزء '+ORD[n]:'صفحة العنوان';
 const short=n=>n?'ج'+ar(n):'العنوان';
 const norm=s=>s.normalize('NFKC').replace(/[ً-ْٰـ]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>AR.indexOf(d));
 const nl=s=>s.replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
@@ -1182,25 +1194,28 @@ document.querySelectorAll('#sxOverlay .tabs button').forEach(b=>b.onclick=()=>{$
 document.querySelectorAll('#bookPage [data-sx]').forEach(b=>b.onclick=()=>openSX(b.dataset.sx==='tl'?'tl':'nasab'));
 
 /* ---------- زاد المعاد: its own page (text only; the volumes are parts 18–22) ---------- */
-async function openZad(){
-  const ov=$('#zadPage'),l=LS.get(LRK(18),null);
-  $('#zGoT').textContent=l&&l.n?'تابع القراءة':'ابدأ القراءة';$('#zGoS').textContent=l&&l.n?partName(l.n)+' · ص '+ar(l.p):'من مقدمة المؤلف';
+let ZB=MB.z;
+async function openZad(b){
+  if(b&&b.ps)ZB=b;else if(cur&&mbOf(cur.n))ZB=mbOf(cur.n);
+  const ov=$('#zadPage'),l=LS.get(ZB.lr,null);
+  $('#zTitle').textContent=ZB.t;$('#zHead').innerHTML=ZB.head;$('#zNote').textContent=ZB.note;ov.setAttribute('aria-label',ZB.t);
+  $('#zGoT').textContent=l&&l.n?'تابع القراءة':'ابدأ القراءة';$('#zGoS').textContent=l&&l.n?partName(l.n)+' · ص '+ar(l.p):ZB.startS;
   const T=$('#zToc');
-  if(!T.children.length){let H=[];try{H=await heads()}catch(e){}
-    ZP.forEach(n=>{const d=document.createElement('details');const sm=document.createElement('summary');sm.textContent='الجزء '+ORD[n-17];d.append(sm);
+  if(T.dataset.b!==ZB.lr){T.innerHTML='';T.dataset.b=ZB.lr;$('#zRes').innerHTML='';$('#zQ').value='';let H=[];try{H=await heads()}catch(e){}
+    ZB.ps.forEach((n,j)=>{const d=document.createElement('details');const sm=document.createElement('summary');sm.textContent='الجزء '+ORD[j+1];d.append(sm);
       H.filter(x=>x[0]===n).forEach(x=>{const b=el('button');b.type='button';b.append(el('span',null,x[2]),el('span',null,'ص '+ar(x[1])));b.onclick=()=>{const y=ov.scrollTop;openPart(n,x[1]).then(()=>setBack('رجوع إلى صفحة الكتاب',()=>{ov.hidden=false;ov.scrollTop=y}))};d.append(b)});
       T.append(d)})}
   ov.hidden=false;
 }
 $('#zadClose').onclick=()=>{$('#zadPage').hidden=true};
-$('#zGo').onclick=()=>{const lr=LS.get(LRK(18),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(18,35)}};
+$('#zGo').onclick=()=>{const lr=LS.get(ZB.lr,null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(ZB.start[0],ZB.start[1])}};
 $('#zForm').addEventListener('submit',async e=>{e.preventDefault();$('#zQ').blur();const R=$('#zRes');R.innerHTML='';const pr=progressBar(R);
-  const res=await runSearch($('#zQ').value,ZP,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=((n-18)/5*100)+'%'},false,r=>{if(r.out.length)renderHits(R,r,0)});pr.done();
+  const res=await runSearch($('#zQ').value,ZB.ps,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=(ZB.ps.indexOf(n)/ZB.ps.length*100)+'%'},false,r=>{if(r.out.length)renderHits(R,r,0)});pr.done();
   if(!res){R.append(el('p','note','اكتب كلمة من حرفين على الأقل.'));return}
   if(res.error&&!res.out.length){R.innerHTML='';R.append(el('p','note','تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت.'));return}
   renderHits(R,res,0)});
 
-$('#siraStrip').onclick=openBook;$('#zadStrip').onclick=openZad;$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
+$('#siraStrip').onclick=openBook;$('#zadStrip').onclick=()=>openZad(MB.z);$('#ihStrip').onclick=()=>openZad(MB.h);$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
 $('#bkGo').onclick=()=>{const lr=LS.get(LRK(17),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(17,3)}};
 $('#bkForm').addEventListener('submit',async e=>{e.preventDefault();$('#bkQ').blur();const R=$('#bkRes');R.innerHTML='';
   const res=await runSearch($('#bkQ').value,17,null,false,null);
@@ -1705,8 +1720,8 @@ async function buildHot(H,n,p,still){
   H.classList.add('show');setTimeout(()=>H.classList.remove('show'),1500);
   if(!LS.get('hotTip',0)){LS.set('hotTip',1);toast('اضغط على أي موضوع في الفهرس لتنتقل إلى صفحته',3500)}
 }
-function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16||(isZ(cur.n)&&cur.n<22)){READING=!EXC;openPart(cur.n+1,VOLS[cur.n+1].s||1,null,true)}else if(cur.n>=16)toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
-function prev(){if(loading)return;HL=[];if(cur.p<=(VOLS[cur.n].s||1)){if((cur.n>1&&!isB(cur.n))||(isZ(cur.n)&&cur.n>18)){READING=!EXC;openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}}else go(cur.p-1)}
+function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16||(mbOf(cur.n)&&mbOf(cur.n).ps.includes(cur.n+1))){READING=!EXC;openPart(cur.n+1,VOLS[cur.n+1].s||1,null,true)}else if(cur.n>=16)toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
+function prev(){if(loading)return;HL=[];if(cur.p<=(VOLS[cur.n].s||1)){if((cur.n>1&&!isB(cur.n))||(mbOf(cur.n)&&mbOf(cur.n).ps.includes(cur.n-1))){READING=!EXC;openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}}else go(cur.p-1)}
 function closeReader(){clearTimeout(TX.sv);savePlace();clearBack();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
 $('#rBack').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
 window.addEventListener('popstate',()=>{if(!openHash(location.hash,false)&&!$('#reader').hidden)closeReader()});
@@ -1822,10 +1837,10 @@ function closeSheet(){
 $('#qMore').onclick=()=>openSheet();$('#sheetBack').onclick=closeSheet;$('#sheetClose').onclick=closeSheet;
 $('#noteSave').onclick=()=>{$('#note').blur();const had=$('#note').value.trim();closeSheet();if(had)toast('حُفظ تعليقك على هذه الصفحة')};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
-$('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VOLS[cur.n].ni){openZad();return}if(VIEW==='txt')await setView('img');go(VOLS[cur.n].f)};
+$('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VOLS[cur.n].ni){openZad(mbOf(cur.n));return}if(VIEW==='txt')await setView('img');go(VOLS[cur.n].f)};
 
 $('#mIdx').onclick=()=>{closeSheet();openIdx()};
-function citation(p){if(isZ(cur.n))return '(زاد المعاد في هدي خير العباد، لابن القيم، تحقيق شعيب وعبد القادر الأرناؤوط، مؤسسة الرسالة، ج'+ar(cur.n-17)+'، ص '+ar(p||cur.p)+')';if(isB(cur.n))return '(مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب، مؤلفات الشيخ، القسم الثالث، ط. جامعة الإمام محمد بن سعود الإسلامية، ص '+ar(p||cur.p)+')';return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
+function citation(p){const mb=mbOf(cur.n);if(mb)return mb.cite(mb.ps.indexOf(cur.n)+1,p||cur.p);if(isB(cur.n))return '(مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب، مؤلفات الشيخ، القسم الثالث، ط. جامعة الإمام محمد بن سعود الإسلامية، ص '+ar(p||cur.p)+')';return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
 const pageUrl=()=>location.origin+location.pathname+'#v'+cur.n+'p'+cur.p;
 async function copyText(t,okMsg){try{await navigator.clipboard.writeText(t);toast(okMsg)}catch(e){prompt('انسخ النص:',t)}}
 $('#mCite').onclick=()=>{closeSheet();copyText(citation(),'نُسخ الاستشهاد: '+partName(cur.n)+'، ص '+ar(cur.p))};
@@ -1862,7 +1877,7 @@ $('#sform2').addEventListener('submit',async e=>{
   e.preventDefault();$('#q2').blur();
   {const r=parseRef($('#q2').value);if(r){closeSearch();openRef(r);return}}
   const R=$('#res2');R.innerHTML='';R.append(el('p','note','جاري البحث…'));
-  const only=isZ(cur.n)?ZP:isB(cur.n)||($('#onlyPart').checked&&cur.n)?cur.n:0;
+  const only=mbOf(cur.n)?mbOf(cur.n).ps:isB(cur.n)||($('#onlyPart').checked&&cur.n)?cur.n:0;
   R.innerHTML='';const pr=progressBar(R);
   const res=await runSearch($('#q2').value,only,n=>{pr.t.textContent='جاري البحث في '+partName(n)+'…';pr.i.style.width=((n-1)/16*100)+'%'},$('#exact2').checked,r=>{if(r.out.length)renderHits(R,r,0)});
   pr.done();
@@ -2271,7 +2286,8 @@ function openNav(){
   it('خزانة الأجزاء',()=>goSec('shelfSec'));
   grp('كتب أخرى');
   it('مختصر سيرة الرسول ﷺ',()=>{closeNav();openBook()});
-  it('زاد المعاد في هدي خير العباد',()=>{closeNav();openZad()});
+  it('زاد المعاد في هدي خير العباد',()=>{closeNav();openZad(MB.z)});
+  it('السيرة النبوية لابن هشام',()=>{closeNav();openZad(MB.h)});
   it('الخط الزمني للسيرة',()=>{closeNav();openSX('tl')});
   it('شجرة النسب وآل عبد المطلب والخلفاء',()=>{closeNav();openSX('nasab')});
   grp('الفهارس');
