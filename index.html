@@ -506,10 +506,6 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .fnbtn.on{color:var(--brass);border-color:var(--brass)}
 .fnimg{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
 .fnimg canvas{width:100%;height:auto;display:block;border-radius:6px}
-.news{border-color:var(--brass)}
-.news .nh{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.news .nh b{font-family:var(--display);font-size:19px;color:var(--brass)}
-.news ul{margin:6px 0 0;padding-inline-start:20px;line-height:1.9;font-size:15px}
 .topicbtn{display:block;margin:10px auto 0;border:0;background:none;color:var(--brass);font:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:6px 10px}
 .tgrp{margin:0 0 16px}
 .tgrp h3{font-family:var(--display);font-size:19px;color:var(--brass);margin:0 0 8px}
@@ -575,9 +571,6 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <button class="icon" id="installX" type="button" aria-label="إخفاء"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
 
-    <section id="newsSec" hidden>
-      <div class="card news"><div class="nh"><b>الجديد بعد التحديث</b><button class="btn btn-link" id="newsOk" type="button">حسناً</button></div><ul id="newsList"></ul></div>
-    </section>
 
     <section>
       <div class="actions">
@@ -876,8 +869,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='30';
-const APP_VER='2026-10-03-0636';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='31';
+const APP_VER='2026-10-03-0641';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2158,45 +2151,6 @@ async function renderFawaid(){
 }
 $('#fwSend').onclick=()=>openFb('fawaid');
 $('#mFaw').onclick=()=>{closeSheet();openFb('fawaid')};
-/* ---------- «الجديد في الموقع»: shown once after an update that brings something readers can use ---------- */
-const NEWS=[   // newest first; d is the date (or date and time, e.g. '2026-10-05T14:00') the update went live
- {d:'2026-10-02T17:30',items:[
-  'مختصر السيرة: خط زمني لأحداث السيرة وما بعدها إلى الدولة العباسية، مأخوذ من الكتاب وحده بترتيبه، ومع كل حدث نص الكتاب ورقم صفحته، والتاريخ بلفظ الكتاب.',
-  'وشجرة: النسب الشريف، وآل عبد المطلب كما ذكرهم الكتاب، والخلفاء بمدة كل واحد بلفظ الكتاب. تجدها في صفحة الكتاب وفي القائمة الجانبية (☰).']},
- {d:'2026-10-02T15:30',items:[
-  'كتاب جديد: «مختصر سيرة الرسول ﷺ» للإمام محمد بن عبدالوهاب، طبعة جامعة الإمام. تجده في أعلى الصفحة الرئيسة («ومن كتب الموقع») وفي القائمة الجانبية (☰)، وله صفحته الخاصة: متابعة القراءة والبحث فيه وأبوابه.',
-  'يُقرأ كما تُقرأ الدرر: نصاً على حدود صفحات المطبوع أو صوراً، مع البحث فيه، والآيات بخط المصحف وتفسير السعدي، وحواشي المطبوع. والنص قوبل بصور المطبوع، والمعتمد عند النقل صورة الصفحة.']},
- {d:'2026-10-02T12:00',items:[
-  'المظهر: اختر بين التلقائي (يتبع إعداد الجوال) والليلي والأبيض، من القائمة الجانبية (☰) أو من «المزيد» أثناء القراءة.',
-  'صورة الاقتباس وصورة الآية بتصميم جديد: الآيات بخط المصحف ولونها الذهبي، ومعها اسم الكتاب والجزء والصفحة.',
-  'الآيات التي يمكن فتحها صارت بعدها علامة صغيرة «تفسير»، وأُكمل اسم السورة في مراجع آيات كانت ناقصة فصارت تفتح كغيرها.']},
- {d:'2026-10-02',items:[
-  'القراءة بالصفحة كاملة: المس الصفحة مرة فيختفي الشريط العلوي والسفلي، والمسها مرة أخرى فيعودان.',
-  'تفسير السعدي: إذا ضغطت على آية مستشهد بها في الكتاب ظهر تحتها تفسيرها من «تيسير الكريم الرحمن» للسعدي، مقابَلاً على طبعة مؤسسة الرسالة، ويمكنك نسخ الآية مع تفسير السعدي أو بدونه، أو نسخ التفسير وحده.']},
- {d:'2026-09-30',items:[
-  'الآيات: اضغط على أي آية مستشهد بها في الكتاب لتظهر لك كاملة مع اسم السورة ورقم الآية، بنص مجمع الملك فهد وخطه، ويمكنك نسخها أو حفظها صورة.']},
- {d:'2026-09-29',items:[
-  'حواشي المطبوع: تحت الصفحة التي فيها حاشية زرّ «حاشية المطبوع» يعرضها كما طُبعت.',
-  'رابط الفقرة: حدّد نصاً واضغط «رابط»، فمن يفتحه يرى الفقرة نفسها مظلّلة.',
-  'البحث بالجزء والصفحة: اكتب في البحث مثل ٨/١٥٠ أو «الجزء الثامن ص ١٥٠».',
-  'فوائد القرّاء: أرسل فائدة وقفت عليها، وتُنشر بعد مراجعتها.',
-  'تصفّح بالموضوع: تحت البحث، كتب الدرر مصنّفة (العقيدة، العبادات، المعاملات…) تنقلك إلى أول كل كتاب.',
-  'زر «رجوع» يعيدك إلى القائمة التي فتحت منها الصفحة (الفهارس، الأبواب، البحث).']}
-];
-function renderNews(){
-  // Each copy (Safari, the home-screen app) keeps its own record:
-  //   'since'   — when this copy was first opened; a notice older than that is not «new» to it, so a newcomer never sees past notices.
-  //   'newsAck' — the latest notice dismissed with «حسناً» in this copy.
-  // Unseen notices from several updates are merged into ONE card, newest first; they never appear one after another.
-  // Copies that existed before 'since' was introduced cannot be told from newcomers by their storage, so until 2026-10-06 they count as older readers.
-  let since=LS.get('since',null);
-  if(since===null){since=Date.now()<Date.parse('2026-10-06')?'2026-09-28':new Date().toISOString();LS.set('since',since)}
-  const ack=LS.get('newsAck','');const from=ack>since?ack:since;
-  const fresh=NEWS.filter(x=>x.d>from);if(!fresh.length)return;
-  const L=$('#newsList');L.innerHTML='';fresh.flatMap(x=>x.items).slice(0,8).forEach(t=>L.append(el('li',null,t)));$('#newsSec').hidden=false;
-}
-$('#newsOk').onclick=()=>{LS.set('newsAck',NEWS[0].d);$('#newsSec').hidden=true};
-renderNews();
 /* ---------- browse by subject: the book's own «كتب», grouped; each opens where it begins ---------- */
 const TOPICS=[
  ['العقيدة',[['العقائد',1,29],['التوحيد',2,5],['الأسماء والصفات',3,5]]],
