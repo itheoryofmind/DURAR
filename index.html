@@ -338,7 +338,7 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .tbody p.hdn{text-indent:0;margin:1.1em 0 .25em;font-family:var(--ui);font-size:.74em;display:flex;align-items:center;gap:.6em}
 .tbody p.hgx{margin:.5em 0 .1em}
 .hdn .hn{font-weight:700;color:var(--ink);font-size:1.15em}
-.hdn .hg{border:1px solid currentColor;border-radius:999px;padding:.05em .7em;line-height:1.6}
+.hdn .hg{background:none;font:inherit;cursor:pointer;border:1px solid currentColor;border-radius:999px;padding:.05em .7em;line-height:1.6}
 .hg.g-s{color:var(--palm)}.hg.g-h{color:var(--brass)}.hg.g-d{color:var(--clay)}
 .qb::after{content:attr(data-c);font-size:calc(var(--tsize) * 1.08);color:var(--brass);margin-inline:2px}
 .tfoot{margin-top:18px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
@@ -869,8 +869,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='32';
-const APP_VER='2026-10-03-0902';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='33';
+const APP_VER='2026-10-03-0911';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -908,8 +908,8 @@ const MB={
     note:'النص من المكتبة الشاملة، وهو نص طبعة الحلبي بتحقيق السقا والأبياري وشلبي، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. وقوبل بنسختين رقميتين أخريين (إحداهما من طبعة محمد محيي الدين عبد الحميد)، وروجعت كل مواضع الخلاف على صور صفحات المطبوع وصُحّح النص على ما فيها، ثم قورن بقراءتين آليتين لصور الصفحات وروجع ما اشتبه منه على الصور، وروجعت عناوين الأبواب والآيات المستشهد بها كلها على المطبوع كذلك. وحُذفت أرقام الآيات التي أضافتها النسخة الرقمية لأنها ليست في المطبوع. ولا تُعرض صور الصفحات ولا حواشي المحققين. والعناوين التي بين قوسين من وضع المحققين.',
     cite:(j,p)=>'(السيرة النبوية لابن هشام، تحقيق السقا والأبياري وشلبي، مطبعة الحلبي ١٣٧٥هـ، ج'+ar(j)+'، ص '+ar(p)+')'},
  s:{ps:[25],t:'الشمائل المحمدية',sh:'الشمائل المحمدية',lr:'lastReadS',start:[25,13],startS:'من أول الكتاب',brp:1,
-    head:'<p>للإمام</p><h3>أبي عيسى محمد بن عيسى الترمذي</h3><p>رحمه الله (ت ٢٧٩هـ)</p><p>مختصر الشمائل المحمدية، اختصره وحقّقه: محمد ناصر الدين الألباني · المكتبة الإسلامية، عمّان ١٤٠٦هـ</p>',
-    note:'النص نص مختصر الشمائل للشيخ الألباني من المكتبة الشاملة، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. وحُدّدت مواضع انتقال الصفحات بمطابقته بقراءة آلية لصور الصفحات، ثم قُرئ كاملاً صفحةً صفحة على صور المطبوع مرتين، وقوبل بقراءتين آليتين، ثم نُسخت صفحاته كلها من الصور نسخاً مستقلاً لم يُنظر فيه إلى النص وقوبل به كلمةً كلمة، وروجع كل خلاف على الصور، وصُحّح على المطبوع: ما سقط من كلمات وأسطر، والصلاة على النبي ﷺ حيث سقطت، وأرقام الأحاديث وأحكامها. وحكم الشيخ الألباني على كل حديث مكتوب بجانب رقمه كما طُبع في الحاشية، فإن طُبع حكم آخر بجانب جزء من الحديث كُتب قبل ذلك الجزء. وما بين المعقوفين [ ] فهو كذلك في المطبوع. ولا تُعرض صور الصفحات ولا حواشي المحقق وتخريجاته حفظاً لحقوق الطبعة.',
+    head:'<p>للإمام</p><h3>أبي عيسى محمد بن عيسى الترمذي</h3><p>رحمه الله (ت ٢٧٩هـ)</p><p>مختصر الشمائل المحمدية، اختصره وحقّقه: محمد ناصر الدين الألباني · المكتبة الإسلامية، عمّان ١٤٠٦هـ</p><p>أحكام الأحاديث فيه أحكام الشيخ الألباني كما طبعها، لا أحكام الموقع</p>',
+    note:'النص نص مختصر الشمائل للشيخ الألباني من المكتبة الشاملة، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. وحُدّدت مواضع انتقال الصفحات بمطابقته بقراءة آلية لصور الصفحات، ثم قُرئ كاملاً صفحةً صفحة على صور المطبوع مرتين، وقوبل بقراءتين آليتين، ثم نُسخت صفحاته كلها من الصور نسخاً مستقلاً لم يُنظر فيه إلى النص وقوبل به كلمةً كلمة، وروجع كل خلاف على الصور، وصُحّح على المطبوع: ما سقط من كلمات وأسطر، والصلاة على النبي ﷺ حيث سقطت، وأرقام الأحاديث وأحكامها. وأحكام الأحاديث (صححه، حسّنه، ضعّفه) كلها أحكام الشيخ الألباني في كتابه هذا، منقولة كما طُبعت بجانب رقم كل حديث، فإن طُبع حكم آخر بجانب جزء من الحديث كُتب قبل ذلك الجزء. وليست من كلام الترمذي، ولا حكماً من الموقع؛ فالموقع ناقل لا محقق، ومن أراد التفصيل فليرجع إلى تخريج الشيخ في حاشية المطبوع. وما بين المعقوفين [ ] فهو كذلك في المطبوع. ولا تُعرض صور الصفحات ولا حواشي المحقق وتخريجاته حفظاً لحقوق الطبعة.',
     cite:(j,p)=>'(مختصر الشمائل المحمدية للترمذي، اختصار وتحقيق الألباني، المكتبة الإسلامية بعمّان ١٤٠٦هـ، ص '+ar(p)+')'},
  m:{ps:[26,27],jn:[5,6],t:'كتاب المغازي من صحيح البخاري',sh:'المغازي',lr:'lastReadM',start:[26,71],startS:'من أول الكتاب',
     head:'<p>من</p><h3>الجامع الصحيح</h3><p>للإمام أبي عبد الله محمد بن إسماعيل البخاري رحمه الله (١٩٤–٢٥٦هـ)</p><p>الطبعة السلطانية (المطبعة الأميرية ببولاق)، بتصوير دار طوق النجاة ١٤٢٢هـ · من الجزء الخامس ص ٧١ إلى الجزء السادس ص ١٦</p>',
@@ -983,7 +983,7 @@ const quran=()=>getJSON('data/quran.json');   // the Qur'an text of the King Fah
 const saadi=()=>getJSON('data/saadi.json');   // تفسير السعدي (طبعة الرسالة), grouped as in the print: s[sura-1] = [[first aya, last aya, text], …]
 
 function pageItems(T,p){const x=T.p[p];return x?x.slice(1):null}
-function pagePlain(T,p){const it=pageItems(T,p);if(!it)return null;return it.map(x=>typeof x==='string'?x:x.hd?ar(x.hd)+(x.g?' - ('+x.g+')':''):x.gx?'('+x.gx+')':(x.h||x.e)).join('\n')}
+function pagePlain(T,p){const it=pageItems(T,p);if(!it)return null;return it.map(x=>typeof x==='string'?x:x.hd?ar(x.hd)+(x.g?' - ('+gtxt(x.g)+')':''):x.gx?'('+gtxt(x.gx)+')':(x.h||x.e)).join('\n')}
 
 /* ---------- search ---------- */
 const NT={};
@@ -1410,6 +1410,11 @@ function midNote(words,places,diff){
 /* ---------- continuous reading: pages follow one another, each headed by its printed page number ---------- */
 const TX={n:-1,from:0,to:0,T:null,lock:false,raf:0};let BRP=false;   // BRP: square brackets are the print's own (not the digital edition's)
 const gcls=g=>/^صحيح/.test(g)?'g-s':/^حسن/.test(g)?'g-h':'g-d';
+// the grade is al-Albani's own, printed in his Mukhtasar beside the number: say so, never state it as the site's verdict
+const gtxt=g=>g==='صحيح'?'صححه الألباني':g==='حسن'?'حسّنه الألباني':g==='ضعيف'?'ضعّفه الألباني':'قال الألباني: '+g;
+let GPG=0;
+function gbadge(g,part){const b=el('button','hg '+gcls(g),gtxt(g));b.type='button';const p=GPG;
+  b.onclick=e=>{e.stopPropagation();toast((part?'حكم الشيخ الألباني على هذا الجزء من الحديث: «':'حكم الشيخ الألباني على هذا الحديث: «')+g+'»، كما طُبع بجانبه في كتابه مختصر الشمائل المحمدية (المكتبة الإسلامية بعمّان ١٤٠٦هـ، ص '+ar(p)+'). وليس من كلام الترمذي، ولا حكماً من الموقع.',7000)};return b}
 function pageItemsDom(x,body){
   const items=x.slice(1);let hasVerse=false,inQ=!!(x[0]&4);
   const U={};for(const r of (x.u||[]))(U[r[0]]=U[r[0]]||{})[r[1]]=r;     // r = [item, brace ordinal, Uthmani text, sura, first aya, last aya]
@@ -1420,8 +1425,8 @@ function pageItemsDom(x,body){
   items.forEach((it,i)=>{cur=i;
     if(typeof it==='string'&&isVerse(it)){hasVerse=true;const P=el('p','verse');P.append(rich(it));body.append(P);return}
     if(typeof it==='string'){const P=el('p');if(i===0&&(x[0]&1))P.className='cont';else if(/^بسم الله الرحمن الر ?حيم\.?$/.test(it.trim()))P.className='bsm';P.append(rich(it));body.append(P)}
-    else if(it.hd){const e=el('p','hdn');e.append(el('span','hn',ar(it.hd)));if(it.g)e.append(el('span','hg '+gcls(it.g),it.g));body.append(e)}
-    else if(it.gx){const e=el('p','hdn hgx');e.append(el('span','hg '+gcls(it.gx),it.gx));e.title='حكم الألباني على هذا الجزء من الحديث، مطبوع في الحاشية بجانبه';body.append(e)}
+    else if(it.hd){const e=el('p','hdn');e.append(el('span','hn',ar(it.hd)));if(it.g)e.append(gbadge(it.g));body.append(e)}
+    else if(it.gx){const e=el('p','hdn hgx');e.append(gbadge(it.gx,1));body.append(e)}
     else if(it.e){const e=el('p','edt');e.title='عنوان من النسخة الرقمية، ليس في المطبوع';e.append(richInline(it.e,HL));body.append(e)}
     else{const h=el('h3');h.append(richInline(it.h,HL));body.append(h)}
   });
@@ -1442,7 +1447,7 @@ function pageBlock(T,n,p){
   hd.append(el('span','pgline'),ib);b.append(hd);
   const st=el('div','istage');st.hidden=true;b.append(st);
   const body=el('div','tbody');b.append(body);
-  if(x){x.u=(T.u&&T.u[p])||null;x.m=mid||null;BRP=!!(mbOf(n)&&mbOf(n).brp);pageItemsDom(x,body);BRP=false;applyHls(body,n,p);
+  if(x){x.u=(T.u&&T.u[p])||null;x.m=mid||null;BRP=!!(mbOf(n)&&mbOf(n).brp);GPG=p;pageItemsDom(x,body);BRP=false;applyHls(body,n,p);
     // the printed page's footnotes (not in the digital text): shown as they are printed, cut from the page image
     const fa=FN&&FN[n+':'+p];
     if(fa){const w=el('div','fnwrap'),fb=el('button','fnbtn','حاشية المطبوع');fb.type='button';const fs=el('div','fnimg');fs.hidden=true;
