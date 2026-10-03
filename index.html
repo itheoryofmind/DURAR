@@ -540,7 +540,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <h1>الدرر السنية<br>في الأجوبة النجدية</h1>
       <p class="subtitle">مجموعة رسائل ومسائل علماء نجد الأعلام، من عصر الإمام محمد بن عبدالوهاب إلى عصر الجامع <span class="rh">رحمهم الله</span></p>
       <p class="hijri" id="hijri"></p>
-      <div class="obooks"><span>ومن كتب الموقع:</span> <button class="otherbook" id="siraStrip" type="button"><b>مختصر سيرة الرسول ﷺ</b></button> <button class="otherbook" id="zadStrip" type="button"><b>زاد المعاد</b></button> <button class="otherbook" id="ihStrip" type="button"><b>سيرة ابن هشام</b></button> <button class="otherbook" id="shStrip" type="button"><b>الشمائل المحمدية</b></button> <button class="otherbook" id="mgStrip" type="button"><b>المغازي من صحيح البخاري</b></button></div>
+      <div class="obooks"><span>ومن كتب الموقع:</span> <button class="otherbook" id="siraStrip" type="button"><b>مختصر سيرة الرسول ﷺ</b></button> <button class="otherbook" id="zadStrip" type="button"><b>زاد المعاد</b></button> <button class="otherbook" id="ihStrip" type="button"><b>سيرة ابن هشام</b></button></div>
     </div>
     <div class="najdi" aria-hidden="true"></div>
   </header>
@@ -869,8 +869,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='34';
-const APP_VER='2026-10-03-0928';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='35';
+const APP_VER='2026-10-03-0932';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -915,6 +915,7 @@ const MB={
     head:'<p>من</p><h3>الجامع الصحيح</h3><p>للإمام أبي عبد الله محمد بن إسماعيل البخاري رحمه الله (١٩٤–٢٥٦هـ)</p><p>الطبعة السلطانية (المطبعة الأميرية ببولاق)، بتصوير دار طوق النجاة ١٤٢٢هـ · من الجزء الخامس ص ٧١ إلى الجزء السادس ص ١٦</p>',
     note:'النص من المكتبة الشاملة (صحيح البخاري، طبعة دار طوق النجاة)، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. ثم قُرئ كاملاً صفحةً صفحة على صور الطبعة السلطانية، ونُسخت صفحاته كلها من الصور نسخاً مستقلاً لم يُنظر فيه إلى النص، وقوبل النسخ بالنص كلمةً كلمة، وعُرضت مواضع الخلاف في الكلمات على مراجِعَين مستقلَّين ينظران في الصورة، فإن اختلفا فعلى ثالث، وصُحّح النص على ما في المطبوع: الكلمات، وعناوين الأبواب، ومواضع انتقال الصفحات. وأرقام الأحاديث هي المطبوعة في الهامش (ترقيم محمد فؤاد عبد الباقي)، وإذا طُبع بجانب الحديث رقمان أو أكثر كُتبت معاً. والإملاء إملاء النسخة الرقمية الحديث (إسحاق، ثلاثمائة)، والمطبوع بالرسم القديم (إسحق، ثلثمائة). ولا تُعرض صور الصفحات، ولا فروق النسخ المكتوبة فوق الكلمات وفي الهامش.',
     cite:(j,p)=>'(صحيح البخاري، كتاب المغازي، الطبعة السلطانية، ج'+ar(j)+'، ص '+ar(p)+')'}};
+const HIDDEN=new Set([25,26,27]);   // books withdrawn until their review is complete
 const mbOf=n=>Object.values(MB).find(b=>b.ps.includes(n))||null;
 const isZ=n=>!!mbOf(n),ZP=MB.z.ps;
 const BOOK=n=>mbOf(n)?mbOf(n).t:isB(n)?'مختصر سيرة الرسول ﷺ':'الدرر السنية في الأجوبة النجدية';
@@ -1223,7 +1224,7 @@ $('#zForm').addEventListener('submit',async e=>{e.preventDefault();$('#zQ').blur
   if(res.error&&!res.out.length){R.innerHTML='';R.append(el('p','note','تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت.'));return}
   renderHits(R,res,0)});
 
-$('#siraStrip').onclick=openBook;$('#zadStrip').onclick=()=>openZad(MB.z);$('#ihStrip').onclick=()=>openZad(MB.h);$('#shStrip').onclick=()=>openZad(MB.s);$('#mgStrip').onclick=()=>openZad(MB.m);$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
+$('#siraStrip').onclick=openBook;$('#zadStrip').onclick=()=>openZad(MB.z);$('#ihStrip').onclick=()=>openZad(MB.h);$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
 $('#bkGo').onclick=()=>{const lr=LS.get(LRK(17),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(17,3)}};
 $('#bkForm').addEventListener('submit',async e=>{e.preventDefault();$('#bkQ').blur();const R=$('#bkRes');R.innerHTML='';
   const res=await runSearch($('#bkQ').value,17,null,false,null);
@@ -1344,7 +1345,7 @@ $('#saveAll').onclick=async()=>{
   const btn=$('#saveAll');btn.disabled=true;
   const ban=el('div','banner');ban.setAttribute('role','status');
   const t=el('div');const bar=el('div','bar');const i=el('i');bar.append(i);ban.append(t,bar);document.body.append(ban);
-  const todo=[];for(const v of VOLS)if(!(await isSaved(v.n)))todo.push(v.n);
+  const todo=[];for(const v of VOLS)if(!HIDDEN.has(v.n)&&!(await isSaved(v.n)))todo.push(v.n);
   const totalPages=todo.reduce((a,n)=>a+VOLS[n].p,0);let done=0,failed=0;
   for(const n of todo){
     t.textContent='جاري حفظ '+partName(n)+' ('+ar(todo.indexOf(n)+1)+' من '+ar(todo.length)+')';
@@ -1650,6 +1651,7 @@ function loadPdf(n){
 let READING=false,EXC=null;
 function isReading(n,p){if(EXC&&n===EXC.n&&Math.abs(p-EXC.p)>=2)EXC=null;return !EXC}
 async function openPart(n,p,hl,noPush,view){
+  if(HIDDEN.has(n)){toast('هذا الكتاب موقوف مؤقتاً حتى تكتمل مراجعته',3500);return}
   if(!LS.get('chosen',0)&&!view){return chooseMode(()=>openPart(n,p,hl,noPush,VIEW))}
   EXC=READING?null:{n,p};READING=false;
   const seq=++openSeq;HL=hl||[];CMP=false;clearBack();
@@ -2265,8 +2267,6 @@ function openNav(){
   it('مختصر سيرة الرسول ﷺ',()=>{closeNav();openBook()});
   it('زاد المعاد في هدي خير العباد',()=>{closeNav();openZad(MB.z)});
   it('السيرة النبوية لابن هشام',()=>{closeNav();openZad(MB.h)});
-  it('الشمائل المحمدية للترمذي',()=>{closeNav();openZad(MB.s)});
-  it('كتاب المغازي من صحيح البخاري',()=>{closeNav();openZad(MB.m)});
   it('الخط الزمني للسيرة',()=>{closeNav();openSX('tl')});
   it('شجرة النسب وآل عبد المطلب والخلفاء',()=>{closeNav();openSX('nasab')});
   grp('الفهارس');
