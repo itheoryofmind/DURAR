@@ -540,7 +540,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <h1>الدرر السنية<br>في الأجوبة النجدية</h1>
       <p class="subtitle">مجموعة رسائل ومسائل علماء نجد الأعلام، من عصر الإمام محمد بن عبدالوهاب إلى عصر الجامع <span class="rh">رحمهم الله</span></p>
       <p class="hijri" id="hijri"></p>
-      <div class="obooks"><span>ومن كتب الموقع:</span> <button class="otherbook" id="siraStrip" type="button"><b>مختصر سيرة الرسول ﷺ</b></button> <button class="otherbook" id="zadStrip" type="button"><b>زاد المعاد</b></button> <button class="otherbook" id="ihStrip" type="button"><b>سيرة ابن هشام</b></button> <button class="otherbook" id="shStrip" type="button"><b>الشمائل المحمدية</b></button></div>
+      <div class="obooks"><span>ومن كتب الموقع:</span> <button class="otherbook" id="siraStrip" type="button"><b>مختصر سيرة الرسول ﷺ</b></button> <button class="otherbook" id="zadStrip" type="button"><b>زاد المعاد</b></button> <button class="otherbook" id="ihStrip" type="button"><b>سيرة ابن هشام</b></button> <button class="otherbook" id="shStrip" type="button"><b>الشمائل المحمدية</b></button> <button class="otherbook" id="mgStrip" type="button"><b>المغازي من صحيح البخاري</b></button></div>
     </div>
     <div class="najdi" aria-hidden="true"></div>
   </header>
@@ -869,8 +869,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script src="lib/pdf.js"></script>
 <script>
 "use strict";
-const DV='31';
-const APP_VER='2026-10-03-0641';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const DV='32';
+const APP_VER='2026-10-03-0902';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -893,7 +893,8 @@ const VOLS=[
  {n:16,p:512,f:497,d:'القسم الأخير من كتاب البيان الواضح وأنبل النصائح، وتراجم أصحاب الرسائل والأجوبة'},
  {n:17,p:345,f:330,d:'مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب'},   // كتب أخرى: not a part of the Durar
  {n:18,p:513,f:9999,d:'زاد المعاد، الجزء الأول',ni:1,s:35},{n:19,p:435,f:9999,d:'زاد المعاد، الجزء الثاني',ni:1,s:5},{n:20,p:609,f:9999,d:'زاد المعاد، الجزء الثالث',ni:1,s:5},{n:21,p:381,f:9999,d:'زاد المعاد، الجزء الرابع',ni:1,s:5},{n:22,p:740,f:9999,d:'زاد المعاد، الجزء الخامس',ni:1,s:5},
- {n:23,p:716,f:9999,d:'السيرة النبوية لابن هشام، الجزء الأول',ni:1,s:1},{n:24,p:671,f:9999,d:'السيرة النبوية لابن هشام، الجزء الثاني',ni:1,s:3},{n:25,p:210,f:9999,d:'الشمائل المحمدية للترمذي',ni:1,s:13}   // ni: text only, the page images are not shown (rights of the edition)
+ {n:23,p:716,f:9999,d:'السيرة النبوية لابن هشام، الجزء الأول',ni:1,s:1},{n:24,p:671,f:9999,d:'السيرة النبوية لابن هشام، الجزء الثاني',ni:1,s:3},{n:25,p:210,f:9999,d:'الشمائل المحمدية للترمذي',ni:1,s:13},
+ {n:26,p:179,f:9999,d:'كتاب المغازي من صحيح البخاري، من الجزء الخامس',ni:1,s:71},{n:27,p:16,f:9999,d:'كتاب المغازي من صحيح البخاري، من الجزء السادس',ni:1,s:2}   // ni: text only, the page images are not shown (rights of the edition)
 ];
 const NV=16,isB=n=>n>NV;   // the Durar has 16 parts; numbers above are other books read in the same reader
 // multi-volume text-only books read in the same reader
@@ -909,7 +910,11 @@ const MB={
  s:{ps:[25],t:'الشمائل المحمدية',sh:'الشمائل المحمدية',lr:'lastReadS',start:[25,13],startS:'من أول الكتاب',brp:1,
     head:'<p>للإمام</p><h3>أبي عيسى محمد بن عيسى الترمذي</h3><p>رحمه الله (ت ٢٧٩هـ)</p><p>مختصر الشمائل المحمدية، اختصره وحقّقه: محمد ناصر الدين الألباني · المكتبة الإسلامية، عمّان ١٤٠٦هـ</p>',
     note:'النص نص مختصر الشمائل للشيخ الألباني من المكتبة الشاملة، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. وحُدّدت مواضع انتقال الصفحات بمطابقته بقراءة آلية لصور الصفحات، ثم قُرئ كاملاً صفحةً صفحة على صور المطبوع مرتين، وقوبل بقراءتين آليتين، ثم نُسخت صفحاته كلها من الصور نسخاً مستقلاً لم يُنظر فيه إلى النص وقوبل به كلمةً كلمة، وروجع كل خلاف على الصور، وصُحّح على المطبوع: ما سقط من كلمات وأسطر، والصلاة على النبي ﷺ حيث سقطت، وأرقام الأحاديث وأحكامها. وحكم الشيخ الألباني على كل حديث مكتوب بجانب رقمه كما طُبع في الحاشية، فإن طُبع حكم آخر بجانب جزء من الحديث كُتب قبل ذلك الجزء. وما بين المعقوفين [ ] فهو كذلك في المطبوع. ولا تُعرض صور الصفحات ولا حواشي المحقق وتخريجاته حفظاً لحقوق الطبعة.',
-    cite:(j,p)=>'(مختصر الشمائل المحمدية للترمذي، اختصار وتحقيق الألباني، المكتبة الإسلامية بعمّان ١٤٠٦هـ، ص '+ar(p)+')'}};
+    cite:(j,p)=>'(مختصر الشمائل المحمدية للترمذي، اختصار وتحقيق الألباني، المكتبة الإسلامية بعمّان ١٤٠٦هـ، ص '+ar(p)+')'},
+ m:{ps:[26,27],jn:[5,6],t:'كتاب المغازي من صحيح البخاري',sh:'المغازي',lr:'lastReadM',start:[26,71],startS:'من أول الكتاب',
+    head:'<p>من</p><h3>الجامع الصحيح</h3><p>للإمام أبي عبد الله محمد بن إسماعيل البخاري رحمه الله (١٩٤–٢٥٦هـ)</p><p>الطبعة السلطانية (المطبعة الأميرية ببولاق)، بتصوير دار طوق النجاة ١٤٢٢هـ · من الجزء الخامس ص ٧١ إلى الجزء السادس ص ١٦</p>',
+    note:'النص من المكتبة الشاملة (صحيح البخاري، طبعة دار طوق النجاة)، مقسّم على صفحات المطبوع، ورقم كل صفحة هو رقمها في المطبوع. ثم قُرئ كاملاً صفحةً صفحة على صور الطبعة السلطانية، ونُسخت صفحاته كلها من الصور نسخاً مستقلاً لم يُنظر فيه إلى النص، وقوبل النسخ بالنص كلمةً كلمة، وعُرضت مواضع الخلاف في الكلمات على مراجِعَين مستقلَّين ينظران في الصورة، فإن اختلفا فعلى ثالث، وصُحّح النص على ما في المطبوع: الكلمات، وعناوين الأبواب، ومواضع انتقال الصفحات. وأرقام الأحاديث هي المطبوعة في الهامش (ترقيم محمد فؤاد عبد الباقي)، وإذا طُبع بجانب الحديث رقمان أو أكثر كُتبت معاً. والإملاء إملاء النسخة الرقمية الحديث (إسحاق، ثلاثمائة)، والمطبوع بالرسم القديم (إسحق، ثلثمائة). ولا تُعرض صور الصفحات، ولا فروق النسخ المكتوبة فوق الكلمات وفي الهامش.',
+    cite:(j,p)=>'(صحيح البخاري، كتاب المغازي، الطبعة السلطانية، ج'+ar(j)+'، ص '+ar(p)+')'}};
 const mbOf=n=>Object.values(MB).find(b=>b.ps.includes(n))||null;
 const isZ=n=>!!mbOf(n),ZP=MB.z.ps;
 const BOOK=n=>mbOf(n)?mbOf(n).t:isB(n)?'مختصر سيرة الرسول ﷺ':'الدرر السنية في الأجوبة النجدية';
@@ -919,7 +924,8 @@ const SPINE=['','العقائد','التوحيد','الأسماء والصفات
 const LEATHER=[['#5a3520','#3b2213'],['#4d2b1a','#2f190d'],['#633a1f','#40240f'],['#3f3320','#282013'],['#5c2e22','#3a1b12']];
 const $=s=>document.querySelector(s);
 const AR='٠١٢٣٤٥٦٧٨٩';const ar=x=>String(x).replace(/\d/g,d=>AR[d]);
-const partName=n=>mbOf(n)?mbOf(n).sh+(mbOf(n).ps.length>1?' ج'+ar(mbOf(n).ps.indexOf(n)+1):''):isB(n)?'مختصر السيرة':n?'الجزء '+ORD[n]:'صفحة العنوان';
+const jOf=n=>{const b=mbOf(n),i=b.ps.indexOf(n);return b.jn?b.jn[i]:i+1};
+const partName=n=>mbOf(n)?mbOf(n).sh+(mbOf(n).ps.length>1?' ج'+ar(jOf(n)):''):isB(n)?'مختصر السيرة':n?'الجزء '+ORD[n]:'صفحة العنوان';
 const short=n=>n?'ج'+ar(n):'العنوان';
 const norm=s=>s.normalize('NFKC').replace(/[ً-ْٰـ]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[٠-٩]/g,d=>AR.indexOf(d));
 const nl=s=>s.replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
@@ -977,7 +983,7 @@ const quran=()=>getJSON('data/quran.json');   // the Qur'an text of the King Fah
 const saadi=()=>getJSON('data/saadi.json');   // تفسير السعدي (طبعة الرسالة), grouped as in the print: s[sura-1] = [[first aya, last aya, text], …]
 
 function pageItems(T,p){const x=T.p[p];return x?x.slice(1):null}
-function pagePlain(T,p){const it=pageItems(T,p);if(!it)return null;return it.map(x=>typeof x==='string'?x:x.hd?ar(+x.hd)+' - ('+x.g+')':x.gx?'('+x.gx+')':(x.h||x.e)).join('\n')}
+function pagePlain(T,p){const it=pageItems(T,p);if(!it)return null;return it.map(x=>typeof x==='string'?x:x.hd?ar(x.hd)+(x.g?' - ('+x.g+')':''):x.gx?'('+x.gx+')':(x.h||x.e)).join('\n')}
 
 /* ---------- search ---------- */
 const NT={};
@@ -1204,7 +1210,7 @@ async function openZad(b){
   $('#zGoT').textContent=l&&l.n?'تابع القراءة':'ابدأ القراءة';$('#zGoS').textContent=l&&l.n?partName(l.n)+' · ص '+ar(l.p):ZB.startS;
   const T=$('#zToc');
   if(T.dataset.b!==ZB.lr){T.innerHTML='';T.dataset.b=ZB.lr;$('#zRes').innerHTML='';$('#zQ').value='';let H=[];try{H=await heads()}catch(e){}
-    ZB.ps.forEach((n,j)=>{const d=document.createElement('details');const sm=document.createElement('summary');sm.textContent=ZB.ps.length>1?'الجزء '+ORD[j+1]:'الأبواب';if(ZB.ps.length===1)d.open=true;d.append(sm);
+    ZB.ps.forEach((n,j)=>{const d=document.createElement('details');const sm=document.createElement('summary');sm.textContent=ZB.ps.length>1?'الجزء '+ORD[jOf(n)]:'الأبواب';if(ZB.ps.length===1)d.open=true;d.append(sm);
       H.filter(x=>x[0]===n).forEach(x=>{const b=el('button');b.type='button';b.append(el('span',null,x[2]),el('span',null,'ص '+ar(x[1])));b.onclick=()=>{const y=ov.scrollTop;openPart(n,x[1]).then(()=>setBack('رجوع إلى صفحة الكتاب',()=>{ov.hidden=false;ov.scrollTop=y}))};d.append(b)});
       T.append(d)})}
   ov.hidden=false;
@@ -1217,7 +1223,7 @@ $('#zForm').addEventListener('submit',async e=>{e.preventDefault();$('#zQ').blur
   if(res.error&&!res.out.length){R.innerHTML='';R.append(el('p','note','تعذّر تحميل نص البحث. تأكد من الاتصال بالإنترنت.'));return}
   renderHits(R,res,0)});
 
-$('#siraStrip').onclick=openBook;$('#zadStrip').onclick=()=>openZad(MB.z);$('#ihStrip').onclick=()=>openZad(MB.h);$('#shStrip').onclick=()=>openZad(MB.s);$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
+$('#siraStrip').onclick=openBook;$('#zadStrip').onclick=()=>openZad(MB.z);$('#ihStrip').onclick=()=>openZad(MB.h);$('#shStrip').onclick=()=>openZad(MB.s);$('#mgStrip').onclick=()=>openZad(MB.m);$('#bookClose').onclick=()=>{$('#bookPage').hidden=true};
 $('#bkGo').onclick=()=>{const lr=LS.get(LRK(17),null);if(lr&&lr.n)resume(lr);else{READING=true;openPart(17,3)}};
 $('#bkForm').addEventListener('submit',async e=>{e.preventDefault();$('#bkQ').blur();const R=$('#bkRes');R.innerHTML='';
   const res=await runSearch($('#bkQ').value,17,null,false,null);
@@ -1414,7 +1420,7 @@ function pageItemsDom(x,body){
   items.forEach((it,i)=>{cur=i;
     if(typeof it==='string'&&isVerse(it)){hasVerse=true;const P=el('p','verse');P.append(rich(it));body.append(P);return}
     if(typeof it==='string'){const P=el('p');if(i===0&&(x[0]&1))P.className='cont';else if(/^بسم الله الرحمن الر ?حيم\.?$/.test(it.trim()))P.className='bsm';P.append(rich(it));body.append(P)}
-    else if(it.hd){const e=el('p','hdn');e.append(el('span','hn',ar(+it.hd)),el('span','hg '+gcls(it.g),it.g));body.append(e)}
+    else if(it.hd){const e=el('p','hdn');e.append(el('span','hn',ar(it.hd)));if(it.g)e.append(el('span','hg '+gcls(it.g),it.g));body.append(e)}
     else if(it.gx){const e=el('p','hdn hgx');e.append(el('span','hg '+gcls(it.gx),it.gx));e.title='حكم الألباني على هذا الجزء من الحديث، مطبوع في الحاشية بجانبه';body.append(e)}
     else if(it.e){const e=el('p','edt');e.title='عنوان من النسخة الرقمية، ليس في المطبوع';e.append(richInline(it.e,HL));body.append(e)}
     else{const h=el('h3');h.append(richInline(it.h,HL));body.append(h)}
@@ -1845,7 +1851,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 $('#mFihris').onclick=async()=>{closeSheet();HL=[];if(VOLS[cur.n].ni){openZad(mbOf(cur.n));return}if(VIEW==='txt')await setView('img');go(VOLS[cur.n].f)};
 
 $('#mIdx').onclick=()=>{closeSheet();openIdx()};
-function citation(p){const mb=mbOf(cur.n);if(mb)return mb.cite(mb.ps.indexOf(cur.n)+1,p||cur.p);if(isB(cur.n))return '(مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب، مؤلفات الشيخ، القسم الثالث، ط. جامعة الإمام محمد بن سعود الإسلامية، ص '+ar(p||cur.p)+')';return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
+function citation(p){const mb=mbOf(cur.n);if(mb)return mb.cite(jOf(cur.n),p||cur.p);if(isB(cur.n))return '(مختصر سيرة الرسول ﷺ، للإمام محمد بن عبدالوهاب، مؤلفات الشيخ، القسم الثالث، ط. جامعة الإمام محمد بن سعود الإسلامية، ص '+ar(p||cur.p)+')';return '(الدرر السنية في الأجوبة النجدية، جمع عبدالرحمن بن محمد بن قاسم، '+partName(cur.n)+'، ص '+ar(p||cur.p)+')'}
 const pageUrl=()=>location.origin+location.pathname+'#v'+cur.n+'p'+cur.p;
 async function copyText(t,okMsg){try{await navigator.clipboard.writeText(t);toast(okMsg)}catch(e){prompt('انسخ النص:',t)}}
 $('#mCite').onclick=()=>{closeSheet();copyText(citation(),'نُسخ الاستشهاد: '+partName(cur.n)+'، ص '+ar(cur.p))};
@@ -2255,6 +2261,7 @@ function openNav(){
   it('زاد المعاد في هدي خير العباد',()=>{closeNav();openZad(MB.z)});
   it('السيرة النبوية لابن هشام',()=>{closeNav();openZad(MB.h)});
   it('الشمائل المحمدية للترمذي',()=>{closeNav();openZad(MB.s)});
+  it('كتاب المغازي من صحيح البخاري',()=>{closeNav();openZad(MB.m)});
   it('الخط الزمني للسيرة',()=>{closeNav();openSX('tl')});
   it('شجرة النسب وآل عبد المطلب والخلفاء',()=>{closeNav();openSX('nasab')});
   grp('الفهارس');
