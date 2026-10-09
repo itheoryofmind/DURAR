@@ -564,7 +564,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .zbl{display:flex;flex-direction:column}
 .zbl button{display:flex;justify-content:space-between;gap:10px;text-align:start;border:0;border-top:1px solid var(--line);background:none;padding:8px 0;font:inherit;font-size:15px;color:var(--ink)}
 .zbl small{color:var(--brass);white-space:nowrap}.zbl .zbmore{justify-content:center;color:var(--brass);font-size:14px}
-body.pg-locked{position:fixed;left:0;right:0;overflow:hidden}
+body.pg-locked,body.ov-locked{position:fixed;left:0;right:0;overflow:hidden}
+.overlay{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .zbd button{touch-action:manipulation}
 </style>
 </head>
@@ -916,7 +917,7 @@ body.pg-locked{position:fixed;left:0;right:0;overflow:hidden}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-09-1402';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-09-1421';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2665,6 +2666,13 @@ async function openZubdaD(){
 }
 $('#openZubda').onclick=openZubdaD;
 
+
+/* full-page overlays: the page behind must not scroll with them (iOS pulls it) */
+(function(){let Y=0;const b=document.body;
+  const upd=()=>{const open=[...document.querySelectorAll('.overlay')].some(o=>!o.hidden);
+    if(open&&!b.classList.contains('ov-locked')){if(b.classList.contains('pg-locked')||b.classList.contains('sx-locked'))return;Y=window.scrollY;b.style.top=(-Y)+'px';b.classList.add('ov-locked')}
+    else if(!open&&b.classList.contains('ov-locked')){b.classList.remove('ov-locked');b.style.top='';window.scrollTo(0,Y)}};
+  const mo=new MutationObserver(upd);document.querySelectorAll('.overlay').forEach(o=>mo.observe(o,{attributes:true,attributeFilter:['hidden']}))})();
 /* add to home screen: a small hint, shown until dismissed */
 (function(){
   const standalone=window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches;
