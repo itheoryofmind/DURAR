@@ -483,6 +483,9 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .titem::before{content:"";position:absolute;inset-inline-start:-22px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--brass)}
 .titem span:last-child{font-family:var(--ui);font-size:13px;color:var(--muted);flex:none}
 .sch{position:fixed;inset-inline:0;bottom:0;z-index:78;background:var(--raised);border-top:2px solid var(--brass);border-radius:18px 18px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(0,0,0,.25);max-height:62vh;overflow:auto;max-width:820px;margin:0 auto}
+.sch.min>*:not(.schhd):not(.yrs){display:none}
+.sch.min{max-height:38vh}
+.sch .schtg{border:1px solid var(--brass);background:none;color:var(--brass);border-radius:999px;padding:4px 12px;font:inherit;font-size:13px;margin-inline-end:6px}
 .navbtn{position:fixed;top:calc(10px + env(safe-area-inset-top));inset-inline-start:12px;z-index:60;width:42px;height:42px;border-radius:50%;border:1px solid rgba(231,194,122,.45);background:rgba(43,27,14,.72);color:#f3e3c3;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(0,0,0,.2)}
 .navbtn[hidden]{display:none}
 .drawer-back{position:fixed;inset:0;z-index:80;background:rgba(20,12,6,.45)}
@@ -526,6 +529,18 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .sch .qt button{border:0;background:none;color:var(--brass);font-size:12px;padding:0 4px}
 .sch .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.prsec{background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:12px 0}
+.prsec .section-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.prsec .section-head h2{flex:1;margin:0}
+.prgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.prc{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px;border-radius:12px;background:var(--surface);font-size:13px;color:var(--muted)}
+.prc b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+.prc.sun{opacity:.7}.prc.next{background:var(--brass-soft);outline:2px solid var(--brass)}.prc.next span{color:var(--brass);font-weight:700}
+.prnext{margin:8px 0 0;font-size:14px;color:var(--brass);text-align:center}
+.prset{display:flex;flex-wrap:wrap;gap:8px}
+.prpick{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.prpick select{font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+@media (max-width:420px){.prgrid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -569,6 +584,13 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
       <button class="btn btn-primary" id="installBtn" type="button" hidden>ثبّت</button>
       <button class="icon" id="installX" type="button" aria-label="إخفاء"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
+
+
+    <section class="prsec" id="prSec" aria-label="مواقيت الصلاة">
+      <div class="section-head"><h2>مواقيت الصلاة</h2><span class="count" id="prWhere"></span><button class="btn btn-link" id="prChange" type="button">تغيير</button></div>
+      <div id="prPick" class="prpick" hidden></div>
+      <div id="prBody"></div>
+    </section>
 
 
     <section>
@@ -647,7 +669,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 
     <section class="about" id="dataSec">
       <h2>بياناتك</h2>
-      <p class="note">المفضلة والتعليقات وخطة الختم وموضع القراءة محفوظة في جهازك فقط. احفظ نسخة منها في ملف قبل تغيير الجوال أو حذف التطبيق، ثم استرجعها.</p>
+      <p class="note">المفضلة والتعليقات وخطة الختم وموضع القراءة محفوظة في المتصفح الذي تقرأ منه فقط، فلا تنتقل وحدها بين الأجهزة ولا بين المتصفحات: ما تحفظه في متصفح الكمبيوتر لا يظهر في الجوال، وما في التطبيق المضاف للشاشة الرئيسية لا يظهر في Safari. لنقلها احفظ نسخة منها في ملف من الجهاز الأول ثم استرجعها في الآخر، وكذلك قبل تغيير الجوال أو حذف التطبيق.</p>
       <div class="links"><button class="btn btn-quiet" id="bkSave" type="button">حفظ نسخة من بياناتي</button><button class="btn btn-quiet" id="bkLoad" type="button">استرجاع من ملف</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
     </section>
 
@@ -790,7 +812,6 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
     <label class="fld" id="fbImgF"><span>صورة توضّح الملاحظة <small id="fbImgReq"></small></span><input type="file" id="fbImg" name="attachment" accept="image/*"></label>
     <label class="fld"><span id="fbWhoL">للتواصل معك <small>(اختياري)</small></span><input type="text" id="fbWho" name="المرسل" placeholder="الاسم أو البريد أو الجوال" autocomplete="off"></label>
     <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
-    <p class="note">يُرفق معها تلقائياً: رقم إصدار الموقع ونوع الجهاز، لتسهيل المتابعة.</p>
     <button type="submit" class="btn btn-primary" id="fbSend">إرسال</button>
   </form>
   <iframe name="fbFrame" id="fbFrame" title="إرسال" hidden></iframe>
@@ -869,7 +890,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-03-1509';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-09-0443';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1525,6 +1546,14 @@ function prependPages(from){
   box.prepend(frag);TX.from=Math.min(TX.from,from);
   tv.scrollTop=top0+(tv.scrollHeight-h0);            // keep the reader's place
 }
+let TOUCHING=false;
+document.getElementById('tview').addEventListener('touchstart',()=>{TOUCHING=true;clearTimeout(TX.pp)},{passive:true});
+document.getElementById('tview').addEventListener('touchend',()=>{TOUCHING=false},{passive:true});
+function fillAbove(){
+  const tv=$('#tview');if(tv.hidden||TX.n<0||TX.n!==cur.n)return;
+  if(TOUCHING){clearTimeout(TX.pp);TX.pp=setTimeout(fillAbove,220);return}
+  let k=0;while(tv.scrollTop<4000&&TX.from>1&&k++<8)prependPages(Math.max(1,TX.from-3));
+}
 function scrollToPage(p){
   const b=$('#tpage').querySelector('.pgblk[data-p="'+p+'"]');if(!b)return;
   TX.lock=true;const tv=$('#tview');const m=HL.length&&b.querySelector('mark');
@@ -1543,7 +1572,7 @@ async function renderText(){
   }
   // short pages (title pages, pages without text) must not leave the screen empty
   {const tv=$('#tview');let k=0;while(tv.scrollHeight<tv.clientHeight+1800&&TX.to<VOLS[n].p&&k++<20)appendPages(Math.min(VOLS[n].p,TX.to+3))}
-  scrollToPage(cur.p);
+  scrollToPage(cur.p);fillAbove();
   if(RESTORE&&RESTORE.n===n&&RESTORE.p===cur.p&&RESTORE.f){const b=$('#tpage').querySelector('.pgblk[data-p="'+cur.p+'"]');if(b){TX.lock=true;$('#tview').scrollTop=b.offsetTop+RESTORE.f*b.offsetHeight;setTimeout(()=>{TX.lock=false},250)}}
   RESTORE=null;
   if(VIEW==='txt'&&!LS.get('txtTip',0)&&n&&!VOLS[n].ni){LS.set('txtTip',1);toast('النص من المكتبة الشاملة ومطابَق لحدود كل صفحة؛ والمعتمد عند النقل صورة الصفحة: زر «قارن بالصورة»',6000)}
@@ -1562,7 +1591,9 @@ function onTScroll(){
   clearTimeout(TX.sv);TX.sv=setTimeout(savePlace,350);
   if(tv.scrollTop+tv.clientHeight>tv.scrollHeight-1800&&TX.to<VOLS[TX.n].p)appendPages(Math.min(VOLS[TX.n].p,TX.to+3));
   if(TX.lock)return;
-  if(tv.scrollTop<2600&&TX.from>1)prependPages(Math.max(1,TX.from-3));   // well before the top: iPhone ignores a jump made at the very top
+  // pages above are added only once the finger is off and the scroll has come to rest: on iPhone, moving the
+  // scroll position while it is still gliding throws the reader to a far page
+  if(tv.scrollTop<2600&&TX.from>1){clearTimeout(TX.pp);TX.pp=setTimeout(fillAbove,220)}
   const y=tv.scrollTop+tv.clientHeight*0.3;let p=TX.from;
   for(const b of $('#tpage').children){if(!b.dataset.p)continue;if(b.offsetTop<=y)p=+b.dataset.p;else break}
   if(p!==cur.p){HL=[];setPage(p);releaseFar();if(!$('#view').hidden&&pdf){clearTimeout(TX.pt);TX.pt=setTimeout(()=>paintMain(cur.p),250)}}
@@ -1588,12 +1619,17 @@ function emptyText(msg,withBtn){
 }
 // copying from the text adds the reference
 document.addEventListener('copy',e=>{
-  const s=document.getSelection();if(!s||s.isCollapsed)return;
+  const s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount)return;
   if(!$('#tview').contains(s.anchorNode))return;
-  const t=s.toString().trim();if(!t)return;
-  const node=s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement,blk=node&&node.closest('.pgblk');
-  const pp=blk?+blk.dataset.p:cur.p,ap=TX.T&&TX.T.p[pp]&&(TX.T.p[pp][0]&2);
-  e.clipboardData.setData('text/plain',t+'\n\n'+citation(pp)+(ap?' [حدود الصفحة تقريبية؛ تُراجع صورتها]':''));e.preventDefault();toast('نُسخ النص مع الاستشهاد بالجزء والصفحة');
+  // copy the book's words only: no page headers, compare buttons, boundary notes or footnote buttons
+  const r=s.getRangeAt(0),box=document.createElement('div');box.append(r.cloneContents());
+  box.querySelectorAll('.pghd,.fnwrap,.istage,.vnote,button,.sx-pwrap,.sx-pbtn,.sxmk-note,[data-ui]').forEach(x=>x.remove());
+  box.style.cssText='position:fixed;left:-9999px;top:0;white-space:pre-wrap';document.body.append(box);
+  const t=(box.innerText||box.textContent).replace(/\n{3,}/g,'\n\n').trim();box.remove();if(!t)return;
+  const pg=nd=>{const x=nd&&(nd.nodeType===1?nd:nd.parentElement),b=x&&x.closest('.pgblk');return b?+b.dataset.p:cur.p};
+  let p1=pg(r.startContainer),p2=pg(r.endContainer);if(p2<p1){const q=p1;p1=p2;p2=q}
+  let c=citation(p1);if(p2>p1){const a=ar(p1),i=c.lastIndexOf(a);if(i>=0)c=c.slice(0,i)+a+'–'+ar(p2)+c.slice(i+a.length)}
+  e.clipboardData.setData('text/plain',t+'\n\n'+c);e.preventDefault();toast('نُسخ النص مع الاستشهاد بالجزء والصفحة');
 });
 
 /* ---------- reader ---------- */
@@ -1740,7 +1776,7 @@ async function buildHot(H,n,p,still){
 function next(){if(loading)return;HL=[];if(cur.p>=VOLS[cur.n].p){if(cur.n<16||(mbOf(cur.n)&&mbOf(cur.n).ps.includes(cur.n+1))){READING=!EXC;openPart(cur.n+1,VOLS[cur.n+1].s||1,null,true)}else if(cur.n>=16)toast('هذه آخر صفحة في الكتاب')}else go(cur.p+1)}
 function prev(){if(loading)return;HL=[];if(cur.p<=(VOLS[cur.n].s||1)){if((cur.n>1&&!isB(cur.n))||(mbOf(cur.n)&&mbOf(cur.n).ps.includes(cur.n-1))){READING=!EXC;openPart(cur.n-1,VOLS[cur.n-1].p,null,true)}}else go(cur.p-1)}
 function closeReader(){clearTimeout(TX.sv);savePlace();clearBack();$('#reader').hidden=true;$('#home').hidden=false;hideSelBar();renderPlan();closeSheet();closeSearch();document.body.classList.remove('immersive');renderHome()}
-$('#rBack').onclick=()=>{history.state&&history.state.r?history.back():(history.replaceState(null,'',location.pathname),closeReader())};
+$('#rBack').onclick=()=>{history.replaceState(null,'',location.pathname);closeReader()};   // the home button goes home, not one page back
 window.addEventListener('popstate',()=>{if(!openHash(location.hash,false)&&!$('#reader').hidden)closeReader()});
 $('#mNext').onclick=()=>{closeSheet();next()};$('#mPrev').onclick=()=>{closeSheet();prev()};
 $('#qToc').onclick=()=>{renderToc(cur.n||1);$('#tocOverlay').hidden=false};
@@ -2232,13 +2268,13 @@ $('#fbForm').addEventListener('submit',async e=>{
   if(!ok){toast(faw?'اكتب الفائدة.':pageRep?'اختر نوع الخطأ واكتب وصفه.':'اختر نوع الملاحظة واكتبها وأرفق صورة توضّحها.',3000);return}
   if(!navigator.onLine){toast('لا يوجد اتصال بالإنترنت الآن. أرسلها حين يعود الاتصال.',3500);return}
   const to=pageRep?FB.page:FB.notes;if(!to){toast('الإرسال غير مفعّل بعد.',2500);return}
-  // hidden fields: subject, where, and the version and device
+  // hidden fields: subject, where, and the site version
   F.querySelectorAll('input.auto').forEach(x=>x.remove());
   const add=(k,v)=>{const i=document.createElement('input');i.type='hidden';i.className='auto';i.name=k;i.value=v;F.append(i)};
   add('_subject',(faw?'فائدة للنشر':pageRep?'تنبيه على خطأ: '+$('#fbType').value:'ملاحظة: '+$('#fbType').value)+(at?' — '+partName(at.n)+' ص '+at.p:''));
   add('_captcha','false');add('_template','table');
   if(at){add('الموضع',partName(at.n)+' · ص '+at.p+' · '+location.origin+location.pathname+'#v'+at.n+'p'+at.p);if(at.sel)add('النص المحدد',at.sel.slice(0,1500))}
-  add('الإصدار',APP_VER);add('الجهاز',navigator.userAgent+' · '+screen.width+'×'+screen.height);
+  add('الإصدار',APP_VER);
   if(img.files&&img.files[0]){const f=await shrink(img.files[0]);if(f!==img.files[0]){const dt=new DataTransfer();dt.items.add(f);img.files=dt.files}}
   F.action='https://formsubmit.co/'+to;
   const btn=$('#fbSend');btn.disabled=true;btn.textContent='جاري الإرسال…';
@@ -2321,7 +2357,7 @@ document.querySelectorAll('#treeOverlay .tabs button').forEach(b=>b.onclick=()=>
 window.addEventListener('resize',()=>{if(!$('#treeOverlay').hidden&&TR.tab==='tree')drawLinks()});
 async function renderTree(){
   document.querySelectorAll('#treeOverlay .tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===TR.tab));
-  const V=$('#treeView');V.innerHTML='';$('#sch').hidden=true;
+  const V=$('#treeView');V.innerHTML='';$('#sch').hidden=true;padTree();
   let D;try{D=TR.D=await ulama()}catch(e){V.append(el('p','note','تعذّر التحميل. تأكد من الاتصال بالإنترنت.'));return}
   const byId={};D.nodes.forEach(n=>byId[n.id]=n);TR.byId=byId;
   const yr=n=>n.d?n.d[0]:(n.b?n.b[0]+60:9999);
@@ -2369,8 +2405,11 @@ function focusTree(id){
 function showScholar(id){
   const D=TR.D,n=TR.byId[id];TR.sel=id;focusTree(id);
   const P=$('#sch');P.innerHTML='';P.hidden=false;
-  const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{P.hidden=true;TR.sel=null;focusTree(null)};
-  const hd=el('div','schhd');hd.append(el('h3',null,n.name),x);P.append(hd);   // the close button stays in view however long the entry is
+  const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{P.hidden=true;TR.sel=null;focusTree(null);padTree()};
+  // short by default so the drawing stays in view; the rest opens on request
+  const tg=el('button','schtg','التفاصيل');tg.type='button';
+  tg.onclick=()=>{const m=P.classList.toggle('min');tg.textContent=m?'التفاصيل':'تصغير';padTree()};
+  const hd=el('div','schhd');hd.append(el('h3',null,n.name),tg,x);P.append(hd);P.classList.add('min');   // the close button stays in view however long the entry is
   const yrs=el('p','yrs');const go=(p)=>()=>{const ov=$('#treeOverlay'),sel=TR.sel;ov.hidden=true;openPart(16,p,null,false,'txt').then(()=>setBack('رجوع إلى شجرة العلماء',()=>{ov.hidden=false;if(sel)showScholar(sel)}))};
   if(n.b){yrs.append('وُلد سنة '+ar(n.b[0])+'هـ (');const b=el('button',null,pg(n.b[1],n.b[2]));b.onclick=go(n.b[1]);yrs.append(b,')')}
   if(n.b&&n.d)yrs.append(' · ');
@@ -2384,8 +2423,112 @@ function showScholar(id){
   quote('من ترجمته: شيوخه',n.t);quote('من ترجمته: تلاميذه',n.s);
   const acts=el('div','acts');const bio=el('button','btn btn-primary','اقرأ ترجمته كاملة');bio.type='button';bio.onclick=go(n.page);acts.append(bio);
   if(n.idx){const a=el('button','btn btn-quiet','أجوبته وأقواله في الكتاب');a.type='button';a.onclick=()=>{$('#treeOverlay').hidden=true;IX.tab='s';IX.sub=n.idx;$('#idxq').value='';$('#idxOverlay').hidden=false;renderIdx()};acts.append(a)}
-  P.append(acts);P.scrollIntoView({block:'nearest',behavior:'smooth'});
+  P.append(acts);padTree();
+  const me=document.querySelector('#tree [data-id="'+id+'"]');if(me)me.scrollIntoView({block:'center',inline:'center',behavior:'smooth'});
 }
+// room under the tree for the scholar's card, so no part of the drawing hides behind it
+function padTree(){const P=$('#sch'),B=document.querySelector('#treeOverlay .body');if(B)B.style.paddingBottom=P.hidden?'':(P.offsetHeight+24)+'px'}
+
+/* ---------- prayer times: computed on the device from the place's coordinates (no server) ---------- */
+const PR={
+  M:{uq:['أم القرى',18.5,'90'],mwl:['رابطة العالم الإسلامي',18,17],egy:['الهيئة المصرية',19.5,17.5],isna:['أمريكا الشمالية',15,15],kar:['جامعة كراتشي',18,18]},
+  C:[ // [city, country, lat, lng, time zone]
+    ['الرياض','السعودية',24.7136,46.6753,'Asia/Riyadh'],['مكة المكرمة','السعودية',21.4225,39.8262,'Asia/Riyadh'],['المدينة المنورة','السعودية',24.4672,39.6111,'Asia/Riyadh'],
+    ['جدة','السعودية',21.4858,39.1925,'Asia/Riyadh'],['الدمام','السعودية',26.4207,50.0888,'Asia/Riyadh'],['الخبر','السعودية',26.2172,50.1971,'Asia/Riyadh'],
+    ['الظهران','السعودية',26.2886,50.1140,'Asia/Riyadh'],['الأحساء','السعودية',25.3800,49.5880,'Asia/Riyadh'],['القطيف','السعودية',26.5560,50.0110,'Asia/Riyadh'],
+    ['الجبيل','السعودية',27.0046,49.6460,'Asia/Riyadh'],['حفر الباطن','السعودية',28.4328,45.9708,'Asia/Riyadh'],['الطائف','السعودية',21.2703,40.4158,'Asia/Riyadh'],
+    ['بريدة','السعودية',26.3260,43.9750,'Asia/Riyadh'],['عنيزة','السعودية',26.0843,43.9935,'Asia/Riyadh'],['الرس','السعودية',25.8694,43.4973,'Asia/Riyadh'],
+    ['حائل','السعودية',27.5114,41.7208,'Asia/Riyadh'],['تبوك','السعودية',28.3838,36.5550,'Asia/Riyadh'],['أبها','السعودية',18.2164,42.5053,'Asia/Riyadh'],
+    ['خميس مشيط','السعودية',18.3000,42.7333,'Asia/Riyadh'],['جازان','السعودية',16.8892,42.5511,'Asia/Riyadh'],['نجران','السعودية',17.4917,44.1322,'Asia/Riyadh'],
+    ['الباحة','السعودية',20.0129,41.4677,'Asia/Riyadh'],['سكاكا','السعودية',29.9697,40.2064,'Asia/Riyadh'],['عرعر','السعودية',30.9753,41.0381,'Asia/Riyadh'],
+    ['القريات','السعودية',31.3318,37.3428,'Asia/Riyadh'],['ينبع','السعودية',24.0890,38.0618,'Asia/Riyadh'],['القنفذة','السعودية',19.1281,41.0787,'Asia/Riyadh'],
+    ['الخرج','السعودية',24.1556,47.3346,'Asia/Riyadh'],['المجمعة','السعودية',25.9040,45.3450,'Asia/Riyadh'],['الزلفي','السعودية',26.2990,44.8150,'Asia/Riyadh'],
+    ['الدوادمي','السعودية',24.5070,44.3920,'Asia/Riyadh'],['شقراء','السعودية',25.2480,45.2520,'Asia/Riyadh'],['وادي الدواسر','السعودية',20.4600,44.7800,'Asia/Riyadh'],
+    ['الكويت','الكويت',29.3759,47.9774,'Asia/Kuwait'],['المنامة','البحرين',26.2235,50.5876,'Asia/Bahrain'],['الدوحة','قطر',25.2854,51.5310,'Asia/Qatar'],
+    ['أبوظبي','الإمارات',24.4539,54.3773,'Asia/Dubai'],['دبي','الإمارات',25.2048,55.2708,'Asia/Dubai'],['الشارقة','الإمارات',25.3463,55.4209,'Asia/Dubai'],['العين','الإمارات',24.2075,55.7447,'Asia/Dubai'],
+    ['مسقط','عُمان',23.5880,58.3829,'Asia/Muscat'],['صلالة','عُمان',17.0151,54.0924,'Asia/Muscat'],['صنعاء','اليمن',15.3694,44.1910,'Asia/Aden'],['عدن','اليمن',12.7855,45.0187,'Asia/Aden'],
+    ['عمّان','الأردن',31.9454,35.9284,'Asia/Amman'],['القدس','فلسطين',31.7683,35.2137,'Asia/Hebron'],['دمشق','سوريا',33.5138,36.2765,'Asia/Damascus'],['بيروت','لبنان',33.8938,35.5018,'Asia/Beirut'],
+    ['بغداد','العراق',33.3152,44.3661,'Asia/Baghdad'],['البصرة','العراق',30.5085,47.7804,'Asia/Baghdad'],['القاهرة','مصر',30.0444,31.2357,'Africa/Cairo'],['الإسكندرية','مصر',31.2001,29.9187,'Africa/Cairo'],
+    ['الخرطوم','السودان',15.5007,32.5599,'Africa/Khartoum'],['طرابلس','ليبيا',32.8872,13.1913,'Africa/Tripoli'],['تونس','تونس',36.8065,10.1815,'Africa/Tunis'],
+    ['الجزائر','الجزائر',36.7538,3.0588,'Africa/Algiers'],['الرباط','المغرب',34.0209,-6.8416,'Africa/Casablanca'],['الدار البيضاء','المغرب',33.5731,-7.5898,'Africa/Casablanca'],
+    ['نواكشوط','موريتانيا',18.0735,-15.9582,'Africa/Nouakchott'],['إسطنبول','تركيا',41.0082,28.9784,'Europe/Istanbul'],['كراتشي','باكستان',24.8607,67.0011,'Asia/Karachi'],
+    ['إسلام آباد','باكستان',33.6844,73.0479,'Asia/Karachi'],['جاكرتا','إندونيسيا',-6.2088,106.8456,'Asia/Jakarta'],['كوالالمبور','ماليزيا',3.1390,101.6869,'Asia/Kuala_Lumpur'],
+    ['لندن','بريطانيا',51.5074,-0.1278,'Europe/London'],['باريس','فرنسا',48.8566,2.3522,'Europe/Paris'],['نيويورك','أمريكا',40.7128,-74.0060,'America/New_York'],
+    ['تورونتو','كندا',43.6532,-79.3832,'America/Toronto'],['سيدني','أستراليا',-33.8688,151.2093,'Australia/Sydney']
+  ],
+  N:['الفجر','الشروق','الظهر','العصر','المغرب','العشاء'],
+  defM(country){return ['السعودية','الكويت','البحرين','قطر','الإمارات','عُمان','اليمن'].includes(country)?'uq':['مصر','السودان','الأردن','فلسطين','سوريا','لبنان','العراق','ليبيا'].includes(country)?'egy':['أمريكا','كندا'].includes(country)?'isna':['باكستان'].includes(country)?'kar':'mwl'}
+};
+// the sun's position (standard astronomical formulas), times in hours of the day, UTC
+function prTimes(y,m,d,lat,lng,mk,hanafi,ramadan){
+  const R=Math.PI/180,sin=x=>Math.sin(x*R),cos=x=>Math.cos(x*R),tan=x=>Math.tan(x*R),
+    asin=x=>Math.asin(x)/R,acos=x=>Math.acos(x)/R,atan2=(a,b)=>Math.atan2(a,b)/R,acot=x=>Math.atan(1/x)/R,
+    fix=(a,b)=>{a=a-b*Math.floor(a/b);return a<0?a+b:a};
+  if(m<=2){y-=1;m+=12}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
+  const jd0=Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5;
+  const sun=t=>{const D=jd0+t-2451545,g=fix(357.529+0.98560028*D,360),q=fix(280.459+0.98564736*D,360),
+    L=fix(q+1.915*sin(g)+0.020*sin(2*g),360),e=23.439-0.00000036*D,RA=fix(atan2(cos(e)*sin(L),cos(L))/15,24);
+    return {dec:asin(sin(e)*sin(L)),eqt:q/15-RA}};
+  const noon=h=>{const s=sun(h/24-lng/360);return fix(12-s.eqt,24)};             // local solar hours
+  const ang=(a,h,ccw)=>{const s=sun(h/24-lng/360),n=noon(h),c=(-sin(a)-sin(s.dec)*sin(lat))/(cos(s.dec)*cos(lat));
+    if(c<-1||c>1)return NaN;const T=acos(c)/15;return n+(ccw?-T:T)};
+  const asr=h=>{const s=sun(h/24-lng/360);return ang(-acot((hanafi?2:1)+tan(Math.abs(lat-s.dec))),h,false)};
+  const M=PR.M[mk]||PR.M.uq;let t=[5,6,12,13,18,18,18];
+  for(let k=0;k<2;k++)t=[ang(M[1],t[0],true),ang(0.833,t[1],true),noon(t[2]),asr(t[3]),ang(0.833,t[4],false),
+    typeof M[2]==='string'?NaN:ang(M[2],t[5],false)];
+  t[2]+=1/60;                                                    // a minute after the sun passes the meridian
+  if(typeof M[2]==='string')t[5]=t[4]+(ramadan?120:+M[2])/60;    // Umm al-Qura: a fixed time after sunset
+  return t.map(h=>h-lng/15);                                     // solar hours at the place → UTC hours
+}
+function prPlace(){return LS.get('prPlace',null)}
+function prDay(tz,off){const now=new Date(Date.now()+(off||0)*864e5),f=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(now).split('-').map(Number);return f}
+function prRamadan(tz){try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{timeZone:tz,month:'numeric'}).format(new Date())==='9'}catch(e){return false}}
+function prList(pl,off){
+  const [y,m,d]=prDay(pl.tz,off),mk=LS.get('prMethod',null)||PR.defM(pl.country),han=LS.get('prAsr','s')==='h';
+  const h=prTimes(y,m,d,pl.lat,pl.lng,mk,han,prRamadan(pl.tz)),base=Date.UTC(y,m-1,d);
+  return h.map(x=>isNaN(x)?null:new Date(base+x*36e5));          // UTC hours from UTC midnight of that date
+}
+const prFmt=(dt,tz)=>dt?new Intl.DateTimeFormat('ar-SA-u-nu-arab',{timeZone:tz,hour:'numeric',minute:'2-digit',hour12:true}).format(dt).replace(/\s?[صم]$/,m=>' '+m.trim()):'—';
+function renderPrayer(){
+  const S=$('#prSec');if(!S)return;const pl=prPlace(),B=$('#prBody');B.innerHTML='';
+  if(!pl){$('#prWhere').textContent='';const w=el('div','prset');
+    const g=el('button','btn btn-primary','استخدم موقعي');g.type='button';g.onclick=prLocate;
+    const c=el('button','btn btn-quiet','اختر الدولة والمدينة');c.type='button';c.onclick=prChoose;w.append(g,c);B.append(w);return}
+  $('#prWhere').textContent=pl.name;
+  let L=prList(pl,0),now=Date.now(),nx=L.findIndex((t,i)=>i!==1&&t&&t>now);
+  let nextAt,nextI=nx;if(nx<0){const T=prList(pl,1);nextAt=T[0];nextI=0}else nextAt=L[nx];
+  const g=el('div','prgrid');L.forEach((t,i)=>{const c=el('div','prc'+(i===nextI&&nx>=0?' next':'')+(i===1?' sun':''));c.append(el('span',null,PR.N[i]),el('b',null,prFmt(t,pl.tz)));g.append(c)});B.append(g);
+  if(nextAt){const mins=Math.max(0,Math.round((nextAt-now)/6e4)),hh=Math.floor(mins/60),mm=mins%60;
+    const u=(k,one,two,few)=>k===1?one:k===2?two:(k>=3&&k<=10?ar(k)+' '+few:ar(k)+' '+one);
+    B.append(el('p','prnext','بقي على '+PR.N[nextI]+': '+(hh?u(hh,'ساعة','ساعتان','ساعات')+(mm?' و':''):'')+(mm||!hh?u(mm,'دقيقة','دقيقتان','دقائق'):'')))}
+  const mk=LS.get('prMethod',null)||PR.defM(pl.country);
+  B.append(el('p','note','حساب فلكي في جهازك بطريقة '+PR.M[mk][0]+(LS.get('prAsr','s')==='h'?'، والعصر على المذهب الحنفي':'')+'. قد يختلف عن تقويم بلدك أو أذان مسجدك دقيقة أو دقيقتين، فالمعتمد الأذان.'));
+}
+function prSave(pl){LS.set('prPlace',pl);renderPrayer()}
+function prNearest(lat,lng){let b=null,bd=1e9;for(const c of PR.C){const d=(c[2]-lat)**2+((c[3]-lng)*Math.cos(lat*Math.PI/180))**2;if(d<bd){bd=d;b=c}}return b}
+function prLocate(){
+  if(!navigator.geolocation){toast('جهازك لا يتيح معرفة الموقع. اختر الدولة والمدينة.',3000);prChoose();return}
+  toast('جارٍ تحديد موقعك…',1500);
+  navigator.geolocation.getCurrentPosition(p=>{const lat=+p.coords.latitude.toFixed(4),lng=+p.coords.longitude.toFixed(4),c=prNearest(lat,lng);
+    prSave({name:'موقعك الحالي'+(c?' (قرب '+c[0]+')':''),country:c?c[1]:'',lat,lng,tz:Intl.DateTimeFormat().resolvedOptions().timeZone})},
+    ()=>{toast('لم يُسمح بمعرفة الموقع. اختر الدولة والمدينة.',3000);prChoose()},{timeout:12000,maximumAge:6*36e5});
+}
+function prChoose(){
+  const P=$('#prPick');P.hidden=false;P.innerHTML='';
+  const cs=[...new Set(PR.C.map(c=>c[1]))],cur=prPlace();
+  const s1=el('select');s1.append(new Option('اختر الدولة',''));cs.forEach(c=>s1.append(new Option(c,c)));
+  const s2=el('select');s2.disabled=true;
+  s1.onchange=()=>{s2.innerHTML='';s2.append(new Option('اختر المدينة',''));PR.C.filter(c=>c[1]===s1.value).forEach((c,i)=>s2.append(new Option(c[0],c[0])));s2.disabled=!s1.value};
+  s2.onchange=()=>{const c=PR.C.find(x=>x[1]===s1.value&&x[0]===s2.value);if(!c)return;P.hidden=true;prSave({name:c[0],country:c[1],lat:c[2],lng:c[3],tz:c[4]})};
+  const sm=el('select');Object.entries(PR.M).forEach(([k,v])=>sm.append(new Option('طريقة الحساب: '+v[0],k)));sm.value=LS.get('prMethod',null)||PR.defM(cur?cur.country:'السعودية');
+  sm.onchange=()=>{LS.set('prMethod',sm.value);renderPrayer()};
+  const sa=el('select');sa.append(new Option('العصر: الجمهور (ظل المثل)','s'),new Option('العصر: الحنفية (ظل المثلين)','h'));sa.value=LS.get('prAsr','s');sa.onchange=()=>{LS.set('prAsr',sa.value);renderPrayer()};
+  const g=el('button','btn btn-quiet','استخدم موقعي');g.type='button';g.onclick=()=>{P.hidden=true;prLocate()};
+  const x=el('button','btn btn-link','إغلاق');x.type='button';x.onclick=()=>{P.hidden=true};
+  P.append(s1,s2,sm,sa,g,x);
+}
+$('#prChange').onclick=()=>{const P=$('#prPick');if(!P.hidden){P.hidden=true;return}prChoose()};
+renderPrayer();setInterval(()=>{if(!$('#home').hidden)renderPrayer()},60000);
 
 /* add to home screen: a small hint, shown until dismissed */
 (function(){
