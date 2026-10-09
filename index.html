@@ -551,7 +551,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .qwrap{max-width:820px;margin:0 auto}
 .qcv,.qout{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 4px 18px rgba(0,0,0,.18);background:#fff}
 
-.zbd{position:fixed;inset:0;z-index:90;background:var(--ground);overflow:auto;padding:calc(10px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom))}
+.zbd{position:fixed;inset:0;z-index:90;background:var(--ground);overflow:auto;overscroll-behavior:contain;padding:calc(10px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom))}
 .zbd .zbt{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--ground);z-index:2;padding:4px 0}
 .zbd .zbt h2{font-family:var(--display);margin:0}
 .zbmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0 16px}
@@ -564,6 +564,8 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .zbl{display:flex;flex-direction:column}
 .zbl button{display:flex;justify-content:space-between;gap:10px;text-align:start;border:0;border-top:1px solid var(--line);background:none;padding:8px 0;font:inherit;font-size:15px;color:var(--ink)}
 .zbl small{color:var(--brass);white-space:nowrap}.zbl .zbmore{justify-content:center;color:var(--brass);font-size:14px}
+body.pg-locked{position:fixed;left:0;right:0;overflow:hidden}
+.zbd button{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -914,7 +916,7 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-09-1029';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-09-1136';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2641,9 +2643,12 @@ async function qEdit(pp,mode){
 
 /* ---------- الدرر في لمحة: الأجزاء وموضوعاتها وأبوابها، من بيان الأجزاء وفهارس الكتاب نفسه ---------- */
 const ZG=[['العقيدة',[1,2,3]],['العبادات',[4,5]],['المعاملات',[6,7]],['الجهاد وحكم المرتد',[8,9,10]],['الردود',[11,12]],['التفسير',[13]],['النصائح والتراجم',[14,15,16]]];
+/* full-screen panels: the page behind stays still (iOS pulls it while scrolling the panel) */
+let PGLY=0;function pgLock(ov){if(document.body.classList.contains('pg-locked'))return;PGLY=window.scrollY;document.body.style.top=(-PGLY)+'px';document.body.classList.add('pg-locked');
+  const mo=new MutationObserver(()=>{if(ov.hidden){mo.disconnect();document.body.classList.remove('pg-locked');document.body.style.top='';window.scrollTo(0,PGLY)}});mo.observe(ov,{attributes:true,attributeFilter:['hidden']})}
 async function openZubdaD(){
   let H=[];try{H=await getJSON('data/heads.json')}catch(e){}
-  let ov=$('#zbD');if(!ov){ov=el('div','zbd');ov.id='zbD';document.body.append(ov)}ov.hidden=false;ov.innerHTML='';
+  let ov=$('#zbD');if(!ov){ov=el('div','zbd');ov.id='zbD';document.body.append(ov)}ov.hidden=false;ov.innerHTML='';pgLock(ov);
   const top=el('div','zbt');const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{ov.hidden=true};
   top.append(el('h2',null,'الدرر في لمحة'),x);ov.append(top);
   ov.append(el('p','note','وصف كل جزء منقول من «بيان الأجزاء» في آخر الجزء السادس عشر، والأبواب من فهارس الكتاب. اضغط أي باب لتنتقل إلى صفحته.'));
