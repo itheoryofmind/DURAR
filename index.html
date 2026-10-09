@@ -360,8 +360,8 @@ body.immersive .selbar{bottom:calc(20px + env(safe-area-inset-bottom))}
 .qbar .icon.on{color:#e7c27a}
 .loader{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:var(--muted);pointer-events:none}
 
-.sheet-back{position:fixed;inset:0;background:rgba(20,12,6,.45);z-index:70}
-.sheet{position:fixed;inset-inline:0;bottom:0;z-index:71;background:var(--surface);border-radius:18px 18px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:82vh;overflow:auto;box-shadow:0 -6px 24px rgba(0,0,0,.2);max-width:640px;margin:0 auto}
+.sheet-back{position:fixed;inset:0;background:rgba(20,12,6,.45);z-index:110}
+.sheet{position:fixed;inset-inline:0;bottom:0;z-index:111;background:var(--surface);border-radius:18px 18px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:82vh;overflow:auto;box-shadow:0 -6px 24px rgba(0,0,0,.2);max-width:640px;margin:0 auto}
 .sheet .grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 10px}
 .sheet.noteonly #imgOpts,.sheet.noteonly #txtOpts,.sheet.noteonly .menu{display:none!important}
 .sheet:not(.noteonly) .notesec{display:none}
@@ -567,6 +567,9 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 body.pg-locked,body.ov-locked{position:fixed;left:0;right:0;overflow:hidden}
 .overlay{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .zbd button{touch-action:manipulation}
+
+#chooseBack{z-index:118!important}#choose{z-index:119!important}
+button,a,.btn{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -917,7 +920,7 @@ body.pg-locked,body.ov-locked{position:fixed;left:0;right:0;overflow:hidden}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-09-1501';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-09-1547';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
