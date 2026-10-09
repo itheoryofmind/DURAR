@@ -917,7 +917,7 @@ body.pg-locked,body.ov-locked{position:fixed;left:0;right:0;overflow:hidden}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-09-1421';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-09-1501';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1933,7 +1933,7 @@ $('#mCopy').onclick=async()=>{closeSheet();
   try{const T=await textOf(cur.n);const t=pagePlain(T,cur.p);if(!t||cur.p>=VOLS[cur.n].f){toast('لا يوجد نص لهذه الصفحة، فاعتمد الصورة.',3500);return}
     copyText(t+'\n\n'+citation()+((T.p[cur.p][0]&2)?' [حدود الصفحة تقريبية؛ تُراجع صورتها]':''),'نُسخ نص الصفحة مع الاستشهاد')}catch(e){toast('تعذّر تحميل النص')}};
 $('#mLink').onclick=async()=>{closeSheet();const u=pageUrl(),t=citation();
-  if(navigator.share){try{await navigator.share({title:isB(cur.n)?'مختصر السيرة':'الدرر السنية',text:t,url:u});return}catch(e){if(e.name==='AbortError')return}}
+  if(navigator.share){try{await navigator.share({title:isB(cur.n)?'مختصر السيرة':mbOf(cur.n)?mbOf(cur.n).sh:'الدرر السنية',text:t,url:u});return}catch(e){if(e.name==='AbortError')return}}
   copyText(t+'\n'+u,'نُسخ رابط الصفحة')};
 $('#mImg').onclick=async()=>{closeSheet();
   try{
@@ -1945,7 +1945,7 @@ $('#mImg').onclick=async()=>{closeSheet();
     x.fillStyle='#3b2616';x.fillRect(0,v.height,c.width,band);x.fillStyle='#f6ecd8';x.font='36px Amiri, serif';x.textAlign='center';x.direction='rtl';
     x.fillText((isB(cur.n)?BOOK(cur.n):BOOK(cur.n)+' — '+partName(cur.n))+'، ص '+ar(cur.p),c.width/2,v.height+58);
     const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.9));
-    const file=new File([blob],(isB(cur.n)?'مختصر السيرة':'الدرر السنية - '+short(cur.n))+' ص'+cur.p+'.jpg',{type:'image/jpeg'});
+    const file=new File([blob],(isB(cur.n)?'مختصر السيرة':mbOf(cur.n)?mbOf(cur.n).sh+(mbOf(cur.n).ps.length>1?' ج'+jOf(cur.n):''):'الدرر السنية - '+short(cur.n))+' ص'+cur.p+'.jpg',{type:'image/jpeg'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:citation()});return}
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.append(a);a.click();a.remove();
   }catch(e){if(e.name!=='AbortError')toast('تعذّرت مشاركة الصورة')}};
