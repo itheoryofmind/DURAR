@@ -920,7 +920,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-09-1547';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-09-1552';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2273,7 +2273,7 @@ function openFb(kind){
   if(faw){T.append(new Option('فائدة للنشر','فائدة للنشر'));T.value='فائدة للنشر'}else{
   const opts=pageRep?['النص يخالف صورة الصفحة','خطأ في آية','حدود الصفحة (بدايتها أو نهايتها)','أخرى']:['تجربة المستخدم','تقنية','شرعية'];
   T.append(new Option('اختر…',''));opts.forEach(o=>T.append(new Option(o,o)));}
-  $('#fbImgReq').textContent=pageRep?'(اختيارية)':'(مطلوبة)';
+  $('#fbImgReq').textContent='(اختيارية)';
   const R=$('#fbRef');R.hidden=!pageRep||(faw&&$('#reader').hidden);
   if(pageRep&&!(faw&&$('#reader').hidden)){const S=document.getSelection(),sel=(S||'').toString().trim();
     // the page of the selected words, else the page being read
@@ -2298,9 +2298,8 @@ $('#fbForm').addEventListener('submit',async e=>{
   const kind=typeof FBK==='string'?FBK:FBK&&FBK.kind,faw=kind==='fawaid',at=FBK&&typeof FBK==='object'?FBK:null;
   const pageRep=kind==='page',F=$('#fbForm'),img=$('#fbImg');let ok=true;
   const need=[[$('#fbType'),v=>!!v],[$('#fbMsg'),v=>v.trim().length>=3]];
-  if(!pageRep&&!faw)need.push([img,()=>img.files&&img.files.length>0]);
   for(const [x,t] of need){const bad=!t(x.value);x.closest('.fld').classList.toggle('bad',bad);if(bad)ok=false}
-  if(!ok){toast(faw?'اكتب الفائدة.':pageRep?'اختر نوع الخطأ واكتب وصفه.':'اختر نوع الملاحظة واكتبها وأرفق صورة توضّحها.',3000);return}
+  if(!ok){toast(faw?'اكتب الفائدة.':pageRep?'اختر نوع الخطأ واكتب وصفه.':'اختر نوع الملاحظة واكتبها.',3000);return}
   if(!navigator.onLine){toast('لا يوجد اتصال بالإنترنت الآن. أرسلها حين يعود الاتصال.',3500);return}
   const to=pageRep?FB.page:FB.notes;if(!to){toast('الإرسال غير مفعّل بعد.',2500);return}
   // hidden fields: subject, where, and the site version
