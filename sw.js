@@ -20,3 +20,9 @@ self.addEventListener('fetch',e=>{
     if(x.ok||x.type==='opaque'){const y=x.clone();caches.open(V).then(c=>c.put(e.request,y))}
     return x})));
 });
+
+/* the reminder before the adhan; a tap opens the site */
+self.addEventListener('push',e=>{let d={};try{d=e.data.json()}catch(_){d={b:e.data?e.data.text():''}}
+  e.waitUntil(self.registration.showNotification(d.t||'الدرر السنية',{body:d.b||'',icon:'icon-192.png',badge:'favicon-96.png',tag:d.tag||'pr',lang:'ar',dir:'rtl',data:{u:d.u||'./'}}))});
+self.addEventListener('notificationclick',e=>{e.notification.close();const u=(e.notification.data&&e.notification.data.u)||'./';
+  e.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(L=>{for(const c of L){if('focus' in c)return c.focus()}return clients.openWindow(u)}))});
