@@ -541,6 +541,11 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .prc.sun{opacity:.7}.prc.next{background:var(--brass-soft);outline:2px solid var(--brass)}.prc.next span{color:var(--brass);font-weight:700}
 .prnext{margin:8px 0 0;font-size:14px;color:var(--brass);text-align:center}
 .prset{display:flex;flex-wrap:wrap;gap:8px}
+#fwSec,#mFaw{display:none!important}                 /* readers' fawaid: not used */
+#home #dlSec,#home #methodSec,#home #fbSec{display:none}   /* in the menu: offline reading, the method, a note to us */
+#home #aboutSec{margin-top:6px}
+.zbd #methodSec>h2{display:none}
+.offsh #dlSec .actions{display:grid;gap:10px}
 .prpush{display:block;margin:10px auto 0}
 .prpick{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
 .prpick select{font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -619,7 +624,14 @@ button,a,.btn{touch-action:manipulation}
     </div>
 
 
-    <section class="prsec" id="prSec" aria-label="مواقيت الصلاة">
+    <section class="about" id="aboutSec">
+      <h2>عن الدرر السنية</h2>
+      <p class="aboutq" id="aboutQ"></p>
+      <p class="count" id="aboutSrc"></p>
+      <div class="links" id="aboutLinks"></div>
+    </section>
+
+      <section class="prsec" id="prSec" aria-label="مواقيت الصلاة">
       <div class="section-head"><h2>مواقيت الصلاة</h2><span class="count" id="prWhere"></span><button class="btn btn-link" id="prChange" type="button">تغيير</button></div>
       <div id="prPick" class="prpick" hidden></div>
       <div id="prBody"></div>
@@ -688,12 +700,7 @@ button,a,.btn{touch-action:manipulation}
       </div>
     </section>
 
-    <section class="about" id="aboutSec">
-      <h2>عن الدرر السنية</h2>
-      <p class="aboutq" id="aboutQ"></p>
-      <p class="count" id="aboutSrc"></p>
-      <div class="links" id="aboutLinks"></div>
-    </section>
+    
 
     <section class="about" id="fbSec" hidden>
       <h2>ملاحظاتك</h2>
@@ -924,7 +931,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-10-0503';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-10-0518';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2360,18 +2367,30 @@ function openNav(){
   it('فهرس الآيات',()=>{closeNav();openIdx('a')});
   it('شجرة العلماء والخط الزمني',()=>{closeNav();$('#openTree').click()});
   grp('ما يخصك');
-  it('فوائد القرّاء',()=>goSec('fwSec'),!$('#fwSec').hidden);
   it('خطة ختم الدرر السنية',()=>goSec('planSec'));
   it('المفضلة والتعليقات',()=>goSec('favSec'),!$('#favSec').hidden);
   it('تظليلاتي',()=>goSec('hlSec'),!$('#hlSec').hidden);
   it('بياناتك (نسخة احتياطية)',()=>goSec('dataSec'));
   grp('الكتاب');
-  it('التحميل والحفظ بدون إنترنت',()=>goSec('dlSec'));
   it('عن الدرر السنية',()=>goSec('aboutSec'));
-  it('منهج هذه النسخة',()=>goSec('methodSec'));
+  it('منهج الموقع',()=>{closeNav();openMethod()});
+  it('القراءة دون اتصال',()=>{closeNav();openOffline()});
+  it('تحميل الكتاب كاملاً',()=>{closeNav();location.href='download/'});
   it('أرسل ملاحظة',()=>{closeNav();openFb('notes')},FBON());
   $('#navBack').hidden=false;$('#nav').hidden=false;
 }
+function openMethod(){
+  let ov=$('#mthD');if(!ov){ov=el('div','zbd');ov.id='mthD';document.body.append(ov);
+    const top=el('div','zbt');const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';x.onclick=()=>{ov.hidden=true};
+    top.append(el('h2',null,'منهج هذه النسخة'),x);ov.append(top,$('#methodSec'))}
+  ov.hidden=false;ov.scrollTop=0;pgLock(ov)}
+function openOffline(){
+  let S=$('#offSh');if(!S){const bk=el('div','sheet-back');bk.id='offBk';S=el('div','sheet offsh');S.id='offSh';S.setAttribute('role','dialog');S.setAttribute('aria-label','القراءة دون اتصال');
+    const hd=el('div','sheethead');hd.innerHTML='<div class="grip"></div>';const x=el('button','icon');x.type='button';x.setAttribute('aria-label','إغلاق');x.style.cssText='position:absolute;inset-inline-start:6px;top:6px';
+    x.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';hd.append(x);
+    S.append(hd,el('h4',null,'القراءة دون اتصال'),el('p','note','احفظ الكتاب في جهازك ليُقرأ كله من غير إنترنت، أو نزّله ملفاً واحداً.'),$('#dlSec'));document.body.append(bk,S);
+    const close=()=>{bk.hidden=true;S.hidden=true};bk.onclick=close;x.onclick=close}
+  $('#offBk').hidden=false;S.hidden=false}
 $('#navBtn').onclick=openNav;$('#navClose').onclick=closeNav;$('#navBack').onclick=closeNav;
 // the button belongs to the home page only
 new MutationObserver(()=>{$('#navBtn').hidden=$('#home').hidden}).observe($('#home'),{attributes:true,attributeFilter:['hidden']});
