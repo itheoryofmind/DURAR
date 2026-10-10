@@ -1,7 +1,7 @@
 // A reminder before the adhan of the five prayers, for dorarnajdiah.com
 // - keeps the devices that asked for it: the push address the browser gives and the place the reader chose for the prayer times
 //   (its coordinates, time zone, method and the Asr choice; no name, no e-mail)
-// - every three minutes: the readers for whom an adhan comes in about ten minutes, by the same calculation as the site
+// - every three minutes: the readers for whom an adhan comes in about the time they chose (5, 10 or 15 minutes), by the same calculation as the site
 // Web Push: RFC 8291 (aes128gcm) and RFC 8292 (VAPID), with WebCrypto only.
 
 const SITE = 'https://dorarnajdiah.com';
@@ -106,15 +106,18 @@ function adhans(p, now) {
   return out;
 }
 const AR = (n) => String(n).replace(/[0-9]/g, (c) => '٠١٢٣٤٥٦٧٨٩'[c]);
-const LEAD = [7 * 6e4, 10 * 6e4];   // sent when the adhan is 7 to 10 minutes away (the check runs every three minutes)
+// the reader chooses 5, 10 or 15 minutes; sent when the adhan is that far away or up to three minutes less (the check runs every three minutes)
+const LEADS = [5, 10, 15];
+const LEADTXT = { 5: 'خمس دقائق', 10: 'عشر دقائق', 15: 'ربع ساعة' };
 function placeOf(m) {
   if (!m) return null;
-  const p = { la: +m.la, lo: +m.lo, tz: m.tz, mk: PRM[m.mk] ? m.mk : 'uq', h: m.h === 1 ? 1 : 0, nm: typeof m.nm === 'string' ? m.nm.slice(0, 40) : '' };
+  const p = { la: +m.la, lo: +m.lo, tz: m.tz, mk: PRM[m.mk] ? m.mk : 'uq', h: m.h === 1 ? 1 : 0, nm: typeof m.nm === 'string' ? m.nm.slice(0, 40) : '', ld: LEADS.includes(+m.ld) ? +m.ld : 10 };
   return (isFinite(p.la) && isFinite(p.lo) && Math.abs(p.la) <= 90 && Math.abs(p.lo) <= 180 && okTz(p.tz)) ? p : null;
 }
 function message(i, at, nm) {
   const mins = Math.max(1, Math.round((at - Date.now()) / 6e4));
-  return { t: 'اقترب أذان ' + NAMES[i], b: 'بقي نحو ' + AR(mins) + (mins >= 3 && mins <= 10 ? ' دقائق' : ' دقيقة') + ' على أذان ' + NAMES[i] + (nm ? ' في ' + nm : '') + '.', u: SITE + '/', tag: 'pr' };
+  const mt = mins === 1 ? 'دقيقة' : mins === 2 ? 'دقيقتان' : AR(mins) + (mins <= 10 ? ' دقائق' : ' دقيقة');
+  return { t: 'اقترب أذان ' + NAMES[i], b: 'بقي نحو ' + mt + ' على أذان ' + NAMES[i] + (nm ? ' في ' + nm : '') + '.', u: SITE + '/', tag: 'pr' };
 }
 
 function valid(sub) {
@@ -136,8 +139,8 @@ async function due(env, now) {
     const l = await env.PUSH.list({ prefix: 's:', cursor });
     for (const k of l.keys) {
       const p = placeOf(k.metadata); if (!p) continue;
-      const g = [p.la.toFixed(2), p.lo.toFixed(2), p.tz, p.mk, p.h].join('|');
-      if (!memo.has(g)) memo.set(g, adhans(p, now).filter(([, t]) => t - now > LEAD[0] && t - now <= LEAD[1]));
+      const g = [p.la.toFixed(2), p.lo.toFixed(2), p.tz, p.mk, p.h, p.ld].join('|');
+      if (!memo.has(g)) memo.set(g, adhans(p, now).filter(([, t]) => t - now > (p.ld - 3) * 6e4 && t - now <= p.ld * 6e4));
       for (const [i, t] of memo.get(g)) out.push([k.name, i, t]);
     }
     cursor = l.list_complete ? null : l.cursor;
@@ -201,8 +204,8 @@ export default {
       if (!valid(sub) || !p) return json({ ok: false }, 400);
       const known = await env.PUSH.get(id);
       await env.PUSH.put(id, JSON.stringify({ endpoint: sub.endpoint, keys: { p256dh: sub.keys.p256dh, auth: sub.keys.auth } }), { metadata: p });
-      if (known) return json({ ok: true });   // the same reader, a new place or method: no second welcome
-      const st = await send(env, sub, { t: 'الدرر السنية', b: 'سيصلك تنبيه قبل أذان كل صلاة من الصلوات الخمس بنحو عشر دقائق.', u: SITE + '/', tag: 'pr' }).catch(() => 0);
+      if (known) return json({ ok: true });   // the same reader, a new place, method or time: no second welcome
+      const st = await send(env, sub, { t: 'الدرر السنية', b: 'سيصلك تنبيه قبل أذان كل صلاة من الصلوات الخمس بنحو ' + LEADTXT[p.ld] + '.', u: SITE + '/', tag: 'pr' }).catch(() => 0);
       return json({ ok: true, sent: st });
     }
     return json({ ok: false }, 404);
