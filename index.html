@@ -547,6 +547,9 @@ textarea.notebox{width:100%;min-height:80px;border:1px solid var(--line);border-
 .zbd #methodSec>h2{display:none}
 .offsh #dlSec .actions{display:grid;gap:10px}
 .prpush{display:block;margin:10px auto 0}
+.prlead{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;margin-top:8px;font-size:13px;color:var(--muted)}
+.prlead button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:3px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.prlead button[aria-pressed=true]{border-color:var(--brass);color:var(--brass);font-weight:700}
 .prpick{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
 .prpick select{font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 @media (max-width:420px){.prgrid{grid-template-columns:repeat(3,1fr)}}
@@ -931,7 +934,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-10-0518';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-10-0536';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2586,13 +2589,16 @@ const PRP={ios:/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platfor
   app:!!(window.navigator.standalone||matchMedia('(display-mode: standalone)').matches),
   can:()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window,on:null};
 async function prpSub(){try{const r=await navigator.serviceWorker.getRegistration();return r?await r.pushManager.getSubscription():null}catch(e){return null}}
-function prpMeta(pl){return {la:pl.lat,lo:pl.lng,tz:pl.tz,mk:LS.get('prMethod',null)||PR.defM(pl.country),h:LS.get('prAsr','s')==='h'?1:0,nm:/^موقعك/.test(pl.name||'')?'':(pl.name||'')}}
+function prpMeta(pl){return {la:pl.lat,lo:pl.lng,tz:pl.tz,mk:LS.get('prMethod',null)||PR.defM(pl.country),h:LS.get('prAsr','s')==='h'?1:0,nm:/^موقعك/.test(pl.name||'')?'':(pl.name||''),ld:+LS.get('prPushLead',10)||10}}
+const PRLEAD=[[5,'٥ دقائق'],[10,'١٠ دقائق'],[15,'ربع ساعة']];
 const prpPost=(path,body)=>fetch(PRPU+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 function prPushRow(B,pl){
   const b=el('button','btn btn-quiet prpush');b.type='button';
-  const set=on=>{PRP.on=on;b.textContent=on?'التنبيه قبل الأذان مفعّل · إيقافه':'نبّهني قبل الأذان';b.dataset.on=on?1:''};
+  const lw=el('div','prlead');lw.setAttribute('role','group');lw.setAttribute('aria-label','وقت التنبيه قبل الأذان');lw.append(el('span',null,'قبل الأذان بـ'));
+  PRLEAD.forEach(([m,t])=>{const x=el('button',null,t);x.type='button';x.setAttribute('aria-pressed',(+LS.get('prPushLead',10)||10)===m);x.onclick=()=>{LS.set('prPushLead',m);lw.querySelectorAll('button').forEach(y=>y.setAttribute('aria-pressed',y===x));prpSync(pl)};lw.append(x)});
+  const set=on=>{PRP.on=on;b.textContent=on?'التنبيه قبل الأذان مفعّل · إيقافه':'نبّهني قبل الأذان';b.dataset.on=on?1:'';lw.hidden=!on};
   if(!PRP.can()){if(PRP.ios&&!PRP.app){set(false);b.onclick=()=>toast('لتصلك التنبيهات في الآيفون: أضف الموقع إلى الشاشة الرئيسية من زر المشاركة في سفاري، ثم افتحه من أيقونته واضغط هذا الزر.',7000);B.append(b)}return}
-  set(!!PRP.on);B.append(b);
+  set(!!PRP.on);B.append(b,lw);
   if(PRP.on===null)prpSub().then(s=>{set(!!s);prpSync(pl,s)});else if(PRP.on)prpSync(pl);
   b.onclick=async()=>{b.disabled=true;try{
       if(b.dataset.on){const s=await prpSub();if(s){prpPost('/unsub',{sub:{endpoint:s.endpoint}}).catch(()=>{});await s.unsubscribe()}LS.set('prPushMeta','');set(false);toast('أوقف التنبيه قبل الأذان.');return}
@@ -2600,7 +2606,7 @@ function prPushRow(B,pl){
       const reg=await navigator.serviceWorker.ready;const {key}=await (await fetch(PRPU+'/key')).json();
       const k=key.replace(/-/g,'+').replace(/_/g,'/');const s=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:Uint8Array.from(atob(k+'='.repeat((4-k.length%4)%4)),c=>c.charCodeAt(0))});
       const m=prpMeta(pl);const r=await prpPost('/sub',{sub:s,place:m});if(!r.ok)throw 0;LS.set('prPushMeta',JSON.stringify(m));
-      set(true);toast('فُعّل التنبيه: يصلك قبل أذان كل صلاة من الصلوات الخمس بنحو عشر دقائق، على مواقيت '+(m.nm||'موقعك')+'.',6000)
+      set(true);toast('فُعّل التنبيه: يصلك قبل أذان كل صلاة من الصلوات الخمس بنحو '+PRLEAD.find(x=>x[0]===m.ld)[1]+'، على مواقيت '+(m.nm||'موقعك')+'. وتستطيع تغيير الوقت من تحت الزر.',6000)
     }catch(e){toast('تعذّر تفعيل التنبيه الآن. حاول بعد قليل.',4000)}finally{b.disabled=false}};
 }
 // a new place, method or Asr choice: the reminders follow it
