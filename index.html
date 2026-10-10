@@ -248,7 +248,7 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s}
 .toast.low{top:auto;bottom:calc(84px + env(safe-area-inset-bottom))}
-.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%);z-index:90;background:var(--brown);color:var(--on-brown);padding:9px 16px;border-radius:20px;font-size:14px;box-shadow:var(--shadow);max-width:90vw;text-align:center;transition:opacity .3s}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%);z-index:300;background:var(--brown);color:var(--on-brown);padding:9px 16px;border-radius:20px;font-size:14px;box-shadow:var(--shadow);max-width:90vw;text-align:center;transition:opacity .3s}
 
 /* ---------- Reader ---------- */
 #reader{position:fixed;inset:0;z-index:40;background:var(--ground);display:flex;flex-direction:column}
@@ -934,7 +934,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-10-0939';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-10-0946';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
