@@ -736,7 +736,7 @@ button,a,.btn{touch-action:manipulation}
       <div class="links"><button class="btn btn-primary" id="fbOpen" type="button">أرسل ملاحظة</button></div>
     </section>
 
-    <section class="about" id="dataSec">
+    <section class="about" id="dataSec" hidden>
       <h2>بياناتك</h2>
       <p class="note">المفضلة والتعليقات وخطة الختم وموضع القراءة محفوظة في المتصفح الذي تقرأ منه فقط، فلا تنتقل وحدها بين الأجهزة ولا بين المتصفحات: ما تحفظه في متصفح الكمبيوتر لا يظهر في الجوال، وما في التطبيق المضاف للشاشة الرئيسية لا يظهر في Safari. لنقلها احفظ نسخة منها في ملف من الجهاز الأول ثم استرجعها في الآخر، وكذلك قبل تغيير الجوال أو حذف التطبيق.</p>
       <div class="links"><button class="btn btn-quiet" id="bkSave" type="button">حفظ نسخة من بياناتي</button><button class="btn btn-quiet" id="bkLoad" type="button">استرجاع من ملف</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
@@ -970,7 +970,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-11-1958';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-12-0134';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1104,6 +1104,11 @@ function wlShow(out,P){out.textContent='';
   if(P.notes){out.append(el('h4',null,'التسليم'));out.append(el('div','wl-txt',P.notes))}
   if(P.files&&P.files.length){out.append(el('h4',null,'الملفات'));P.files.forEach(x=>{const a=el('a','wl-file',x.n);a.href=URL.createObjectURL(new Blob([WL.unb64(x.d)],{type:x.t||'application/octet-stream'}));a.download=x.n;a.target='_blank';out.append(a)})}
   out.append(el('p','wl-m','احفظ ما هنا في مكان آمن. وتستطيع العودة إلى هذه الصفحة بإضافة #ahl إلى آخر رابط الموقع.'))}
+// بياناتك: shown in a sheet from the menu, and put back in its place (hidden) when the sheet closes
+function dataSheet(){const s=document.getElementById('dataSec');if(!s)return;const home=s.parentNode,next=s.nextSibling;
+  const ov=el('div','wl-ov');ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','بياناتك');const box=el('div','wl-box');const x=el('button','wl-x','×');x.type='button';x.setAttribute('aria-label','إغلاق');
+  const close=()=>{s.hidden=true;home.insertBefore(s,next);ov.remove()};x.onclick=close;ov.onclick=e=>{if(e.target===ov)close()};
+  s.hidden=false;box.append(x,s);ov.append(box);document.body.append(ov)}
 addEventListener('hashchange',()=>{if(location.hash==='#ahl'){history.replaceState(null,'',location.pathname+location.search);wlFamily()}});
 if(location.hash==='#ahl')setTimeout(()=>{history.replaceState(null,'',location.pathname+location.search);wlFamily()},800);
 
@@ -2476,7 +2481,7 @@ function openNav(){
   it('خطة ختم الدرر السنية',()=>goSec('planSec'));
   it('المفضلة والتعليقات',()=>goSec('favSec'),!$('#favSec').hidden);
   it('تظليلاتي',()=>goSec('hlSec'),!$('#hlSec').hidden);
-  it('بياناتك (نسخة احتياطية)',()=>goSec('dataSec'));
+  it('بياناتك (نسخة احتياطية)',()=>{closeNav();dataSheet()});
   grp('الكتاب');
   it('عن الدرر السنية',()=>goSec('aboutSec'));
   it('منهج الموقع',()=>{closeNav();openMethod()});
