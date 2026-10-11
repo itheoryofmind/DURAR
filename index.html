@@ -744,7 +744,7 @@ button,a,.btn{touch-action:manipulation}
       <p>تصحيح: الصفحات ٤١–١٢٠ من الجزء الثامن كانت مقلوبة الترتيب في المسح الأصلي، وهي هنا وفي ملف التحميل بترتيب الطبعة. وصف الأجزاء منقول من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦).</p>
     </section>
   </main>
-  <footer><p class="rule">❖</p><p>الدرر السنية في الأجوبة النجدية</p><p class="ft-url" dir="ltr">dorarnajdiah.com</p><p><button type="button" class="btn ft-share" id="shareSite">شارك الموقع</button></p><p class="waqf">جهدٌ فردي غير ربحي لخدمة الكتاب، وليس تابعاً لأي جهة رسمية. ومن كان له حقٌّ في هذا العمل أو ملاحظةٌ عليه، فنرحب بتواصله عبر <button type="button" class="waqflink" id="waqfFb">«أرسل ملاحظة»</button>.</p></footer>
+  <footer><p class="rule">❖</p><p>الدرر السنية في الأجوبة النجدية</p><!--SHARE-BEGIN--><p class="ft-url" dir="ltr">dorarnajdiah.com</p><p><button type="button" class="btn ft-share" id="shareSite">شارك الموقع</button></p><!--SHARE-END--><p class="waqf">جهدٌ فردي غير ربحي لخدمة الكتاب، وليس تابعاً لأي جهة رسمية. ومن كان له حقٌّ في هذا العمل أو ملاحظةٌ عليه، فنرحب بتواصله عبر <button type="button" class="waqflink" id="waqfFb">«أرسل ملاحظة»</button>.</p></footer>
 </div>
 
 <!-- ============ READER ============ -->
@@ -884,7 +884,7 @@ button,a,.btn{touch-action:manipulation}
     <p class="ayasrc" id="tafPg" hidden></p><p class="ayasrc" id="tafSrc"></p></section>
   <p class="ayasrc">نص الآية وخطّها من مجمع الملك فهد لطباعة المصحف الشريف (مصحف المدينة النبوية، رواية حفص، الإصدار ٣٠)، كما نشره المجمع دون أي تعديل.</p>
 </div>
-<div class="sheet-back" id="shrBack" hidden></div>
+<!--SHARE-BEGIN--><div class="sheet-back" id="shrBack" hidden></div>
 <div class="sheet" id="shr" hidden role="dialog" aria-label="شارك الموقع">
   <div class="sheethead"><div class="grip"></div><button class="icon" id="shrClose" type="button" aria-label="إغلاق"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <h3 class="ayaplace">شارك الموقع</h3>
@@ -893,7 +893,7 @@ button,a,.btn{touch-action:manipulation}
   <p class="sh-url" dir="ltr">dorarnajdiah.com</p>
   <div class="ayabtns"><button class="btn btn-primary" id="shrSend" type="button">إرسال الرابط</button><button class="btn" id="shrCopy" type="button">نسخ الرابط</button></div>
   <p class="sh-msg" id="shrMsg" role="status"></p>
-</div>
+</div><!--SHARE-END-->
 <div class="sheet-back" id="chooseBack" hidden></div>
 <div class="sheet" id="choose" hidden role="dialog" aria-label="طريقة القراءة">
   <div class="grip"></div>
@@ -956,7 +956,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-11-1051';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-11-1056';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1975,11 +1975,13 @@ async function ayaImage(parts,label){
   await drawCard([{t:'﴿'+parts.join(' ')+'﴾',k:'q'}],label,location.host,'aya.png');
 }
 function closeAya(){$('#ayaBack').hidden=true;$('#aya').hidden=true}
+/*SHARE-BEGIN*/
 /* شارك الموقع: the link through the phone's share sheet (also from the home-screen app, which has no address bar), copy, and a QR code */
 {const U='https://dorarnajdiah.com/';const open=()=>{$('#shrMsg').textContent='';$('#shrBack').hidden=false;$('#shr').hidden=false};window.openShare=open,close=()=>{$('#shrBack').hidden=true;$('#shr').hidden=true};
  const copy=async()=>{try{await navigator.clipboard.writeText(U);$('#shrMsg').textContent='نُسخ الرابط.'}catch(e){$('#shrMsg').textContent='انسخ الرابط: '+U}};
  $('#shareSite').onclick=open;$('#shrClose').onclick=close;$('#shrBack').onclick=close;$('#shrCopy').onclick=copy;
  $('#shrSend').onclick=async()=>{if(navigator.share){try{await navigator.share({title:'الدرر السنية في الأجوبة النجدية',text:'الدرر السنية في الأجوبة النجدية: قراءة وبحث في الكتاب كاملاً',url:U})}catch(e){}}else copy()}}
+/*SHARE-END*/
 
 $('#ayaClose').onclick=closeAya;$('#ayaBack').onclick=closeAya;
 function openSheet(noteOnly){
@@ -2420,7 +2422,7 @@ function openNav(){
   it('الإشعارات',()=>{closeNav();openNotif()});
   it('تحميل الكتاب كاملاً',()=>{closeNav();location.href='download/'});
   it('أرسل ملاحظة',()=>{closeNav();openFb('notes')},FBON());
-  it('شارك الموقع',()=>{closeNav();openShare()});
+  it('شارك الموقع',()=>{closeNav();openShare()});/*SHARE-LINE*/
   $('#navBack').hidden=false;$('#nav').hidden=false;
 }
 function openMethod(){
