@@ -182,6 +182,13 @@ export default {
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
     if (u.pathname === '/key') return json({ key: (await vapid(env)).pub });
     if (u.pathname === '/health') return json({ ok: true });
+    // the notice of the one who keeps the site, and his family's page: answered by the other worker, through a private binding (nothing of it is kept here)
+    if (['/w/s', '/w/q', '/w/open'].includes(u.pathname)) {
+      if (!env.WILL) return json({ r: 0 });
+      const h = new Headers({ 'Content-Type': 'application/json', 'CF-Connecting-IP': req.headers.get('CF-Connecting-IP') || '' });
+      const r = await env.WILL.fetch('https://will' + u.pathname, { method: req.method, headers: h, body: req.method === 'POST' ? await req.text() : undefined });
+      return new Response(await r.text(), { status: r.status, headers: { 'Content-Type': 'application/json; charset=utf-8', ...cors } });
+    }
     if (req.method === 'POST' && u.pathname === '/inner/send') {
       if (req.headers.get('X-Inner') !== await inner(env)) return json({ ok: false }, 403);
       return json(await sendJobs(env, await req.json()));
