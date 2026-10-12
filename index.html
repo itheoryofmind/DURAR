@@ -977,7 +977,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-12-0136';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-12-0809';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2727,7 +2727,7 @@ function prMini(){const S=$('#prSec');if(!S)return;const B=$('#prBody'),hd=S.que
   let m=B.querySelector('.prmini');if(!m){m=el('button','prmini');m.type='button';m.onclick=()=>{LS.set('prOpen',true);prMini()};B.prepend(m)}
   m.textContent='';const nx=B.querySelector('.prc.next'),rest=B.querySelector('.prnext');
   if(nx){const n=nx.querySelector('span'),t=nx.querySelector('b');m.append((n?n.textContent:'')+' ');if(t)m.append(el('b',null,t.textContent))}
-  if(rest)m.append((nx?' · ':'')+rest.textContent.replace(/^بقي على [^:]+:\s*/,nx?'بعد ':'$&'))}
+  if(rest)m.append((nx?' · ':'')+(nx?rest.textContent.replace(/^بقي على [^:]+:\s*/,'بعد ').replace('ساعتان','ساعتين').replace('دقيقتان','دقيقتين'):rest.textContent))}
 {const _rp=renderPrayer;renderPrayer=function(){const r=_rp.apply(this,arguments);try{prMini()}catch(e){}return r}}
 
 function prpMeta(pl){return {la:pl.lat,lo:pl.lng,tz:pl.tz,mk:LS.get('prMethod',null)||PR.defM(pl.country),h:LS.get('prAsr','s')==='h'?1:0,nm:/^موقعك/.test(pl.name||'')?'':(pl.name||''),ld:+LS.get('prPushLead',10)||10}}
