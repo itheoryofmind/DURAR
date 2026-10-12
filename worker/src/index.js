@@ -1,4 +1,4 @@
-import { ownerFetch, installSeen } from './owner.js';
+import { ownerFetch, installSeen, topOf } from './owner.js';
 // A reminder before the adhan of the five prayers, for dorarnajdiah.com
 // - keeps the devices that asked for it: the push address the browser gives and the place the reader chose for the prayer times
 //   (its coordinates, time zone, method and the Asr choice; no name, no e-mail)
@@ -177,11 +177,18 @@ async function sendJobs(env, jobs) {
   return r;
 }
 
+// for the keeper's page: how long before the adhan they chose, and the places most of them chose
+function durarStats(ms) {
+  const ps = ms.map(placeOf).filter(Boolean);
+  return [{ t: 'التنبيه قبل الأذان', r: LEADS.map((x) => ['قبل ' + LEADTXT[x], ps.filter((p) => p.ld === x).length, '']) },
+    { t: 'أكثر المدن', r: topOf(ps.map((p) => p.nm).filter(Boolean)).slice(0, 5).map(([n, c]) => [n, c, '']) }];
+}
+
 export default {
   async fetch(req, env) {
     const u = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
-    { const o = await ownerFetch(req, env, u, { site: SITE, name: 'الدرر السنية', fanOut, job: (id, msg) => [id, 'bc', msg] }); if (o) return o; }
+    { const o = await ownerFetch(req, env, u, { site: SITE, name: 'الدرر السنية', fanOut, job: (id, msg) => [id, 'bc', msg], stats: durarStats }); if (o) return o; }
     if (req.method === 'POST' && u.pathname === '/i') return installSeen(req, env, cors);
     if (u.pathname === '/key') return json({ key: (await vapid(env)).pub });
     if (u.pathname === '/health') return json({ ok: true });
