@@ -1,4 +1,4 @@
-import { ownerFetch } from './owner.js';
+import { ownerFetch, installSeen } from './owner.js';
 // A reminder before the adhan of the five prayers, for dorarnajdiah.com
 // - keeps the devices that asked for it: the push address the browser gives and the place the reader chose for the prayer times
 //   (its coordinates, time zone, method and the Asr choice; no name, no e-mail)
@@ -182,6 +182,7 @@ export default {
     const u = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
     { const o = await ownerFetch(req, env, u, { site: SITE, name: 'الدرر السنية', fanOut, job: (id, msg) => [id, 'bc', msg] }); if (o) return o; }
+    if (req.method === 'POST' && u.pathname === '/i') return installSeen(req, env, cors);
     if (u.pathname === '/key') return json({ key: (await vapid(env)).pub });
     if (u.pathname === '/health') return json({ ok: true });
     if (req.method === 'POST' && u.pathname === '/inner/send') {
