@@ -34,9 +34,6 @@ id = "$NS"
 [[services]]
 binding = "SELF"
 service = "durar-push"
-[[services]]
-binding = "WILL"
-service = "sira-push"
 [triggers]
 crons = ["*/3 * * * *"]   # every three minutes: the readers whose adhan is about ten minutes away
 T
