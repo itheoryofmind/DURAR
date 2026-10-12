@@ -977,7 +977,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-12-1022';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-12-1028';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1602,7 +1602,7 @@ const gtxt=g=>g==='صحيح'?'صححه الألباني':g==='حسن'?'حسّن�
 let GPG=0;
 function gbadge(g,part){const b=el('button','hg '+gcls(g),gtxt(g));b.type='button';const p=GPG;
   b.onclick=e=>{e.stopPropagation();toast((part?'حكم الشيخ الألباني على هذا الجزء من الحديث: «':'حكم الشيخ الألباني على هذا الحديث: «')+g+'»، كما طُبع بجانبه في كتابه مختصر الشمائل المحمدية (المكتبة الإسلامية بعمّان ١٤٠٦هـ، ص '+ar(p)+'). وليس من كلام الترمذي، ولا حكماً من الموقع.',7000)};return b}
-function boldNm(root){const RX=/(رسول الله صلى الله عليه وسلم|للنبي صلى الله عليه وسلم|النبي صلى الله عليه وسلم|نبي الله صلى الله عليه وسلم|رسول الله ﷺ|النبي ﷺ)/;
+function boldNm(root){const RX=/((?:[وفبلك]{0,2})رسول الله صلى الله عليه وسلم|(?:[وفبك]{0,2})للنبي صلى الله عليه وسلم|(?:[وفبك]{0,2})النبي صلى الله عليه وسلم|(?:[وفبلك]{0,2})نبي الله صلى الله عليه وسلم|(?:[وفبلك]{0,2})رسول الله ﷺ|(?:[وفبك]{0,2})النبي ﷺ)/;
   const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:t=>RX.test(t.data)&&!t.parentElement.closest('h3,b,strong,a,button,.verse,.q,.nb-n,.hdn')?1:3});const L=[];while(w.nextNode())L.push(w.currentNode);
   L.forEach(t=>{const f=document.createDocumentFragment();t.data.split(RX).forEach((y,i)=>{if(!y)return;if(i%2){const b=document.createElement('span');b.className='nb-n';b.textContent=y;f.append(b)}else f.append(document.createTextNode(y))});t.replaceWith(f)})}
 function pageItemsDom(x,body){
