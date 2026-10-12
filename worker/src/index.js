@@ -1,3 +1,4 @@
+import { ownerFetch } from './owner.js';
 // A reminder before the adhan of the five prayers, for dorarnajdiah.com
 // - keeps the devices that asked for it: the push address the browser gives and the place the reader chose for the prayer times
 //   (its coordinates, time zone, method and the Asr choice; no name, no e-mail)
@@ -167,7 +168,7 @@ async function sendJobs(env, jobs) {
     const v = await env.PUSH.getWithMetadata(id, 'json');
     if (!v || !v.value) continue;
     const p = placeOf(v.metadata) || {};
-    const msg = i === -1 ? { t: 'تجربة التنبيه', b: 'هكذا يصلك التنبيه قبل الأذان.', u: SITE + '/', tag: 'pr' } : message(i, t, p.nm);
+    const msg = i === 'bc' ? t : i === -1 ? { t: 'تجربة التنبيه', b: 'هكذا يصلك التنبيه قبل الأذان.', u: SITE + '/', tag: 'pr' } : message(i, t, p.nm);
     const st = await send(env, v.value, msg, 900, 'high').catch(() => 0);
     r.tried++;
     if (st >= 200 && st < 300) r.sent++;
@@ -180,6 +181,7 @@ export default {
   async fetch(req, env) {
     const u = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
+    { const o = await ownerFetch(req, env, u, { site: SITE, name: 'الدرر السنية', fanOut, job: (id, msg) => [id, 'bc', msg] }); if (o) return o; }
     if (u.pathname === '/key') return json({ key: (await vapid(env)).pub });
     if (u.pathname === '/health') return json({ ok: true });
     if (req.method === 'POST' && u.pathname === '/inner/send') {
