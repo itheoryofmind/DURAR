@@ -221,6 +221,8 @@ export default {
     return json({ ok: false }, 404);
   },
   async scheduled(ev, env, ctx) {
+    // the keeper paused the site with its notifications (from his edit mode; kept at push.seeratuh.com): send nothing meanwhile
+    try { const j = await (await fetch('https://push.seeratuh.com/st?s=durar')).json(); if (j && j.on && j.np) return; } catch (e) {}
     const r = await fanOut(env, await due(env, Date.now()));
     if (r.tried) console.log('tried', r.tried, 'sent', r.sent, 'removed', r.removed);
   },
