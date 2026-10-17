@@ -969,7 +969,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-17-0531';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-17-0559';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2945,6 +2945,9 @@ html.own-pg-on,html.own-pg-on body{overflow:hidden}
 .own-grey{background:#3a352a!important;color:#f1ece0!important}
 .own-bar .own-b{flex:none}.own-bar .own-pk{flex:1}
 
+/* the keeper withheld the printed pages' images: the buttons and any opened image go; a page that has only its image stays */
+html.own-noimg .pgimg,html.own-noimg .sx-pbtn,html.own-noimg .sx-pwrap,html.own-noimg .istage:not([data-auto]){display:none!important}
+
 </style>
 <script>
 /* ---------- the keeper's control of the site (used by both of his sites) ----------
@@ -3022,6 +3025,10 @@ function design(k){if(typeof OWN_DESIGNS==='undefined')return;const D=k&&OWN_DES
 if(PVZ!==null){design(PVZ);if(PVM){if(PVM==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',PVM)}}
 else design(LS.get('own_dz',''));
 
+/* ---------- the printed pages' images («قارن بالصورة»), shown or withheld by the keeper ---------- */
+function noimg(){document.documentElement.classList.toggle('own-noimg',!!CFG.noimg)}
+noimg();
+
 /* ---------- the pause ---------- */
 let pzv=null;
 function pause(){if(CFG.on&&!OWN()){if(!pzv){pzv=el('div','pz');pzv.setAttribute('role','alertdialog');pzv.setAttribute('aria-modal','true');document.body.append(pzv);document.documentElement.classList.add('pz-on')}
@@ -3029,7 +3036,7 @@ function pause(){if(CFG.on&&!OWN()){if(!pzv){pzv=el('div','pz');pzv.setAttribute
   else if(pzv){pzv.remove();pzv=null;document.documentElement.classList.remove('pz-on')}}
 
 async function load(){try{const r=await fetch(W+'/st?s='+SITE,{cache:'no-store'});if(!r.ok)return;const j=await r.json();
-  const ch=JSON.stringify([j.hide,j.add,j.pages])!==JSON.stringify([CFG.hide,CFG.add,CFG.pages]);CFG=j;LS.set('own_cfg',j);if(PVZ===null&&(j.dz||'')!==LS.get('own_dz','')){LS.set('own_dz',j.dz||'');design(j.dz||'')}pause();if(ch)reapply();drawPz()}catch(e){}}
+  const ch=JSON.stringify([j.hide,j.add,j.pages])!==JSON.stringify([CFG.hide,CFG.add,CFG.pages]);CFG=j;LS.set('own_cfg',j);noimg();if(PVZ===null&&(j.dz||'')!==LS.get('own_dz','')){LS.set('own_dz',j.dz||'');design(j.dz||'')}pause();if(ch)reapply();drawPz()}catch(e){}}
 load();try{pause()}catch(e){}if((CFG.hide||[]).length||(CFG.add||[]).length||(CFG.pages||[]).length)try{applyTo(document.body)}catch(e){}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()});
 
