@@ -121,6 +121,10 @@ function message(i, at, nm) {
   return { t: 'اقترب أذان ' + NAMES[i], b: 'بقي نحو ' + mt + ' على أذان ' + NAMES[i] + (nm ? ' في ' + nm : '') + '.', u: SITE + '/', tag: 'pr' };
 }
 
+// at the adhan itself: a notification of its own (its own tag, so the one before it stays)
+function atAdhan(i, nm) {
+  return { t: 'حان وقت صلاة ' + NAMES[i], b: 'حان الآن وقت أذان ' + NAMES[i] + (nm ? ' في ' + nm : '') + '.', u: SITE + '/', tag: 'pra' };
+}
 function valid(sub) {
   try {
     const u = new URL(sub.endpoint);
@@ -141,8 +145,9 @@ async function due(env, now) {
     for (const k of l.keys) {
       const p = placeOf(k.metadata); if (!p) continue;
       const g = [p.la.toFixed(2), p.lo.toFixed(2), p.tz, p.mk, p.h, p.ld].join('|');
-      if (!memo.has(g)) memo.set(g, adhans(p, now).filter(([, t]) => t - now > (p.ld - 3) * 6e4 && t - now <= p.ld * 6e4));
-      for (const [i, t] of memo.get(g)) out.push([k.name, i, t]);
+      // the reminder before the adhan (the time the reader chose), and a second at the adhan itself (the tick nearest to it)
+      if (!memo.has(g)) memo.set(g, adhans(p, now).flatMap(([i, t]) => (t - now > (p.ld - 3) * 6e4 && t - now <= p.ld * 6e4) ? [[i, t]] : (t - now > -1.5 * 6e4 && t - now <= 1.5 * 6e4) ? [[i, t, 'at']] : []));
+      for (const [i, t, at] of memo.get(g)) out.push(at ? [k.name, i, t, 'at'] : [k.name, i, t]);
     }
     cursor = l.list_complete ? null : l.cursor;
   } while (cursor);
@@ -164,11 +169,11 @@ async function fanOut(env, jobs) {
 }
 async function sendJobs(env, jobs) {
   const r = { tried: 0, sent: 0, removed: 0 };
-  for (const [id, i, t] of jobs) {
+  for (const [id, i, t, at] of jobs) {
     const v = await env.PUSH.getWithMetadata(id, 'json');
     if (!v || !v.value) continue;
     const p = placeOf(v.metadata) || {};
-    const msg = i === 'bc' ? t : i === -1 ? { t: 'تجربة التنبيه', b: 'هكذا يصلك التنبيه قبل الأذان.', u: SITE + '/', tag: 'pr' } : message(i, t, p.nm);
+    const msg = i === 'bc' ? t : i === -1 ? { t: 'تجربة التنبيه', b: 'هكذا يصلك التنبيه قبل الأذان.', u: SITE + '/', tag: 'pr' } : at === 'at' ? atAdhan(i, p.nm) : message(i, t, p.nm);
     const st = await send(env, v.value, msg, 900, 'high').catch(() => 0);
     r.tried++;
     if (st >= 200 && st < 300) r.sent++;
@@ -215,7 +220,7 @@ export default {
       const known = await env.PUSH.get(id);
       await env.PUSH.put(id, JSON.stringify({ endpoint: sub.endpoint, keys: { p256dh: sub.keys.p256dh, auth: sub.keys.auth } }), { metadata: p });
       if (known) return json({ ok: true });   // the same reader, a new place, method or time: no second welcome
-      const st = await send(env, sub, { t: 'الدرر السنية', b: 'سيصلك تنبيه قبل أذان كل صلاة من الصلوات الخمس بنحو ' + LEADTXT[p.ld] + '.', u: SITE + '/', tag: 'pr' }).catch(() => 0);
+      const st = await send(env, sub, { t: 'الدرر السنية', b: 'سيصلك تنبيه قبل أذان كل صلاة من الصلوات الخمس بنحو ' + LEADTXT[p.ld] + '، وتنبيه آخر عند الأذان.', u: SITE + '/', tag: 'pr' }).catch(() => 0);
       return json({ ok: true, sent: st });
     }
     return json({ ok: false }, 404);
