@@ -969,7 +969,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-17-0651';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-17-0708';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2949,6 +2949,9 @@ html.own-pg-on,html.own-pg-on body{overflow:hidden}
 html.own-noimg .pgimg,html.own-noimg .sx-pbtn,html.own-noimg .sx-pwrap,html.own-noimg .istage:not([data-auto]){display:none!important}
 
 .dz-art{display:none}
+/* the verses of the Qur'an in the Uthmani script's font (King Fahd Complex, Hafs) in every design and mode */
+.q,.qu,.hd-v,.ayatext,.tq,.sx-hero .sx-verse .v1,.sx-hero .sx-verse .v2,.nz-q blockquote .qu{font-family:"UthmanicHafs","Amiri",serif!important}
+.q,.hd-v{font-size:1.04em}
 
 :root.dz-najd{--display:"Noto Kufi Arabic","Amiri",sans-serif;--text:"Amiri","Noto Naskh Arabic",serif;--ui:"Noto Kufi Arabic",-apple-system,sans-serif}
 :root.dz-najd:not([data-theme=night]){--ground:#F5EEE2;--surface:#FFFBF4;--raised:#FFFCF6;--ink:#2C1F15;--muted:#6E5C4A;--line:#E7D8C2;--brown:#5A3420;--brown2:#7A4628;--on-brown:#FBF1E4;--brass:#8E5F12;--gold:#C78F36;--brass-soft:#F5E5CC;--clay:#A9482A;--palm:#4F6E33;--verse:#45692C;--mark:#F0D893;--here:#C78F36;--read:#30231A}
