@@ -969,7 +969,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-17-0920';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-17-1155';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2472,7 +2472,7 @@ function openNotif(){
   const B=$('#ntBd');B.innerHTML='';const pl=LS.get('prPlace',null);
   if(!pl){B.append(el('p','note','التنبيه قبل الأذان يكون على مواقيت مدينتك، فاختر مدينتك أولاً من «مواقيت الصلاة» في الرئيسية.'));
     const g=el('button','btn btn-quiet','اختيار المدينة');g.type='button';g.onclick=()=>{$('#ntBk').hidden=true;S.hidden=true;goSec('prSec')};B.append(g)}
-  else{B.append(el('p','note','تنبيه قبل أذان كل صلاة من الصلوات الخمس، على مواقيت '+(/^موقعك/.test(pl.name||'')?'موقعك':pl.name)+'، وتختار كم قبل الأذان.'));prPushRow(B,pl)}
+  else{B.append(el('p','note','تنبيه قبل أذان كل صلاة من الصلوات الخمس، وتنبيه آخر عند الأذان، على مواقيت '+(/^موقعك/.test(pl.name||'')?'موقعك':pl.name)+'، وتختار كم قبل الأذان.'));prPushRow(B,pl)}
   $('#ntBk').hidden=false;S.hidden=false}
 $('#navBtn').onclick=openNav;$('#navClose').onclick=closeNav;$('#navBack').onclick=closeNav;
 // the button belongs to the home page only
@@ -2699,7 +2699,7 @@ function prPushRow(B,pl){
       const reg=await navigator.serviceWorker.ready;const {key}=await (await fetch(PRPU+'/key')).json();
       const k=key.replace(/-/g,'+').replace(/_/g,'/');const s=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:Uint8Array.from(atob(k+'='.repeat((4-k.length%4)%4)),c=>c.charCodeAt(0))});
       const m=prpMeta(pl);const r=await prpPost('/sub',{sub:s,place:m});if(!r.ok)throw 0;LS.set('prPushMeta',JSON.stringify(m));
-      set(true);toast('فُعّل التنبيه: يصلك قبل أذان كل صلاة من الصلوات الخمس بنحو '+PRLEAD.find(x=>x[0]===m.ld)[1]+'، على مواقيت '+(m.nm||'موقعك')+'. وتستطيع تغيير الوقت من الخيار الذي أسفل الزر.',6000)
+      set(true);toast('فُعّل التنبيه: يصلك قبل أذان كل صلاة من الصلوات الخمس بنحو '+PRLEAD.find(x=>x[0]===m.ld)[1]+'، وتنبيه آخر عند الأذان، على مواقيت '+(m.nm||'موقعك')+'. وتستطيع تغيير الوقت من الخيار الذي أسفل الزر.',6000)
     }catch(e){toast('تعذّر تفعيل التنبيه الآن. حاول بعد قليل.',4000)}finally{b.disabled=false}};
 }
 // a new place, method or Asr choice: the reminders follow it
