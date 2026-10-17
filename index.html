@@ -969,7 +969,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-17-0443';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-17-0452';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2995,7 +2995,8 @@ function recheck(root){if(root.nodeType!==1)return;const L=[root,...root.querySe
 function applyTo(root){recheck(root);
   for(const r of CFG.hide||[])try{matches(root,r,n=>{n.classList.add(OWN()?'own-hid-o':'own-hid');n.dataset.ownHid=r.id})}catch(e){}
   for(const a of CFG.add||[])try{matches(root,a,n=>after(n,a.id,()=>addEl(a)))}catch(e){}
-  for(const p of CFG.pages||[])try{matches(root,p,n=>after(n,p.id,()=>tileEl(p,n)))}catch(e){}}
+  for(const p of CFG.pages||[])try{matches(root,p,n=>after(n,p.id,()=>tileEl(p,n)))}catch(e){}
+  if(typeof exEven==='function')try{exEven()}catch(e){}}
 function reapply(){document.querySelectorAll('.own-add').forEach(x=>x.remove());document.querySelectorAll('.own-hid,.own-hid-o').forEach(x=>{x.classList.remove('own-hid','own-hid-o');delete x.dataset.ownHid});applyTo(document.body)}
 let pend=new Set(),tmr=0;
 new MutationObserver(ms=>{if(!(CFG.hide||[]).length&&!(CFG.add||[]).length&&!(CFG.pages||[]).length)return;
