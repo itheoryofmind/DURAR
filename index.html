@@ -969,7 +969,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-17-0452';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-17-0531';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -3012,6 +3012,16 @@ function openPage(p){const ov=el('div','own-pg');ov.setAttribute('role','dialog'
   ov.append(hd,inn);document.body.append(ov);document.documentElement.classList.add('own-pg-on');ov.tabIndex=-1;ov.focus();
   ov.addEventListener('keydown',e=>{if(e.key==='Escape')close()});return ov}
 
+/* ---------- the design the keeper chose (or one being previewed: ?dz=<design>&mode=auto|white|night) ---------- */
+const QS=new URLSearchParams(location.search),PVZ=QS.get('dz'),PVM=QS.get('mode');
+function design(k){if(typeof OWN_DESIGNS==='undefined')return;const D=k&&OWN_DESIGNS[k];
+  [...document.documentElement.classList].filter(c=>c.startsWith('dz-')).forEach(c=>document.documentElement.classList.remove(c));
+  if(!D)return;   // the designs' styles are in the page itself; a design is its class on the page
+  if(!document.getElementById('own-dzf-'+k)){const l=document.createElement('link');l.rel='stylesheet';l.id='own-dzf-'+k;l.href='https://fonts.googleapis.com/css2?'+D.f+'&display=swap';document.head.append(l)}
+  document.documentElement.classList.add('dz-'+k)}
+if(PVZ!==null){design(PVZ);if(PVM){if(PVM==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',PVM)}}
+else design(LS.get('own_dz',''));
+
 /* ---------- the pause ---------- */
 let pzv=null;
 function pause(){if(CFG.on&&!OWN()){if(!pzv){pzv=el('div','pz');pzv.setAttribute('role','alertdialog');pzv.setAttribute('aria-modal','true');document.body.append(pzv);document.documentElement.classList.add('pz-on')}
@@ -3019,7 +3029,7 @@ function pause(){if(CFG.on&&!OWN()){if(!pzv){pzv=el('div','pz');pzv.setAttribute
   else if(pzv){pzv.remove();pzv=null;document.documentElement.classList.remove('pz-on')}}
 
 async function load(){try{const r=await fetch(W+'/st?s='+SITE,{cache:'no-store'});if(!r.ok)return;const j=await r.json();
-  const ch=JSON.stringify([j.hide,j.add,j.pages])!==JSON.stringify([CFG.hide,CFG.add,CFG.pages]);CFG=j;LS.set('own_cfg',j);pause();if(ch)reapply();drawPz()}catch(e){}}
+  const ch=JSON.stringify([j.hide,j.add,j.pages])!==JSON.stringify([CFG.hide,CFG.add,CFG.pages]);CFG=j;LS.set('own_cfg',j);if(PVZ===null&&(j.dz||'')!==LS.get('own_dz','')){LS.set('own_dz',j.dz||'');design(j.dz||'')}pause();if(ch)reapply();drawPz()}catch(e){}}
 load();try{pause()}catch(e){}if((CFG.hide||[]).length||(CFG.add||[]).length||(CFG.pages||[]).length)try{applyTo(document.body)}catch(e){}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()});
 
@@ -3097,7 +3107,7 @@ function oSnip(s,T){const [n,ix]=letters(s);const a=n.indexOf(T);if(a<0)return s
 function secName(){const o=[...document.querySelectorAll('[role=dialog][aria-label]')].filter(x=>!x.hidden&&x.getClientRects().length&&!x.closest('[hidden]')&&!x.classList.contains('own-sh')).pop();return o?o.getAttribute('aria-label'):'الصفحة الرئيسية'}
 function fileName(f){const m={'sx_feat.json':'سنوات عمره والأحداث','sira_x.json':'الخط الزمني','sx_ghun.json':'شرح الغنيمان','saadi.json':'تفسير السعدي','fihris.json':'الفهرس','heads.json':'العناوين','meta.json':'بيانات الكتب','fawaid.json':'الفوائد'};if(m[f])return m[f];
   if(/^t\d+\.json$/.test(f)){try{if(typeof SXBN==='function')return SXBN(+f.slice(1,-5));if(typeof partName==='function')return partName(+f.slice(1,-5))}catch(e){}}
-  if(/^sx_jhc_/.test(f))return 'كتاب الجهاد: الشروح';if(/^sx_jhi_/.test(f))return 'كتاب الجهاد';return secName()}
+  if(/^sx_sy_/.test(f))return 'تراجم الصحابة (سير أعلام النبلاء)';if(/^sx_jhc_/.test(f))return 'كتاب الجهاد: الشروح';if(/^sx_jhi_/.test(f))return 'كتاب الجهاد';return secName()}
 function chooser(groups,txt){const [ov,c]=sheet('أي موضع تقصد؟');const [T]=letters(txt);
   c.append(el('p','own-n','هذا النص في أكثر من موضع من نصوص الموقع؛ اختر الذي تريد تعديله.'));
   for(const g of groups){const b=el('button','own-hit');b.type='button';b.append(el('small',null,fileName(g.at[0].f)+(g.at.length>1?' (و'+ar(g.at.length-1)+' موضع آخر بالنص نفسه)':'')),oSnip(g.s,T));b.onclick=()=>{ov.remove();oData(g,txt)};c.append(b)}}
