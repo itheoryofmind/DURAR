@@ -40,6 +40,9 @@ T
 CLOUDFLARE_ACCOUNT_ID="$ACC" npx --yes wrangler@3 deploy
 ADMIN=$(printf %s "durar:$CLOUDFLARE_API_TOKEN" | sha256sum | cut -c1-40)
 api -X PUT "https://api.cloudflare.com/client/v4/accounts/$ACC/storage/kv/namespaces/$NS/values/admin" --data-binary "$ADMIN" -H "Content-Type: text/plain" >/dev/null && echo "test key set"
+# the Sira worker's key: it sends here the notices the keeper set ahead for this site
+PEER=$(printf %s "$CLOUDFLARE_API_TOKEN" | sha256sum | cut -c1-40)
+api -X PUT "https://api.cloudflare.com/client/v4/accounts/$ACC/storage/kv/namespaces/$NS/values/peer" --data-binary "$PEER" -H "Content-Type: text/plain" >/dev/null && echo "peer key set"
 echo "$URL" > "${URL_OUT:-/dev/null}"
 for i in $(seq 1 30); do
   if out=$(curl -fsS "$URL/health" 2>/dev/null); then echo "live: $out"; exit 0; fi
