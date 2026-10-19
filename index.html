@@ -971,7 +971,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-18-1953';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-19-1106';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2975,6 +2975,7 @@ audio.own-note-m{background:none;height:44px}
 
 /* the band under the phone's clock (the app reaches the top of the screen): the colour of the design's top, a shade darker where that top is light so the clock stays readable */
 #sbar{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--sb,#000);z-index:2147483000;pointer-events:none}
+.pz-k{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}.pz-k input{flex:1 1 180px;min-width:0;font:inherit;font-size:17px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg,#fff);color:var(--ink);direction:ltr;text-align:center}.pz-k .pz-m{flex:0 0 100%;margin:4px 0 0;font-size:15px}
 
 :root.dz-najd{--display:"Noto Kufi Arabic","Amiri",sans-serif;--text:"Amiri","Noto Naskh Arabic",serif;--ui:"Noto Kufi Arabic",-apple-system,sans-serif}
 :root.dz-najd:not([data-theme=night]){--ground:#F5EEE2;--surface:#FFFBF4;--raised:#FFFCF6;--ink:#2C1F15;--muted:#6E5C4A;--line:#E7D8C2;--brown:#5A3420;--brown2:#7A4628;--on-brown:#FBF1E4;--brass:#8E5F12;--gold:#C78F36;--brass-soft:#F5E5CC;--clay:#A9482A;--palm:#4F6E33;--verse:#45692C;--mark:#F0D893;--here:#C78F36;--read:#30231A}
@@ -3153,7 +3154,14 @@ noimg();
 /* ---------- the pause ---------- */
 let pzv=null;
 function pause(){if(CFG.on&&!OWN()){if(!pzv){pzv=el('div','pz');pzv.setAttribute('role','alertdialog');pzv.setAttribute('aria-modal','true');document.body.append(pzv);document.documentElement.classList.add('pz-on')}
-    pzv.textContent='';const c=el('div','pz-c');c.append(el('div','pz-n',HOME));const b=el('button','pz-b','تحقّق مرة أخرى');b.type='button';b.onclick=()=>{b.disabled=true;load().then(()=>{b.disabled=false})};c.append(el('p','pz-m',CFG.msg||''),b);pzv.append(c)}
+    pzv.textContent='';const c=el('div','pz-c');c.append(el('div','pz-n',HOME));const b=el('button','pz-b','تحقّق مرة أخرى');b.type='button';b.onclick=()=>{b.disabled=true;load().then(()=>{b.disabled=false})};const m=el('p','pz-m',CFG.msg||'');c.append(m,b);pzv.append(c);
+    // the keeper alone: five taps on the message, then his key, and the site opens for him (the key is checked by the server)
+    let n=0,t0=0;m.addEventListener('click',()=>{const t=Date.now();if(t-t0>4000)n=0;t0=t;n++;if(n<5||c.querySelector('.pz-k'))return;n=0;
+      const f=el('form','pz-k');const i=el('input');i.type='password';i.autocomplete='current-password';i.placeholder='المفتاح';i.setAttribute('aria-label','المفتاح');
+      const g=el('button','pz-b','دخول');g.type='submit';const e=el('p','pz-m','');f.append(i,g,e);c.append(f);i.focus();
+      f.onsubmit=async ev=>{ev.preventDefault();const v=i.value.trim().replace(/^.*#(own|k)=/,'');if(!v)return;g.disabled=true;e.textContent='يتحقق…';
+        let ok=false;try{const r=await fetch(W+'/c/hi',{method:'POST',body:JSON.stringify({k:v,s:SITE})});ok=!!(await r.json()).ok}catch(x){}
+        if(ok){LS.set('ownk',v);KEY=v;pause();try{location.reload()}catch(x){}}else{g.disabled=false;e.textContent='المفتاح غير صحيح.'}}})}
   else if(pzv){pzv.remove();pzv=null;document.documentElement.classList.remove('pz-on')}}
 
 /* ---------- the keeper's message on the home page: a card under the top (the site keeps working), with a sound or a video if he put one ---------- */
@@ -3190,8 +3198,10 @@ function drawPz(){if(!pzB)return;pzB.textContent=CFG.on?'الموقع متوقف
 /* ---------- the keeper links this phone to the panel's alerts with a code from the panel (the app on the home screen keeps its own storage, so no key is needed here) ---------- */
 window.ownPair=async()=>{try{
   if(!('serviceWorker' in navigator)||!('PushManager' in window)){alert('افتح الموقع من أيقونته في الشاشة الرئيسية، ثم أعد المحاولة.');return}
+  // the permission first, straight from the tap (the phone refuses it after a dialog)
+  if(Notification.permission==='denied'){alert('الإشعارات ممنوعة لهذا الموقع على هذا الجهاز. فعّلها من الإعدادات ← الإشعارات ← سِيرَتُه، ثم أعد المحاولة.');return}
+  if(Notification.permission!=='granted'&&(await Notification.requestPermission())!=='granted'){alert('لم يُسمح بالإشعارات. إن لم تظهر لك نافذة السماح فأعد المحاولة، أو فعّلها من الإعدادات ← الإشعارات ← سِيرَتُه.');return}
   const code=(prompt('اكتب الرمز الذي تظهره لوحة التحكم في بطاقة «تنبيهاتك»:')||'').replace(/[^0-9٠-٩]/g,'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));if(code.length!==6)return;
-  if(Notification.permission!=='granted'&&(await Notification.requestPermission())!=='granted'){alert('لم يُسمح بالإشعارات على هذا الجهاز.');return}
   const reg=await navigator.serviceWorker.ready;let sb=await reg.pushManager.getSubscription();
   if(!sb){const {key}=await (await fetch(W+'/key')).json();const k=key.replace(/-/g,'+').replace(/_/g,'/');sb=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:Uint8Array.from(atob(k+'='.repeat((4-k.length%4)%4)),c=>c.charCodeAt(0))})}
   const r=await (await fetch(W+'/c/pairgo',{method:'POST',body:JSON.stringify({code,sub:sb.toJSON()})})).json().catch(()=>({ok:false}));
