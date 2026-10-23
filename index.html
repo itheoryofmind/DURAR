@@ -971,7 +971,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-23-1500';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-23-1554';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1512,7 +1512,7 @@ function richInline(s,hl,inQ,rep){
     if(ch==='\u0001'){flush();sup=el('sup','fn');sup.title='رقم حاشية في النسخة الرقمية، والحاشية غير منقولة هنا';node.append(sup);continue}
     if(ch==='\u0002'){if(sup){sup.textContent=buf;buf=''}sup=null;continue}
     if(sup){buf+=ch;continue}
-    if(ch==='{'&&!qspan&&!ed){flush();k++;qspan=el('span','q');const b=el('span','qb','{');b.dataset.c='﴿';qspan.append(b);f.append(qspan);node=qspan;
+    if(ch==='{'&&!qspan&&!ed){{const mt=buf.match(/(^|[\s(«"])([بكلف])(\s?)$/);if(mt){const sp=mt[3];buf=buf.slice(0,buf.length-sp.length);flush();node.append(el('span','tw','\u0640'));buf=sp}}flush();k++;qspan=el('span','q');const b=el('span','qb','{');b.dataset.c='﴿';qspan.append(b);f.append(qspan);node=qspan;
       // the verse in the Uthmani script of the King Fahd Complex, when the quotation matches it word for word
       if(rep&&rep[k]!=null){const r=rep[k];
         // the reference was checked word for word against the verse: a tap shows it in full with its place
@@ -1746,7 +1746,7 @@ document.addEventListener('copy',e=>{
   if(!$('#tview').contains(s.anchorNode))return;
   // copy the book's words only: no page headers, compare buttons, boundary notes or footnote buttons
   const r=s.getRangeAt(0),box=document.createElement('div');box.append(r.cloneContents());
-  box.querySelectorAll('.pghd,.fnwrap,.istage,.vnote,button,.sx-pwrap,.sx-pbtn,.sxmk-note,[data-ui]').forEach(x=>x.remove());
+  box.querySelectorAll('.pghd,.fnwrap,.istage,.vnote,button,.sx-pwrap,.sx-pbtn,.sxmk-note,[data-ui],.tw').forEach(x=>x.remove());
   box.style.cssText='position:fixed;left:-9999px;top:0;white-space:pre-wrap';document.body.append(box);
   const t=(box.innerText||box.textContent).replace(/\n{3,}/g,'\n\n').trim();box.remove();if(!t)return;
   const pg=nd=>{const x=nd&&(nd.nodeType===1?nd:nd.parentElement),b=x&&x.closest('.pgblk');return b?+b.dataset.p:cur.p};
