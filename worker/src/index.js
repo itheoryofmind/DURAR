@@ -136,6 +136,21 @@ async function inner(env) {
   if (!k) { k = b64u.enc(crypto.getRandomValues(new Uint8Array(24))); await env.PUSH.put('inner', k); }
   return k;
 }
+// Friday: the reminder of the prayer upon the Prophet (al-Ahzab 56, the King Fahd Complex text), every reader, from an hour after
+// sunrise to half an hour before maghrib, every two hours, never in the hour and a half before the Friday prayer nor the 45 minutes after
+const VERSE = "إِنَّ ٱللَّهَ وَمَلَٰٓئِكَتَهُۥ يُصَلُّونَ عَلَى ٱلنَّبِيِّۚ يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ صَلُّواْ عَلَيۡهِ وَسَلِّمُواْ تَسۡلِيمًا";
+const fridayMsg = () => ({ t: 'يوم الجمعة', b: '﴿' + VERSE + '﴾ [الأحزاب: ٥٦]', u: SITE + '/', tag: 'friday' });
+function isFri(tz, t) { return new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short' }).format(new Date(t)) === 'Fri'; }
+function fridaySlots(p, now) {
+  if (!isFri(p.tz, now)) return [];
+  const [y, m, d] = ymd(p.tz, now);
+  const h = prTimes(y, m, d, p.la, p.lo, p.mk, p.h === 1, false), base = Date.UTC(y, m - 1, d);
+  if ([h[1], h[2], h[4]].some(isNaN)) return [];
+  const rise = base + h[1] * 36e5, noon = base + h[2] * 36e5, magh = base + h[4] * 36e5, out = [];
+  for (let t = rise + 36e5; t <= magh - 30 * 6e4; t += 2 * 36e5) if (!(t > noon - 90 * 6e4 && t < noon + 45 * 6e4)) out.push(t);
+  const last = magh - 30 * 6e4; if (!out.length || last - out[out.length - 1] > 45 * 6e4) out.push(last);
+  return out;
+}
 // every reader whose adhan is near: [id, prayer, time]; one calculation per place
 async function due(env, now) {
   const out = [], memo = new Map();
@@ -148,6 +163,8 @@ async function due(env, now) {
       // the reminder before the adhan (the time the reader chose), and a second at the adhan itself (the tick nearest to it)
       if (!memo.has(g)) memo.set(g, adhans(p, now).flatMap(([i, t]) => (t - now > (p.ld - 3) * 6e4 && t - now <= p.ld * 6e4) ? [[i, t]] : (t - now > -1.5 * 6e4 && t - now <= 1.5 * 6e4) ? [[i, t, 'at']] : []));
       for (const [i, t, at] of memo.get(g)) out.push(at ? [k.name, i, t, 'at'] : [k.name, i, t]);
+      const gf = 'f|' + g; if (!memo.has(gf)) memo.set(gf, fridaySlots(p, now).filter((t) => now >= t && now - t < 3 * 6e4));
+      for (const t of memo.get(gf)) out.push([k.name, 'fr', t]);
     }
     cursor = l.list_complete ? null : l.cursor;
   } while (cursor);
@@ -173,7 +190,7 @@ async function sendJobs(env, jobs) {
     const v = await env.PUSH.getWithMetadata(id, 'json');
     if (!v || !v.value) continue;
     const p = placeOf(v.metadata) || {};
-    const msg = i === 'bc' ? t : i === -1 ? { t: 'تجربة التنبيه', b: 'هكذا يصلك التنبيه قبل الأذان.', u: SITE + '/', tag: 'pr' } : at === 'at' ? atAdhan(i, p.nm) : message(i, t, p.nm);
+    const msg = i === 'bc' ? t : i === 'fr' ? fridayMsg() : i === -1 ? { t: 'تجربة التنبيه', b: 'هكذا يصلك التنبيه قبل الأذان.', u: SITE + '/', tag: 'pr' } : at === 'at' ? atAdhan(i, p.nm) : message(i, t, p.nm);
     const st = await send(env, v.value, msg, 900, 'high').catch(() => 0);
     r.tried++;
     if (st >= 200 && st < 300) r.sent++;
