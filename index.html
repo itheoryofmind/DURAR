@@ -752,7 +752,7 @@ button,a,.btn{touch-action:manipulation}
         <div class="card"><b>نص مطابَق صفحةً صفحة</b><span>النص من المكتبة الشاملة (الطبعة السادسة ١٤١٧هـ) بلفظ نسختها الرقمية حرفاً بحرف، لم يُغيَّر فيه حرف ولم يُحذف منه شيء، ولم يُصحَّح على المطبوع. قُرئ أول كل صفحة وآخرها من صورتها وطوبق من الجهتين، وما لم تكتمل مطابقة حدوده عُلِّم «≈ حدود تقريبية».</span></div>
         <div class="card"><b>حواشي المطبوع</b><span>حواشي الجامع في أسفل الصفحات ليست في النص الرقمي، فتُعرض كما طُبعت: صورةً مقتطعة من الصفحة نفسها، بزر «حاشية المطبوع» تحت نص الصفحة.</span></div>
         <div class="card"><b>مقابلة وسط الصفحة</b><span>قُرئت كل صفحة من صورتها كاملة وقوبلت بالنص، فما ظهر فيه نقص عن المطبوع أو مخالفة له، وأكّده فحص مستقل بالنظر في الصورة، عُلِّم في موضعه بـ«في المطبوع زيادة» أو «يخالف المطبوع». والنص نفسه لم يُغيَّر.</span></div>
-        <div class="card"><b>الآيات بلفظ الكتاب</b><span>تُعرض الآية المستشهد بها بلفظ الكتاب كما في نسخته الرقمية، وبالضغط عليها يظهر نصها بخط مصحف المدينة (مجمع الملك فهد لطباعة المصحف الشريف) متى طابقت كلماتها الآية المعزوّ إليها.</span></div>
+        <div class="card"><b>الآيات برسم المصحف</b><span>تُعرض الآية المستشهد بها برسم مصحف المدينة وضبطه (مجمع الملك فهد لطباعة المصحف الشريف) متى كانت كلماتها كلمات الآية نفسها وتعيّن موضعها، وما خالف لفظُه لفظَ المصحف بقي بلفظ الكتاب، وبالضغط على الآية يظهر نصها كاملًا.</span></div>
         <div class="card"><b>فهارس تعمل باللمس</b><span>أرقام الصفحات في فهارس الأجزاء قُرئت وروجعت، فاضغط على أي موضوع في الفهرس المطبوع لتنتقل إلى صفحته.</span></div>
       </div>
       <p class="note">النص الرقمي قد يخالف المطبوع في الرسم والهمزات وعلامات الترقيم، ولا تدخل فيه الحواشي، وما بين معقوفين [ ] من عناوين وعزو للآيات هو بصيغة النسخة الرقمية وقد لا يكون في المطبوع بلفظه (يظهر بلون باهت). فالمعتمد في النقل والعزو صورة الصفحة، وهي بجانب النص دائماً.</p>
@@ -972,7 +972,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-24-0720';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-24-0730';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1511,7 +1511,7 @@ function richInline(s,hl,inQ,rep){
   for(const ch of s){
     // a one-letter preposition (ب ك ل ف) written apart before a quotation, a verse or a bracket: joined to it on screen with a
     // kashida, as the print sets it («بـ ﴿…﴾»); the kashida is left out when copying
-    if(!sup&&'{"«(['.includes(ch)){const mt=buf.match(/(^|[\s(«"])([بكلف])(\s+)$/);if(mt){const sp=mt[3];buf=buf.slice(0,buf.length-sp.length);flush();node.append(el('span','tw'));buf=sp}}
+    if(!sup&&'{"«(['.includes(ch)){const mt=buf.match(/(^|[\s(«"])(و[بكل]|ف[بل]|[بكلف])(\s+)$/);if(mt){const sp=mt[3];buf=buf.slice(0,buf.length-sp.length);flush();node.append(el('span','tw'));buf=sp}}
     if(ch==='\u0003'||ch==='\u0004'){flush();const d=ch==='\u0004',g=el('button',d?'gap d':'gap');g.type='button';g.setAttribute('aria-label',d?'النص هنا يخالف المطبوع':'هنا في المطبوع كلام ليس في النص');g.onclick=e=>{e.stopPropagation();midNote(0,1,d)};node.append(g);continue}
     if(ch==='\u0001'){flush();sup=el('sup','fn');sup.title='رقم حاشية في النسخة الرقمية، والحاشية غير منقولة هنا';node.append(sup);continue}
     if(ch==='\u0002'){if(sup){sup.textContent=buf;buf=''}sup=null;continue}
@@ -1521,7 +1521,9 @@ function richInline(s,hl,inQ,rep){
       if(rep&&rep[k]!=null){const r=rep[k];
         // the reference was checked word for word against the verse: a tap shows it in full with its place
         if(r[3]){qspan.classList.add('qa');qspan.dataset.s=r[3];qspan.dataset.a=r[4];qspan.dataset.b=r[5]}
-        if(r[6]!=null)fix=r}
+        if(r[6]!=null)fix=r;
+        // the quotation is the verse's own words: shown in the mushaf's script and vowelling (the book's text stays stored as it is)
+        if(r[2]&&typeof r[2]==='string'){qspan.classList.add('qm');qspan.append(document.createTextNode(r[2]));skip=true}}
       continue}
     if(ch==='}'&&qspan&&!ed){if(skip)buf='';else flush();skip=false;const b=el('span','qb','}');b.dataset.c='﴾';qspan.append(b);node=f;qspan=null;continue}
     if(skip)continue;
