@@ -972,7 +972,7 @@ button,a,.btn{touch-action:manipulation}
 <script>
 "use strict";
 const DV='37';
-const APP_VER='2026-10-23-1617';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-24-0720';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2207,6 +2207,7 @@ async function markPassage(){
     if(b&&TX.n===q.n){PASSAGE=null;const S=bodyText(b).s;let t=q.t,j=S.indexOf(t);
       if(j<0){t=t.slice(0,Math.min(40,t.length));j=S.indexOf(t)}
       if(j<0){toast('فُتحت الصفحة، ولم يُعثر على الفقرة بلفظها.',3000);return}
+      {const W=/[\u0621-\u065F\u0670-\u06D3\w]/;let e=j+t.length;while(j>0&&W.test(S[j-1])&&W.test(S[j]))j--;while(e<S.length&&W.test(S[e])&&W.test(S[e-1]))e++;t=S.slice(j,e)}   // whole words: a mark never cuts a word in two
       wrapRange(b,j,j+t.length,{i:'lnk',c:'l'});const sp=b.querySelector('.hlt[data-id="lnk"]');
       if(sp){TX.lock=true;sp.scrollIntoView({block:'center'});setTimeout(()=>{TX.lock=false},300)}return}
     await new Promise(r=>setTimeout(r,150))}
