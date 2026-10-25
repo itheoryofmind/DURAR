@@ -974,7 +974,7 @@ button,a,.btn{touch-action:manipulation}
 // the Quran verses are shown in the mushaf (Uthmani) script with full vowelling wherever their place is certain (data 'u' r[2], qu.json)
 window.UTHM=true;
 const DV='37';
-const APP_VER='2026-10-25-0836';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-25-0947';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1104,7 +1104,7 @@ async function removeVol(n){if(hasCaches)await (await volCache()).delete(volKey(
 
 /* ---------- data files (text per part, index hotspots, headings) ---------- */
 const MEM={};
-const DH={"data/t12.json": "beaff92e26", "data/t14.json": "366fe4e91d", "data/t2.json": "b8f6131f32", "data/fawaid.json": "58e0494c51", "data/fihris.json": "c10bf22f64", "data/fn.json": "9bbee04dd0", "data/fx_snap.json": "77120d1f7c", "data/heads.json": "ae62c1c907", "data/idx.json": "3b5ed4a1b1", "data/meta.json": "ab0de5c8ec", "data/mid.json": "ac2a1f6a41", "data/quran.json": "3b7af2ab79", "data/saadi.json": "a890c7ed56", "data/t1.json": "99343a2c2a", "data/t10.json": "6f6c6661a0", "data/t11.json": "108b9906b7", "data/t13.json": "df6217a8ab", "data/t15.json": "9f747dae15", "data/t16.json": "251f8cb73f", "data/t3.json": "18035e3eba", "data/t4.json": "63772568a0", "data/t5.json": "bf85bbffc5", "data/t6.json": "11d9e91269", "data/t7.json": "54886cc290", "data/t8.json": "038e636a0b", "data/t9.json": "b9d3ac8751", "data/ulama.json": "986b4d68de"};
+const DH={"data/t12.json": "beaff92e26", "data/t14.json": "d6bdf2868e", "data/t2.json": "b8f6131f32", "data/fawaid.json": "58e0494c51", "data/fihris.json": "c10bf22f64", "data/fn.json": "9bbee04dd0", "data/fx_snap.json": "eff1b053ed", "data/heads.json": "ae62c1c907", "data/idx.json": "3b5ed4a1b1", "data/meta.json": "ab0de5c8ec", "data/mid.json": "ac2a1f6a41", "data/quran.json": "3b7af2ab79", "data/saadi.json": "a890c7ed56", "data/t1.json": "7fd4a340a7", "data/t10.json": "e11e935915", "data/t11.json": "b7e3735984", "data/t13.json": "cb1de2f2a9", "data/t15.json": "d4467fb493", "data/t16.json": "251f8cb73f", "data/t3.json": "cb8730148d", "data/t4.json": "80ce00264d", "data/t5.json": "8b6b28b9c7", "data/t6.json": "11d9e91269", "data/t7.json": "54886cc290", "data/t8.json": "038e636a0b", "data/t9.json": "1a1eda03f0", "data/ulama.json": "986b4d68de"};
 async function getJSON(path){
   if(MEM[path])return MEM[path];
   const url=path+'?v='+DV+(DH[path]?'-'+DH[path]:'');let j=null;
@@ -1506,9 +1506,11 @@ function richInline(s,hl,inQ,rep){
     const r=rep&&rep[-1];if(r&&r[3]){qspan.classList.add('qa');qspan.dataset.s=r[3];qspan.dataset.a=r[4];qspan.dataset.b=r[5]}
     qspan.title='تتمة الآية من الصفحة السابقة';}
   const flush=()=>{if(buf){appendHL(node,buf,hl);buf=''}};
+  let uNode=null;const skOf=t=>t.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,'').replace(/[^\u0621-\u064A\u0671]/g,'').replace(/[اأإآٱءؤئوىيةهت]/g,'').replace(/(.)\1+/g,'$1');
+  const uCheck=()=>{if(uNode&&qspan&&skOf(skipO)!==skOf(uNode.textContent)){qspan.classList.remove('qm');uNode.replaceWith(document.createTextNode(skipO))}uNode=null};   // the mushaf's text only when it carries the book's words
   let k=-1,skip=false,skipO="",sup=null,fix=null;
   // the rest of a verse begun before, in the mushaf's script when the whole verse was matched (u entry with ordinal -1)
-  if(inQ&&qspan&&window.UTHM){const r=rep&&rep[-1];if(r&&typeof r[2]==='string'){qspan.classList.add('qm');qspan.append(document.createTextNode(r[2]));skip=true}}
+  if(inQ&&qspan&&window.UTHM){const r=rep&&rep[-1];if(r&&typeof r[2]==='string'){qspan.classList.add('qm');uNode=document.createTextNode(r[2]);qspan.append(uNode);skip=true}}
   // footnote numbers of the digital edition after a hadith or a verse (its takhrij notes, not carried here): small and muted
   s=s.replace(/(["}]|"،)(\s?)(\d{1,2})(?=[\s.،؛:؟,]|$)/g,'$1$2\u0001$3\u0002');
   // in some parts the digital edition lost the ligature ﷺ after the Prophet's name and left a lone "(": shown as in print
@@ -1528,9 +1530,9 @@ function richInline(s,hl,inQ,rep){
         if(r[3]){qspan.classList.add('qa');qspan.dataset.s=r[3];qspan.dataset.a=r[4];qspan.dataset.b=r[5]}
         if(r[6]!=null)fix=r;
         // the quotation is the verse's own words: shown in the mushaf's script and vowelling (the book's text stays stored as it is)
-        if(window.UTHM&&r[2]&&typeof r[2]==='string'){qspan.classList.add('qm');qspan.append(document.createTextNode(r[2]));skip=true;skipO=''}}
+        if(window.UTHM&&r[2]&&typeof r[2]==='string'){qspan.classList.add('qm');uNode=document.createTextNode(r[2]);qspan.append(uNode);skip=true;skipO=''}}
       continue}
-    if(ch==='}'&&qspan&&!ed){if(skip){buf='';qspan.dataset.o=skipO}else flush();skip=false;const b=el('span','qb','}');b.dataset.c='﴾';qspan.append(b);node=f;qspan=null;continue}
+    if(ch==='}'&&qspan&&!ed){if(skip){buf='';qspan.dataset.o=skipO;uCheck()}else flush();skip=false;const b=el('span','qb','}');b.dataset.c='﴾';qspan.append(b);node=f;qspan=null;continue}
     if(skip){skipO+=ch;continue}
     if(ch==='['&&!ed&&!BRP){flush();ed=el('span','ed');ed.title='بصيغة النسخة الرقمية، وقد لا يكون في المطبوع بلفظه';edParent=node;node.append(ed);node=ed;buf='[';continue}
     if(ch===']'&&ed){buf+=']';flush();node=edParent;ed=null;
@@ -1538,6 +1540,7 @@ function richInline(s,hl,inQ,rep){
       continue}
     buf+=ch;
   }
+  if(skip&&uNode&&skipO.trim()&&skOf(skipO)!==skOf(uNode.textContent)){qspan.classList.remove('qm');uNode.replaceWith(document.createTextNode(skipO))}   // a verse that goes on past this paragraph: its first part checked too
   flush();f.inQ=!!qspan;return f;
 }
 function appendHL(node,text,hl){
