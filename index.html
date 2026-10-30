@@ -320,6 +320,8 @@ footer .waqf{max-width:520px;margin:8px auto 0;font-family:var(--text);font-size
 .q.qa{cursor:pointer;-webkit-tap-highlight-color:rgba(183,137,60,.18)}
 /* a clear but quiet cue that a verse opens: a small «تفسير» tag after it (tap the verse or the tag) */
 .q.qa::after{content:"\2060تفسير";display:inline;font-family:var(--ui);font-size:11px;line-height:1;font-weight:600;color:var(--brass);border:1px solid var(--brass);border-radius:6px;padding:3px 5px 2px;margin-inline-start:4px;vertical-align:.35em;opacity:.8;width:max-content;word-spacing:0;letter-spacing:0;text-align:center;white-space:nowrap;text-indent:0}
+/* a verse that goes on in the next paragraph or page: its «تفسير» tag comes at its true end, after the rest */
+.q.qa.qo::after{content:none}
 .ayaplace{font-family:var(--display);font-size:20px;margin:4px 0 10px;text-align:center;color:var(--brass)}
 .ayatext{font-family:"UthmanicHafs","Amiri",serif;font-size:calc(var(--tsize) * 1.25);line-height:2.4;text-align:center;color:var(--verse);padding:4px 2px 8px}
 .ft-url{margin:4px 0;font-size:14px;letter-spacing:.04em}
@@ -974,7 +976,7 @@ button,a,.btn{touch-action:manipulation}
 // the Quran verses are shown in the mushaf (Uthmani) script with full vowelling wherever their place is certain (data 'u' r[2], qu.json)
 window.UTHM=true;
 const DV='37';
-const APP_VER='2026-10-28-2313';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-30-0328';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1104,7 +1106,7 @@ async function removeVol(n){if(hasCaches)await (await volCache()).delete(volKey(
 
 /* ---------- data files (text per part, index hotspots, headings) ---------- */
 const MEM={};
-const DH={"data/t12.json": "beaff92e26", "data/t14.json": "f5afa6c661", "data/t2.json": "3471d59141", "data/fawaid.json": "58e0494c51", "data/fihris.json": "c10bf22f64", "data/fn.json": "9bbee04dd0", "data/fx_snap.json": "2af065e678", "data/heads.json": "ae62c1c907", "data/idx.json": "3b5ed4a1b1", "data/meta.json": "ab0de5c8ec", "data/mid.json": "ac2a1f6a41", "data/quran.json": "3b7af2ab79", "data/saadi.json": "a890c7ed56", "data/t1.json": "66280ceac6", "data/t10.json": "e11e935915", "data/t11.json": "1c5c40b5c3", "data/t13.json": "a34ee934eb", "data/t15.json": "d4467fb493", "data/t16.json": "251f8cb73f", "data/t3.json": "c5d73c153d", "data/t4.json": "80ce00264d", "data/t5.json": "8b6b28b9c7", "data/t6.json": "11d9e91269", "data/t7.json": "65bc7f3480", "data/t8.json": "94e359616d", "data/t9.json": "1a1eda03f0", "data/ulama.json": "986b4d68de"};
+const DH={"data/t12.json": "d36204b9bb", "data/t14.json": "6064bab0a3", "data/t2.json": "8001992786", "data/fawaid.json": "58e0494c51", "data/fihris.json": "c10bf22f64", "data/fn.json": "9bbee04dd0", "data/fx_snap.json": "2af065e678", "data/heads.json": "ae62c1c907", "data/idx.json": "3b5ed4a1b1", "data/meta.json": "ab0de5c8ec", "data/mid.json": "ac2a1f6a41", "data/quran.json": "3b7af2ab79", "data/saadi.json": "a890c7ed56", "data/t1.json": "3b0c2490d9", "data/t10.json": "e11e935915", "data/t11.json": "55a905b443", "data/t13.json": "7e21dfe1d0", "data/t15.json": "a62a835413", "data/t16.json": "39b1d7bccb", "data/t3.json": "06cd41aeff", "data/t4.json": "245b2b185e", "data/t5.json": "006ffe27a3", "data/t6.json": "11d9e91269", "data/t7.json": "172f61a94e", "data/t8.json": "aabeccd830", "data/t9.json": "abebdaf01c", "data/ulama.json": "986b4d68de"};
 async function getJSON(path){
   if(MEM[path])return MEM[path];
   const url=path+'?v='+DV+(DH[path]?'-'+DH[path]:'');let j=null;
@@ -1542,7 +1544,7 @@ function richInline(s,hl,inQ,rep){
     buf+=ch;
   }
   if(skip&&uNode&&skipO.trim()&&uBad(skipO,uNode.textContent)){qspan.classList.remove('qm');uNode.replaceWith(document.createTextNode(skipO))}   // a verse that goes on past this paragraph: its first part checked too
-  flush();f.inQ=!!qspan;return f;
+  flush();if(qspan)qspan.classList.add('qo');f.inQ=!!qspan;return f;
 }
 function appendHL(node,text,hl){
   if(!hl||!hl.length){node.append(text);return}
@@ -2331,8 +2333,12 @@ async function drawCard(runs,foot1,foot2,fname,shareText){
   try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share(shareText?{files:[file],text:shareText}:{files:[file]});return}}catch(e){if(e&&e.name==='AbortError')return}
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
 }
+// the selected words of the book only: a page's header («ص ٢٧٣ قارن بالصورة»), buttons and notes between two pages are left out
+function selClean(s){if(!s||!s.rangeCount)return '';const box=document.createElement('div');box.append(s.getRangeAt(0).cloneContents());
+  box.querySelectorAll('.pghd,.fnwrap,.istage,.vnote,button,.sx-pwrap,.sx-pbtn,.sxmk-note,[data-ui],.tw').forEach(x=>x.remove());
+  box.style.cssText='position:fixed;left:-9999px;top:0;white-space:pre-wrap';document.body.append(box);const t=box.innerText||box.textContent||'';box.remove();return t}
 $('#quoteBtn').onclick=async()=>{
-  const s=document.getSelection();let t=s.toString().replace(/\s+/g,' ').trim();if(!t)return;
+  const s=document.getSelection();let t=selClean(s).replace(/\s+/g,' ').trim();if(!t)return;
   if(t.length>700)t=t.slice(0,700).replace(/\s\S*$/,'')+' …';
   const node=s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement,blk=node&&node.closest('.pgblk');const pp=blk?+blk.dataset.p:cur.p;
   hideSelBar();qPick(t,pp);
