@@ -985,7 +985,7 @@ button,a,.btn{touch-action:manipulation}
 // the Quran verses are shown in the mushaf (Uthmani) script with full vowelling wherever their place is certain (data 'u' r[2], qu.json)
 window.UTHM=true;
 const DV='37';
-const APP_VER='2026-10-30-1450';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-30-2100';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -2829,16 +2829,20 @@ function prMini(){const S=$('#prSec');if(!S)return;const B=$('#prBody'),hd=S.que
   if(rest)m.append((nx?' · ':'')+(nx?rest.textContent.replace(/^بقي على [^:]+:\s*/,'بعد ').replace('ساعتان','ساعتين').replace('دقيقتان','دقيقتين'):rest.textContent))}
 {const _rp=renderPrayer;renderPrayer=function(){const r=_rp.apply(this,arguments);try{prMini()}catch(e){}return r}}
 
-function prpMeta(pl){return {la:pl.lat,lo:pl.lng,tz:pl.tz,mk:LS.get('prMethod',null)||PR.defM(pl.country),h:LS.get('prAsr','s')==='h'?1:0,nm:/^موقعك/.test(pl.name||'')?'':(pl.name||''),ld:+LS.get('prPushLead',10)||10}}
+function prpMeta(pl){return {la:pl.lat,lo:pl.lng,tz:pl.tz,mk:LS.get('prMethod',null)||PR.defM(pl.country),h:LS.get('prAsr','s')==='h'?1:0,nm:/^موقعك/.test(pl.name||'')?'':(pl.name||''),ld:+LS.get('prPushLead',10)||10,fq:[1,2,6].includes(+LS.get('prFriFq',2))?+LS.get('prFriFq',2):2}}
 const PRLEAD=[[5,'٥ دقائق'],[10,'١٠ دقائق'],[15,'ربع ساعة']];
+// the Friday reminder of the prayer upon the Prophet ﷺ: how often (twice unless chosen otherwise)
+const PRFRQ=[[1,'مرة'],[2,'مرتين'],[6,'كل ساعتين']];
 const prpPost=(path,body)=>fetch(PRPU+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 function prPushRow(B,pl){
   const b=el('button','btn btn-quiet prpush');b.type='button';
   const lw=el('div','prlead');lw.setAttribute('role','group');lw.setAttribute('aria-label','وقت التنبيه قبل الأذان');lw.append(el('span',null,'قبل الأذان بـ'));
   PRLEAD.forEach(([m,t])=>{const x=el('button',null,t);x.type='button';x.setAttribute('aria-pressed',(+LS.get('prPushLead',10)||10)===m);x.onclick=()=>{LS.set('prPushLead',m);lw.querySelectorAll('button').forEach(y=>y.setAttribute('aria-pressed',y===x));prpSync(pl)};lw.append(x)});
-  const set=on=>{PRP.on=on;b.textContent=on?'التنبيه قبل الأذان مفعّل · إيقافه':'نبّهني قبل الأذان';b.dataset.on=on?1:'';lw.hidden=!on};
+  const fw=el('div','prlead');fw.setAttribute('role','group');fw.setAttribute('aria-label','كم مرة يصلك تذكير الجمعة');fw.append(el('span',null,'تذكير الجمعة بالصلاة على النبي ﷺ:'));
+  PRFRQ.forEach(([v,t])=>{const x=el('button',null,t);x.type='button';x.setAttribute('aria-pressed',prpMeta(pl).fq===v);x.onclick=()=>{LS.set('prFriFq',v);fw.querySelectorAll('button').forEach(y=>y.setAttribute('aria-pressed',y===x));prpSync(pl);toast(v===1?'يصلك تذكير الجمعة مرة واحدة صباحاً.':v===2?'يصلك تذكير الجمعة مرتين: صباحاً، وقبل المغرب.':'يصلك تذكير الجمعة كل ساعتين من الصباح إلى قبيل المغرب.',3500)};fw.append(x)});
+  const set=on=>{PRP.on=on;b.textContent=on?'التنبيه قبل الأذان مفعّل · إيقافه':'نبّهني قبل الأذان';b.dataset.on=on?1:'';lw.hidden=!on;fw.hidden=!on};
   if(!PRP.can()){if(PRP.ios&&!PRP.app){set(false);b.onclick=()=>toast('لتصلك التنبيهات في الآيفون: أضف الموقع إلى الشاشة الرئيسية من زر المشاركة في سفاري، ثم افتحه من أيقونته واضغط هذا الزر.',7000);B.append(b)}return}
-  set(!!PRP.on);B.append(b,lw);
+  set(!!PRP.on);B.append(b,lw,fw);
   if(PRP.on===null)prpSub().then(s=>{set(!!s);prpSync(pl,s)});else if(PRP.on)prpSync(pl);
   b.onclick=async()=>{b.disabled=true;try{
       if(b.dataset.on){const s=await prpSub();if(s){prpPost('/unsub',{sub:{endpoint:s.endpoint}}).catch(()=>{});await s.unsubscribe()}LS.set('prPushMeta','');set(false);toast('أوقف التنبيه قبل الأذان.');return}

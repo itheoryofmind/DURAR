@@ -112,7 +112,7 @@ const LEADS = [5, 10, 15];
 const LEADTXT = { 5: 'خمس دقائق', 10: 'عشر دقائق', 15: 'ربع ساعة' };
 function placeOf(m) {
   if (!m) return null;
-  const p = { la: +m.la, lo: +m.lo, tz: m.tz, mk: PRM[m.mk] ? m.mk : 'uq', h: m.h === 1 ? 1 : 0, nm: typeof m.nm === 'string' ? m.nm.slice(0, 40) : '', ld: LEADS.includes(+m.ld) ? +m.ld : 10 };
+  const p = { la: +m.la, lo: +m.lo, tz: m.tz, mk: PRM[m.mk] ? m.mk : 'uq', h: m.h === 1 ? 1 : 0, nm: typeof m.nm === 'string' ? m.nm.slice(0, 40) : '', ld: LEADS.includes(+m.ld) ? +m.ld : 10, fq: [1, 2, 6].includes(+m.fq) ? +m.fq : 2 };
   return (isFinite(p.la) && isFinite(p.lo) && Math.abs(p.la) <= 90 && Math.abs(p.lo) <= 180 && okTz(p.tz)) ? p : null;
 }
 function message(i, at, nm) {
@@ -136,7 +136,7 @@ async function inner(env) {
   if (!k) { k = b64u.enc(crypto.getRandomValues(new Uint8Array(24))); await env.PUSH.put('inner', k); }
   return k;
 }
-// Friday: the reminder of the prayer upon the Prophet (al-Ahzab 56, the King Fahd Complex text), every reader, from an hour after
+// Friday: the reminder of the prayer upon the Prophet (al-Ahzab 56, the King Fahd Complex text), every reader, as often as chosen (fq), from two hours after
 // sunrise to half an hour before maghrib, every two hours, never in the hour and a half before the Friday prayer nor the 45 minutes after
 const VERSE = "إِنَّ ٱللَّهَ وَمَلَٰٓئِكَتَهُۥ يُصَلُّونَ عَلَى ٱلنَّبِيِّۚ يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ صَلُّواْ عَلَيۡهِ وَسَلِّمُواْ تَسۡلِيمًا";
 const fridayMsg = () => ({ t: 'يوم الجمعة', b: '﴿' + VERSE + '﴾ [الأحزاب: ٥٦]', u: SITE + '/', tag: 'friday' });
@@ -152,6 +152,10 @@ function fridaySlots(p, now) {
   const noonOk = (t) => !(t > noon - 90 * 6e4 && t < noon + 45 * 6e4);
   const sira = []; for (let t = rise + 36e5; t <= magh - 30 * 6e4; t += 2 * 36e5) if (noonOk(t)) sira.push(t);
   if (!sira.length || magh - 30 * 6e4 - sira[sira.length - 1] > 45 * 6e4) sira.push(magh - 30 * 6e4);
+  // how often (the reader's choice, fq; the keeper asked 2026-10-30): 1 = once, two hours after sunrise; 2 (the default) = that and
+  // an hour and a half before maghrib; 6 = every two hours between them as before (each an hour from the Sira site's own)
+  if (p.fq === 1) return noonOk(rise + 2 * 36e5) ? [rise + 2 * 36e5] : [];
+  if (p.fq === 2) return [rise + 2 * 36e5, magh - 90 * 6e4].filter(noonOk);
   for (let t = rise + 2 * 36e5; t <= magh - 90 * 6e4; t += 2 * 36e5) if (noonOk(t)) out.push(t);
   const last = magh - 90 * 6e4; if (!out.length || last - out[out.length - 1] > 45 * 6e4) out.push(last);
   return out.filter((t) => sira.every((x) => Math.abs(x - t) >= 55 * 6e4));
@@ -168,7 +172,7 @@ async function due(env, now) {
       // the reminder before the adhan (the time the reader chose), and a second at the adhan itself (the tick nearest to it)
       if (!memo.has(g)) memo.set(g, adhans(p, now).flatMap(([i, t]) => (t - now > (p.ld - 3) * 6e4 && t - now <= p.ld * 6e4) ? [[i, t]] : (t - now > -1.5 * 6e4 && t - now <= 1.5 * 6e4) ? [[i, t, 'at']] : []));
       for (const [i, t, at] of memo.get(g)) out.push(at ? [k.name, i, t, 'at'] : [k.name, i, t]);
-      const gf = 'f|' + g; if (!memo.has(gf)) memo.set(gf, fridaySlots(p, now).filter((t) => now >= t && now - t < 3 * 6e4));
+      const gf = 'f|' + g + '|' + p.fq; if (!memo.has(gf)) memo.set(gf, fridaySlots(p, now).filter((t) => now >= t && now - t < 3 * 6e4));
       for (const t of memo.get(gf)) out.push([k.name, 'fr', t]);
     }
     cursor = l.list_complete ? null : l.cursor;
