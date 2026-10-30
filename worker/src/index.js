@@ -147,9 +147,14 @@ function fridaySlots(p, now) {
   const h = prTimes(y, m, d, p.la, p.lo, p.mk, p.h === 1, false), base = Date.UTC(y, m - 1, d);
   if ([h[1], h[2], h[4]].some(isNaN)) return [];
   const rise = base + h[1] * 36e5, noon = base + h[2] * 36e5, magh = base + h[4] * 36e5, out = [];
-  for (let t = rise + 36e5; t <= magh - 30 * 6e4; t += 2 * 36e5) if (!(t > noon - 90 * 6e4 && t < noon + 45 * 6e4)) out.push(t);
-  const last = magh - 30 * 6e4; if (!out.length || last - out[out.length - 1] > 45 * 6e4) out.push(last);
-  return out;
+  // the Sira site's Friday reminders come at sunrise + 1h, every two hours, and half an hour before maghrib (its worker,
+  // fridaySlots); the keeper asked (2026-10-30) that the two sites' reminders be an hour apart, so these come in the hours between
+  const noonOk = (t) => !(t > noon - 90 * 6e4 && t < noon + 45 * 6e4);
+  const sira = []; for (let t = rise + 36e5; t <= magh - 30 * 6e4; t += 2 * 36e5) if (noonOk(t)) sira.push(t);
+  if (!sira.length || magh - 30 * 6e4 - sira[sira.length - 1] > 45 * 6e4) sira.push(magh - 30 * 6e4);
+  for (let t = rise + 2 * 36e5; t <= magh - 90 * 6e4; t += 2 * 36e5) if (noonOk(t)) out.push(t);
+  const last = magh - 90 * 6e4; if (!out.length || last - out[out.length - 1] > 45 * 6e4) out.push(last);
+  return out.filter((t) => sira.every((x) => Math.abs(x - t) >= 55 * 6e4));
 }
 // every reader whose adhan is near: [id, prayer, time]; one calculation per place
 async function due(env, now) {
