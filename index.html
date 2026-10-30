@@ -783,6 +783,7 @@ button,a,.btn{touch-action:manipulation}
     <button class="quotebtn" id="quoteBtn" type="button">اقتباس</button>
     <button class="hc hlink" id="selLink" type="button">رابط</button>
     <button class="hc hrep" id="selRep" type="button">تنبيه</button>
+    <button class="hc hrep" id="selEdit" type="button" hidden>✏️ عدّل المحدد</button>
   </div>
   <nav class="qbar" aria-label="أدوات القراءة">
     <button class="icon" id="qToc" aria-label="أبواب الكتاب"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><small>الأبواب</small></button>
@@ -2200,6 +2201,9 @@ function editHl(id,c){
     LS.set('hls',H);break}
   hideSelBar();renderHls();
 }
+{const se=$('#selEdit');if(se){new MutationObserver(()=>{se.hidden=!document.querySelector('.own-bar')||$('#selBar').hidden}).observe($('#selBar'),{attributes:true,attributeFilter:['hidden']});
+  se.onclick=()=>{const S=document.getSelection();if(!S||S.isCollapsed||!S.rangeCount)return;const txt=S.toString().replace(/\s+/g,' ').trim();let t=S.anchorNode;if(t&&t.nodeType!==1)t=t.parentElement;if(!t||typeof actions!=='function')return;
+    let blk=t;while(blk&&blk!==document.body&&INL.has(blk.tagName)&&blk.parentElement)blk=blk.parentElement;hideSelBar();try{S.removeAllRanges()}catch(e){}actions(t,blk,txt)}}}
 $('#selBar').querySelectorAll('.hc[data-c]').forEach(b=>b.onclick=()=>{if(HLEDIT)editHl(HLEDIT.i,b.dataset.c);else addHl(b.dataset.c)});
 $('#selRep').onclick=()=>{openFb('page');hideSelBar()};
 /* ---------- a link to a passage: opens its page with the words marked ---------- */
@@ -3340,11 +3344,14 @@ function diffView(a,b,ctx){const A=toks(a),B=toks(b);let i=0;while(i<A.length&&i
   const f=el('span');const head=A.slice(0,i).join(''),tail=A.slice(A.length-j).join('');ctx=ctx||120;
   f.append(head.length>ctx?'… ':'',head.slice(-ctx));for(const [k,t] of ops)f.append(k===0?document.createTextNode(t):el(k<0?'del':'ins',null,t));
   f.append(tail.slice(0,ctx),tail.length>ctx?' …':'');return f}
-function editor(c,old,tapped,onSave){const ta=el('textarea','own-ta');ta.value=old;ta.dir='rtl';c.append(ta);
+function editor(c,old,tapped,onSave){c.append(el('p','own-n','في المربع النص كاملاً، والمظلَّل فيه هو ما ضغطت عليه. حدّد بإصبعك أي جزء منه ثم «احذف المحدد»، أو اكتب مكانه.'));const ta=el('textarea','own-ta');ta.value=old;ta.dir='rtl';c.append(ta);
+  {const r=el('div','own-row');const dl=el('button','own-b','احذف المحدد');dl.type='button';const rs=el('button','own-b','أرجع النص كما كان');rs.type='button';r.append(dl,rs);c.append(r);
+   dl.onclick=()=>{const a=ta.selectionStart,b=ta.selectionEnd;if(a===b){oToast('حدّد في المربع النص الذي تريد حذفه أولاً.',1);return}let v=ta.value.slice(0,a)+ta.value.slice(b);v=v.slice(0,a).replace(/ +$/,'')+(a>0&&v[a]&&!/^[ \u060c.:;\]})]/.test(v.slice(a))?' ':'')+v.slice(a).replace(/^ +/,'');ta.value=v;ta.dispatchEvent(new Event('input'));try{ta.focus();ta.setSelectionRange(a,a)}catch(e){}};
+   rs.onclick=()=>{ta.value=old;ta.dispatchEvent(new Event('input'))}}
   const nt=el('input','own-in');nt.type='text';nt.maxLength=300;nt.placeholder='سبب التعديل (اختياري، يبقى في السجل)';c.append(nt);
   const dv=el('div','own-diff'),wn=el('div');c.append(el('div','own-lb','التغيير'),dv,wn);
   const sv=el('button','own-save','احفظ التعديل');sv.type='button';c.append(sv);
-  const upd=()=>{dv.textContent='';wn.textContent='';const v=ta.value;if(v===old){dv.append(el('span','own-n','لم يتغير شيء بعد.'));sv.disabled=true;return}sv.disabled=!v.trim();dv.append(diffView(old,v));
+  const upd=()=>{dv.textContent='';wn.textContent='';const v=ta.value;if(v===old){dv.append(el('span','own-n','لم يتغير شيء بعد.'));sv.disabled=true;return}sv.disabled=false;if(!v.trim())dv.append(el('div','own-warn','سيُحذف هذا النص كله من موضعه.'));dv.append(diffView(old,v));
     const bad=MARKS.filter(([o,x])=>cnt(old,o)!==cnt(v,o)||cnt(old,x)!==cnt(v,x)).map(x=>x[0]+x[1]);
     if(bad.length)wn.append(el('div','own-warn','تغيّر عدد العلامات '+bad.join(' ')+' — بها يُعرف كلامه صلى الله عليه وسلم والآيات وإحالاتها؛ فإن لم تقصد تغييرها فأعدها كما كانت.'))};
   let tm;ta.oninput=()=>{clearTimeout(tm);tm=setTimeout(upd,250)};upd();
