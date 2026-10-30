@@ -12,7 +12,7 @@ export async function isOwner(k, env, remote) {
   if (env && env.PUSH && !remote) { const o = await env.PUSH.get('ownerh'); if (o && /^[0-9a-f]{64}$/.test(o)) want = o; }
   let d = 0; for (let i = 0; i < h.length; i++) d |= h.charCodeAt(i) ^ want.charCodeAt(i);
   if (d === 0 && h.length === want.length) return true;
-  if (remote) { try { const r = await (await fetch('https://push.seeratuh.com/c/hi', { method: 'POST', body: JSON.stringify({ k }) })).json(); return !!(r && r.ok); } catch (e) {} }
+  if (remote) { try { const r = await (await fetch('https://push.seeratuh.com/c/hi', { method: 'POST', body: JSON.stringify({ k }) })).json(); return !!(r && r.ok && (!r.helper || (r.helper.perms || {}).push)); } catch (e) {} }
   return false;
 }
 async function allIds(env, metas) {
