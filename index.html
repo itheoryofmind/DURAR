@@ -985,7 +985,7 @@ button,a,.btn{touch-action:manipulation}
 // the Quran verses are shown in the mushaf (Uthmani) script with full vowelling wherever their place is certain (data 'u' r[2], qu.json)
 window.UTHM=true;
 const DV='37';
-const APP_VER='2026-10-30-2115';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-31-0500';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1553,7 +1553,7 @@ function richInline(s,hl,inQ,rep){
     buf+=ch;
   }
   if(skip&&uNode&&skipO.trim()&&uBad(skipO,uNode.textContent)){qspan.classList.remove('qm');uNode.replaceWith(document.createTextNode(skipO))}   // a verse that goes on past this paragraph: its first part checked too
-  flush();if(qspan)qspan.classList.add('qo');f.inQ=!!qspan;return f;
+  flush();if(qspan){qspan.classList.add('qo');if(skip&&skipO.trim())qspan.dataset.o=skipO}f.inQ=!!qspan;return f;   // a verse going on past this paragraph keeps the book's wording too, so a link to its words finds it
 }
 function appendHL(node,text,hl){
   if(!hl||!hl.length){node.append(text);return}
@@ -2340,7 +2340,9 @@ async function markPassage(){
       if(j<0){   // a verse shown in the mushaf's script: the passage is looked up in the book's stored wording kept on it
         const nz=x=>x.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\u0621-\u064A]/g,'');
         const tq=nz(q.t);let hit=null;
-        for(const v of b.querySelectorAll('.q.qm[data-o]')){const o=nz(v.dataset.o);if(o.length<3)continue;if(tq.includes(o)||o.includes(tq.slice(0,24))||(tq.length>12&&o.includes(tq.slice(-24)))){hit=v;break}}
+        // the words inside the verse's brackets are looked up too, without what was written before or after it (a reference, «الآية»)
+        const pcs=[tq,...q.t.split(/[{}]/).map(nz).filter(x=>x.length>=4&&x!==tq).sort((x,y)=>y.length-x.length)];
+        for(const v of b.querySelectorAll('.q.qm[data-o]')){const o=nz(v.dataset.o);if(o.length<3)continue;if(pcs.some(p=>p.includes(o)||o.includes(p.slice(0,24))||(p.length>12&&o.includes(p.slice(-24))))){hit=v;break}}
         if(hit){hit.classList.add('hlt','c-l');TX.lock=true;hit.scrollIntoView({block:'center'});setTimeout(()=>{TX.lock=false},300);return}
         toast('فُتحت الصفحة، ولم يُعثر على الفقرة بلفظها.',3000);return}
       {const W=/[\u0621-\u065F\u0670-\u06D3\w]/;let e=j+t.length;while(j>0&&W.test(S[j-1])&&W.test(S[j]))j--;while(e<S.length&&W.test(S[e])&&W.test(S[e-1]))e++;t=S.slice(j,e)}   // whole words: a mark never cuts a word in two
