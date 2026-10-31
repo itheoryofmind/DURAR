@@ -985,7 +985,7 @@ button,a,.btn{touch-action:manipulation}
 // the Quran verses are shown in the mushaf (Uthmani) script with full vowelling wherever their place is certain (data 'u' r[2], qu.json)
 window.UTHM=true;
 const DV='37';
-const APP_VER='2026-10-31-0500';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-10-31-0610';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1124,6 +1124,18 @@ async function getJSON(path){
     try{if(hasCaches)await (await dataCache()).put(url,new Response(t,{headers:{'Content-Type':'application/json'}}))}catch(e){}}
   return MEM[path]=j;
 }
+/* the texts are saved on the reader's device by themselves (as on the Sira site), one file after another while the site is open:
+   the whole book reads, searches and opens its verses offline; after an update only the changed files are fetched again */
+let DFILL=false;
+async function fillTexts(){
+  if(!hasCaches||DFILL)return;DFILL=true;
+  try{const c=await dataCache(),want=new Map(Object.keys(DH).map(p=>[p,p+'?v='+DV+'-'+DH[p]]));
+    // an older copy of a file that has changed since: dropped (its new copy comes below)
+    for(const r of await c.keys()){const u=new URL(r.url);const p=u.pathname.replace(/^.*?\/(data\/[^/]+)$/,'$1');if(want.has(p)&&new URL(want.get(p),location.href).href!==r.url)await c.delete(r)}
+    for(const u of want.values()){if(await c.match(u))continue;if(navigator.onLine===false)break;
+      const r=await fetch(u).catch(()=>null);if(!r||!r.ok)break;await c.put(u,new Response(await r.text(),{headers:{'Content-Type':'application/json'}}))}
+  }catch(e){}DFILL=false}
+setTimeout(fillTexts,6000);addEventListener('online',()=>setTimeout(fillTexts,2000));
 const textOf=n=>getJSON('data/t'+n+'.json');       // {p:[null | [cont, item...]], o:{page: machine-read text of pages without checked text}}
 const fihris=()=>getJSON('data/fihris.json');
 const heads=()=>getJSON('data/heads.json');
