@@ -985,7 +985,7 @@ button,a,.btn{touch-action:manipulation}
 // the Quran verses are shown in the mushaf (Uthmani) script with full vowelling wherever their place is certain (data 'u' r[2], qu.json)
 window.UTHM=true;
 const DV='37';
-const APP_VER='2026-11-01-1008';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
+const APP_VER='2026-11-01-1010';   // must match version.json; tells an installed copy that a newer version exists               // version of the data files
 const ORD=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر'];
 // وصف الأجزاء من بيان الأجزاء في آخر الجزء السادس عشر (ص ٤٩٤–٤٩٦)
 const VOLS=[
@@ -1115,7 +1115,7 @@ async function removeVol(n){if(hasCaches)await (await volCache()).delete(volKey(
 
 /* ---------- data files (text per part, index hotspots, headings) ---------- */
 const MEM={};
-const DH={"data/t12.json": "8c3b460439", "data/t14.json": "fefd4fbfa3", "data/t2.json": "24fd037841", "data/fawaid.json": "58e0494c51", "data/fihris.json": "c10bf22f64", "data/fn.json": "d14e168f13", "data/fx_snap.json": "d9305f3aae", "data/heads.json": "ae62c1c907", "data/idx.json": "3b5ed4a1b1", "data/meta.json": "ab0de5c8ec", "data/mid.json": "4ba8766112", "data/quran.json": "3b7af2ab79", "data/saadi.json": "a890c7ed56", "data/t1.json": "a8d57f92e0", "data/t10.json": "84a1873f22", "data/t11.json": "a1e8a2858f", "data/t13.json": "308d655e22", "data/t15.json": "08a63c6eed", "data/t16.json": "7cc6f2ba28", "data/t3.json": "07a7b257df", "data/t4.json": "34b3a4544d", "data/t5.json": "a20804bc7a", "data/t6.json": "11d9e91269", "data/t7.json": "172f61a94e", "data/t8.json": "a1a919be8e", "data/t9.json": "fe7242e1e4", "data/ulama.json": "986b4d68de"};
+const DH={"data/t12.json": "8c3b460439", "data/t14.json": "fefd4fbfa3", "data/t2.json": "24fd037841", "data/fawaid.json": "58e0494c51", "data/fihris.json": "c10bf22f64", "data/fn.json": "d14e168f13", "data/fx_snap.json": "d9305f3aae", "data/heads.json": "ae62c1c907", "data/idx.json": "3b5ed4a1b1", "data/meta.json": "ab0de5c8ec", "data/mid.json": "4ba8766112", "data/quran.json": "3b7af2ab79", "data/saadi.json": "a890c7ed56", "data/t1.json": "a8d57f92e0", "data/t10.json": "84a1873f22", "data/t11.json": "a1e8a2858f", "data/t13.json": "d453ad0bc2", "data/t15.json": "08a63c6eed", "data/t16.json": "7cc6f2ba28", "data/t3.json": "07a7b257df", "data/t4.json": "34b3a4544d", "data/t5.json": "a20804bc7a", "data/t6.json": "11d9e91269", "data/t7.json": "172f61a94e", "data/t8.json": "a1a919be8e", "data/t9.json": "fe7242e1e4", "data/ulama.json": "986b4d68de"};
 async function getJSON(path){
   if(MEM[path])return MEM[path];
   const url=path+'?v='+DV+(DH[path]?'-'+DH[path]:'');let j=null;
